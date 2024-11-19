@@ -2,7 +2,7 @@
 base = "."
 command = "npm run build"
 publish = "./build/"
-[environment]
+[build.environment]
 REACT_APP_SUPABASE_URL=https://xwhvvbueavhkbuaoujcb.supabase.co
 REACT_APP_SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3aHZ2YnVlYXZoa2J1YW91amNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE4OTQ4MjQsImV4cCI6MjA0NzQ3MDgyNH0.6jnaT_cluYkYyOUQQ2T55FhHPcMmr_JUUuinEI6QJAE
 
