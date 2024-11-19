@@ -13,19 +13,19 @@ function Contas() {
         <nav aria-label="Breadcrumb" className="mb-4">
           <ol className="flex items-center space-x-4">
             <li>
-              <a href="/" className="text-sm font-medium text-gray-900"
+              <button className="text-sm font-medium text-gray-900"
               onClick={() => handleNavigation("/home")}
               >
                 Home
-              </a>
+              </button>
               <span className="mx-2 text-gray-400">/</span>
             </li>
             <li>
-              <a href="#" className="text-sm font-medium text-gray-900"
+              <button className="text-sm font-medium text-gray-900"
               onClick={() => handleNavigation("/contas")}
               >
                 Contas
-              </a>
+              </button>
               <span className="mx-2 text-gray-400">/</span>
             </li>
             <li>

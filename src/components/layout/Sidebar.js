@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./layout.css"; // Arquivo de estilos para animações
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
@@ -37,23 +37,23 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               </button>
               <ul className="dropdown-menu">
                 <li>
-                  <a
+                  {/* Substituído por botão estilizado */}
+                  <button
                     className="dropdown-item"
-                    href="#"
                     onClick={() => handleNavigation("/config")}
                   >
                     Configuração Geral
-                  </a>
-                  <a className="dropdown-item" href="#">
+                  </button>
+                  {/* Ou usar Link */}
+                  <Link className="dropdown-item" to="/pessoas">
                     Pessoas
-                  </a>
-                  <a className="dropdown-item" href="#">
+                  </Link>
+                  <Link className="dropdown-item" to="/conta">
                     Conta
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
-            
 
             <div className="dropdown">
               <button
@@ -62,37 +62,37 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Finaças
+                Finanças
               </button>
               <ul className="dropdown-menu">
                 <li>
-                <a
+                  <button
                     className="dropdown-item"
-                    href="#"
                     onClick={() => handleNavigation("/contas")}
                   >
                     Contas Gerais
-                  </a>
-                  <a
+                  </button>
+                  <button
                     className="dropdown-item"
-                    href="#"
                     onClick={() => handleNavigation("/caixabancos")}
                   >
                     Caixa e Bancos
-                  </a>
-                  <a className="dropdown-item" href="#"
-                  onClick={() => handleNavigation("/contasapagar")}
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => handleNavigation("/contasapagar")}
                   >
                     Contas a Pagar
-                  </a>
-                  <a className="dropdown-item" href="#"
-                   onClick={() => handleNavigation("/contasresceber")}
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => handleNavigation("/contasresceber")}
                   >
-                    Conta a Resceber
-                  </a>
-                  <a className="dropdown-item" href="#">
-                    Relatorio
-                  </a>
+                    Contas a Receber
+                  </button>
+                  <Link className="dropdown-item" to="/relatorio">
+                    Relatório
+                  </Link>
                 </li>
               </ul>
             </div>

@@ -164,24 +164,22 @@ export function Login() {
             {isResetting ? (
               <span>
                 Lembrei da minha senha{' '}
-                <a
-                  href="#"
+                <button
                   onClick={() => setIsResetting(false)}
                   className="font-semibold text-indigo-600 hover:text-indigo-500"
                 >
                   Voltar para login
-                </a>
+                </button>
               </span>
             ) : (
               <span>
                 Esqueceu a senha?{' '}
-                <a
-                  href="#"
+                <button
                   onClick={() => setIsResetting(true)}
                   className="font-semibold text-indigo-600 hover:text-indigo-500"
                 >
                   Redefina aqui
-                </a>
+                </button>
               </span>
             )}
           </p>
