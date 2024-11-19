@@ -1,0 +1,129 @@
+/* Estilo geral para o corpo */
+body {
+    margin: 0;
+    padding: 0;
+    max-width: 100vw;
+    min-height: 100vh;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilo para a estrutura do layout */
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o layout ocupe a altura total da tela */
+    overflow-x: hidden;
+}
+
+/* Estilo para a área principal (conteúdo) */
+.content {
+    flex: 1; /* Faz o conteúdo ocupar o espaço restante */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-y: scroll;
+}
+
+/* Estilo para o header */
+.header {
+    background-color: #007BFF; /* Azul */
+    color: rgb(3, 2, 2);
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+/* Estilo para o footer */
+.footer {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+/* Estilo da Sidebar */
+
+  .sidebar {
+    transition: all 0.5s ease-in-out; /* Suaviza a transição */
+  }
+  
+  .sidebar.w-60 {
+    width: 15rem; /* Largura padrão quando visível */
+  }
+  
+  .sidebar.w-0 {
+    width: 0; /* Largura quando oculto */
+    overflow: hidden; /* Oculta conteúdo */
+  }
+  
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .main-content {
+    margin-left: 240px; /* Compensar a largura da Sidebar */
+    padding: 16px;
+  }
+  .dropdown{
+    padding: 5px;
+    font-size: large;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+  }
+  .dropdown:hover{
+    background:#ffffff;
+    color: black;
+  }
+  .dropdown-item:hover{
+    background:#bfe1f4;
+  }
+  .card-sidebar{
+    width: 100vw;
+    background: #242b39;
+    border-radius: 1em;
+  }
+/* Estilo responsivo para telas menores */
+@media only screen and (max-width: 700px) {
+    /* Garantir que o layout ocupe a largura total da tela */
+    .layout {
+        width: 100%;
+    }
+
+    /* Configuração flexível para a aba */
+    .aba {
+        display: flex;
+        flex-direction: column;
+        font-size: 1rem;
+        gap: 15px;
+        width: 100%;
+    }
+
+    /* Redimensiona o texto e o espaçamento do header */
+    .header {
+        font-size: 1rem;
+        padding: 8px 16px;
+    }
+
+    /* Ajusta o padding e tamanho da fonte do footer */
+    .footer {
+        font-size: 0.8rem;
+        padding: 8px 16px;
+    }
+    .sidebar {
+      transition: all 0.5s ease-in-out; /* Suaviza a transição */
+        width: 0px;
+        padding: 0;
+        z-index: 100;
+    }
+    .main-content {
+        margin-left: 0px; /* Compensar a largura da Sidebar */
+      }
+}
+
+  
+
+  
