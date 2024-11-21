@@ -5,6 +5,12 @@ const Home = () => {
   return (
 <div>
     <div className="container mx-auto p-4">
+      <h2 className='text-black'> Página Inicial</h2>
+      <div className='card'>
+        <input
+        type='te'
+        />
+      </div>
       <ChartExample />
 
     </div>

@@ -1,35 +1,42 @@
-#formRegister{
-display: flex;
-flex-flow: column wrap;
-justify-content: center;
-width: 100%;
-padding: 1em;
+.container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-.cardRegistro{
-    background-color: rgb(235, 239, 242);
-    box-shadow: 1px 0px 10px rgb(13, 8, 8);
-    margin-top: 1em;
-    width: 100%;
+.cardRegistro {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.bttRegister{
-    background-color: rgb(45, 123, 29);
-    border-radius: 1em;
-    width: 55%;
+
+.car-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
 }
-.bttRegister:hover{
-    box-shadow: 1px 0px 5px rgb(13, 8, 8);
-    color: aliceblue;
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
 }
-.bttclear{
-    background-color: rgb(190, 223, 27);
-    border-radius: 1em;
-    width: 55%;
+
+.button {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
-.bttclear:hover{
-    box-shadow: 1px 0px 5px rgb(13, 8, 8);
-    color: aliceblue;
+
+.button:hover {
+    background: #0056b3;
 }
-.form-control{
-    border-radius: 1em;
+
+.form-section {
+    margin-top: 20px;
 }

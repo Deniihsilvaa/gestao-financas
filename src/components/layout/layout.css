@@ -86,6 +86,21 @@ body {
     background: #242b39;
     border-radius: 1em;
   }
+  .barnav{
+      display: flex;
+      flex-flow: row nowrap;
+      gap: 1em;
+      padding: 1em;
+  }
+  .bttUser{
+    width: 25px;
+    height: 25px;
+   transition: steps(10s);
+  }
+  .bttUser:hover{
+    transform: scale(1.2);
+    cursor: pointer;
+  }
 /* Estilo responsivo para telas menores */
 @media only screen and (max-width: 700px) {
     /* Garantir que o layout ocupe a largura total da tela */

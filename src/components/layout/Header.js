@@ -2,7 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom'; // Para navegação entre rotas
 import { supabase } from '../../services/supabaseClient'; // Configuração do Supabase
 import './layout.css'; // Estilos para o layout
-
+import IconeUser from '../../img/iconeuser.svg'
+import IconeLogout from '../../img//iconelogout.svg'
 const Header = ({ toggleSidebar, isSidebarOpen }) => {
   const navigate = useNavigate(); // Hook para navegação entre rotas
 
@@ -27,7 +28,9 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
 
   return (
     <header className="bg-blue-600 text-white aba">
-      <nav aria-label="Global" className="flex items-center justify-between p-1 lg:px-8">
+      <div className="ma">
+      <nav aria-label="Global" className="flex items-center justify-between p-2">
+
         <div className="border-x-2 border-white">
         <button
           onClick={toggleSidebar}
@@ -40,6 +43,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
           ></i>
         </button>
         </div>
+
         {/* Botão Home no centro */}
         <div className="flex">
           <button
@@ -49,16 +53,30 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
             Home
           </button>
         </div>
+
         {/* Botão de Logout à direita */}
         <div className="flex justify-end">
-          <button
-            onClick={handleLogout}
-            className="text-sm font-semibold leading-6 text-white hover:text-gray-300"
+    <div className="flex items-center">
+
+    <button
+            onClick={() => handleNavigation('/config')}
+            className="bttUser"
           >
-            Logout
+            <img src={IconeUser} alt="IconeUser" />
           </button>
+
+          <button
+          className="bttUser"
+            onClick={handleLogout}
+          >
+            <img src={IconeLogout} alt="IconeLogout" />
+            
+          </button>
+      </div>
+
         </div>
       </nav>
+      </div>
     </header>
   );
 };

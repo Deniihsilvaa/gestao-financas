@@ -2,11 +2,12 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./layout.css"; // Arquivo de estilos para animações
 
-const Sidebar = ({ isOpen, toggleSidebar }) => {
+const Sidebar = ({ isOpen,onClose }) => {
   const navigate = useNavigate();
 
   const handleNavigation = (path) => {
     navigate(path);
+    onClose();
   };
 
   return (
@@ -16,13 +17,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       }`}
     >
       <div className="p-4">
-        <button
-          onClick={toggleSidebar}
-          className="text-white text-lg mb-4 focus:outline-none"
-          aria-label="Toggle Menu"
-        >
-          <i className={`bi ${isOpen ? "bi-x" : "bi-list"}`} style={{ fontSize: "1.5rem" }}></i>
-        </button>
+
         {isOpen && (
           <div>
             <h2 className="text-lg font-semibold mb-4">Menu</h2>
