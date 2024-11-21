@@ -56,43 +56,48 @@ function ModalRegistro({ onClose }) {
     return (
         <div>
             <form>
-                <div>
-                    <label>Nome:</label>
+                <div className="input-group mb-3">
+
+                    <span htmlFor="name" className="input-group-text">Nome:</span>
                     <input
                         type="text"
+                        className="form-control"
                         placeholder="Digite o nome"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                 </div>
-                <div>
-                    <label>Email:</label>
+                <div className="input-group mb-3">
+                    <span className="input-group-text" htmlFor="email">Email:</span>
                     <input
+                     className="form-control"
                         type="email"
                         placeholder="Digite o email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
                 </div>
-                <div>
-                    <label>Senha:</label>
+                <div className="input-group mb-3">
+                    <span className="input-group-text" htmlFor="password">Senha:</span>
                     <input
+                    className="form-control"
                         type="password"
                         placeholder="Digite a senha"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
-                <div>
-                    <label>Função:</label>
+                <div className="input-group mb-3">
+                    <span className="input-group-text" htmlFor="role">Função:</span>
                     <input
+                     className="form-control"
                         type="text"
                         placeholder="Ex: administrador, usuário"
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
                     />
                 </div>
-                <button type="button" onClick={handleRegister}>
+                <button className="btn btn-primary" type="button" onClick={handleRegister}>
                     Registrar
                 </button>
             </form>

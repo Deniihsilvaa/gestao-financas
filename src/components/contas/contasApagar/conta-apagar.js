@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+import Modal from "../../Modal/Modal";
+import TemplateRegistros from "./registro";
 
 function ContasApagar() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+
   return (
     <div className="flex h-screen">
+
       {/* Conteúdo principal */}
       <main className="flex-1 bg-gray-100 p-6">
         {/* Breadcrumb */}
@@ -27,7 +39,7 @@ function ContasApagar() {
             </li>
           </ol>
         </nav>
-
+        <h2 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">Contas a Pagar</h2>
         {/* Barra de filtros */}
         <div className="flex items-center justify-between bg-white p-4 rounded shadow mb-6">
           <input
@@ -38,6 +50,9 @@ function ContasApagar() {
           <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
             Filtrar
           </button>
+          <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            onClick={handleOpenModal}
+          > Registrar</button>
         </div>
 
         {/* Tabela */}
@@ -88,6 +103,10 @@ function ContasApagar() {
           <li>Próximas a vencer: 3</li>
         </ul>
       </aside>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} title="Registrar Conta a Pagar">
+        <TemplateRegistros onClose={handleCloseModal} />
+      </Modal>
+
     </div>
   );
 }
