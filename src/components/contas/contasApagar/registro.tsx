@@ -9,9 +9,8 @@ interface Conta {
     vencimento: string;
     bancoId: number;
     tipoCategoria: string;
-    datacompetencia: string; // Alterando para datacompetencia
+    datacompetencia: string;
 }
-
 
 interface TemplateRegistrosProps {
     onClose: () => void;
@@ -22,23 +21,21 @@ function TemplateRegistros({ onClose }: TemplateRegistrosProps) {
     const [categoria, setCategoria] = useState("");
     const [valor, setValor] = useState("");
     const [vencimento, setVencimento] = useState("");
-    const [bancoId, setBancoId] = useState<number | "">(""); // Estado para armazenar o ID do banco
-    const [tipoCategoria, setTipoCategoria] = useState<string>(""); // Estado para armazenar o tipo de categoria
-    const [bancos, setBancos] = useState<{ id: number; banco: string }[]>([]); // Estado para os bancos
-    const [categorias, setCategorias] = useState<{ id: number; categoria: string }[]>([]); // Estado para as categorias
+    const [bancoId, setBancoId] = useState<number | "">("");
+    const [tipoCategoria, setTipoCategoria] = useState<string>("");
+    const [bancos, setBancos] = useState<{ id: number; banco: string }[]>([]);
+    const [categorias, setCategorias] = useState<{ id: number; categoria: string }[]>([]);
     const [datacompetencia, setdatacompetencia] = useState("");
 
-    // Buscar bancos do Supabase
+    const [error, setError] = useState<string | null>(null);
+
+    // Buscar bancos e categorias do Supabase
     useEffect(() => {
         const fetchBancos = async () => {
             try {
                 const { data, error } = await supabase.from("bank_account").select("id, banco");
-
-                if (error) {
-                    throw error;
-                }
-
-                setBancos(data);
+                if (error) throw error;
+                setBancos(data || []);
             } catch (error) {
                 console.error("Erro ao buscar bancos:", error);
             }
@@ -46,17 +43,9 @@ function TemplateRegistros({ onClose }: TemplateRegistrosProps) {
 
         const fetchCategorias = async () => {
             try {
-                // Aqui estamos buscando as categorias onde o tipo é "Saída"
-                const { data, error } = await supabase
-                    .from("type_categoria")
-                    .select("id, categoria")
-                    .eq("tipo", "Saída"); // Filtra por "Saída"
-
-                if (error) {
-                    throw error;
-                }
-
-                setCategorias(data);
+                const { data, error } = await supabase.from("type_categoria").select("id, categoria").eq("tipo", "Saída");
+                if (error) throw error;
+                setCategorias(data || []);
             } catch (error) {
                 console.error("Erro ao buscar categorias:", error);
             }
@@ -66,33 +55,52 @@ function TemplateRegistros({ onClose }: TemplateRegistrosProps) {
         fetchCategorias();
     }, []);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const novaConta: Conta = {
-            id: Date.now(),
-            descricao,
-            categoria,
-            valor: parseFloat(valor),
-            vencimento,
-            datacompetencia, // Usando datacompetencia corretamente
-            bancoId: Number(bancoId),
-            tipoCategoria, // Incluindo tipoCategoria no objeto
-        };
-    
-        alert("Conta registrada com sucesso!");
-        setDescricao("");
-        setCategoria("");
-        setdatacompetencia(""); // Limpar datacompetencia
-        setValor("");
-        setVencimento("");
-        setBancoId(""); // Limpar bancoId
-        setTipoCategoria(""); // Limpar tipoCategoria
-        onClose();
+
+        // Validação básica
+        if (!descricao || !categoria || !valor || !vencimento || !datacompetencia || !bancoId || !tipoCategoria) {
+            setError("Todos os campos são obrigatórios.");
+            return;
+        }
+
+        try {
+            const novaConta: Conta = {
+                id: Date.now(),
+                descricao,
+                categoria,
+                valor: parseFloat(valor),
+                vencimento,
+                datacompetencia,
+                bancoId: Number(bancoId),
+                tipoCategoria,
+            };
+
+            // Salvar no banco de dados (exemplo)
+            const { error } = await supabase.from("contas").insert([novaConta]);
+            if (error) throw error;
+
+            alert("Conta registrada com sucesso!");
+            // Resetando os campos
+            setDescricao("");
+            setCategoria("");
+            setdatacompetencia("");
+            setValor("");
+            setVencimento("");
+            setBancoId("");
+            setTipoCategoria("");
+            setError(null);
+            onClose();
+        } catch (error) {
+            console.error("Erro ao registrar conta:", error);
+            setError("Ocorreu um erro ao registrar a conta. Tente novamente.");
+        }
     };
-    
 
     return (
         <form onSubmit={handleSubmit}>
+            {error && <div className="alert alert-danger">{error}</div>}
+
             <div className="input-group mb-3">
                 <label htmlFor="descricao" className="input-group-text">Descrição</label>
                 <input
@@ -101,19 +109,21 @@ function TemplateRegistros({ onClose }: TemplateRegistrosProps) {
                     className="form-control"
                     placeholder="Descrição do pagamento"
                     value={descricao}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescricao(e.target.value)}
+                    onChange={(e) => setDescricao(e.target.value)}
                 />
             </div>
+
             <div className="input-group mb-3">
-                <label htmlFor="data_competencia" className="input-group-text">Data de compentencia</label>
+                <label htmlFor="datacompetencia" className="input-group-text">Data de Competência</label>
                 <input
-                    id="data_competencia"
+                    id="datacompetencia"
                     type="date"
                     className="form-control"
                     value={datacompetencia}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setdatacompetencia(e.target.value)}
+                    onChange={(e) => setdatacompetencia(e.target.value)}
                 />
             </div>
+
             <div className="input-group mb-3">
                 <label htmlFor="valor" className="input-group-text">Valor</label>
                 <input
@@ -122,7 +132,7 @@ function TemplateRegistros({ onClose }: TemplateRegistrosProps) {
                     className="form-control"
                     placeholder="Digite o valor"
                     value={valor}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValor(e.target.value)}
+                    onChange={(e) => setValor(e.target.value)}
                 />
             </div>
 
@@ -133,18 +143,17 @@ function TemplateRegistros({ onClose }: TemplateRegistrosProps) {
                     type="date"
                     className="form-control"
                     value={vencimento}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVencimento(e.target.value)}
+                    onChange={(e) => setVencimento(e.target.value)}
                 />
             </div>
 
-            {/* Select para o banco */}
             <div className="input-group mb-3">
                 <label htmlFor="banco" className="input-group-text">Banco</label>
                 <select
                     id="banco"
                     className="form-select"
                     value={bancoId}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setBancoId(Number(e.target.value))}
+                    onChange={(e) => setBancoId(Number(e.target.value))}
                 >
                     <option value="">Selecione o banco</option>
                     {bancos.map((banco) => (
@@ -155,14 +164,13 @@ function TemplateRegistros({ onClose }: TemplateRegistrosProps) {
                 </select>
             </div>
 
-            {/* Select para a categoria de tipo (Saída) */}
             <div className="input-group mb-3">
                 <label htmlFor="tipo_categoria" className="input-group-text">Tipo de Categoria</label>
                 <select
                     id="tipo_categoria"
                     className="form-select"
                     value={tipoCategoria}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTipoCategoria(e.target.value)}
+                    onChange={(e) => setTipoCategoria(e.target.value)}
                 >
                     <option value="">Selecione uma categoria</option>
                     {categorias.map((categoria) => (

@@ -11,7 +11,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkSession = async () => {
         const { data: session, error } = await supabase.auth.getSession();
-        if (!session?.user) {
+        if (!session?.user && !error) {
             console.log("Usuário não autenticado. Redirecionando para login...");
             // Redirecione para a página de login
         }

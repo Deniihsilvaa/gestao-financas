@@ -19,7 +19,7 @@ const FormularioConta = ({ onClose }) => {
             const user_id = dados.id;
 
 
-            const { data, error } = await supabase.from("bank_account").insert([
+            const { error } = await supabase.from("bank_account").insert([
                 { banco, agencia, conta, user_id },
             ]);
 

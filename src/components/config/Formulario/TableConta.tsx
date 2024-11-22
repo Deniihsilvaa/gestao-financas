@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../../services/supabaseClient";
-import { useNavigate } from "react-router-dom";
 
 // Defina a interface para os dados da conta bancária
 interface Conta {
