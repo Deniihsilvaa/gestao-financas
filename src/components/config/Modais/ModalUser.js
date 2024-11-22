@@ -6,6 +6,7 @@ function ModalRegistro({ onClose }) {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [role, setRole] = useState("");
+    const [access_level, setaccess_level] = useState("");
 
     const handleRegister = async () => {
         if (!email || !password || !name || !role) {
@@ -21,8 +22,9 @@ function ModalRegistro({ onClose }) {
             });
 
             if (authError) {
-                console.error("Erro ao registrar o usuário:", authError.message);
-                alert("Erro ao registrar o usuário. Tente novamente.");
+                if (authError.message === "User already registered") {
+                    alert("Erro ao registrar o usuário. Tente novamente: O email inserido ja esta em uso.");
+                }
                 return;
             }
 
@@ -37,18 +39,18 @@ function ModalRegistro({ onClose }) {
                         name,
                         email,
                         role,
+                        access_level,
                     },
                 ]);
 
             if (dbError) {
-                console.error("Erro ao salvar os dados do usuário:", dbError.message);
+
                 alert("Erro ao salvar os dados no banco de dados.");
             } else {
                 alert("Usuário registrado com sucesso!");
                 onClose(); // Fecha o modal após o sucesso
             }
         } catch (err) {
-            console.error("Erro inesperado:", err.message);
             alert("Erro inesperado. Tente novamente.");
         }
     };
@@ -95,6 +97,18 @@ function ModalRegistro({ onClose }) {
                         placeholder="Ex: administrador, usuário"
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
+                    />
+                </div>
+
+
+                <div className="input-group mb-3">
+                    <span className="input-group-text" htmlFor="access_level">Nivel de Acesso:</span>
+                    <input
+                     className="form-control"
+                        type="text"
+                        placeholder="Ex: 1,2,3"
+                        value={access_level}
+                        onChange={(e) => setaccess_level(e.target.value)}
                     />
                 </div>
                 <button className="btn btn-primary" type="button" onClick={handleRegister}>

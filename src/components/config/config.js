@@ -1,31 +1,37 @@
+// components/config/config.js
 import React, { useState } from "react";
 import "./config.css";
 import Modal from "../Modal/Modal";
 import ModalSenha from "./Modais/ModalSenha";
 import ModalRegistro from "./Modais/ModalUser";
+import FormularioConta from "./Formulario/formConta";
 
 function Config() {
     const [isSenhaModalOpen, setIsSenhaModalOpen] = useState(false);
     const [isRegistroModalOpen, setIsRegistroModalOpen] = useState(false);
+    const [isContaModalOpen, setIsContaModalOpen] = useState(false);
     const [userID, setUserID] = useState(null);
 
     // Funções para abrir/fechar modais
     const handleOpenSenhaModal = (id) => {
-        setUserID(id); // Define o ID do usuário (se necessário)
+        setUserID(id);
         setIsSenhaModalOpen(true);
     };
-
     const handleCloseSenhaModal = () => {
         setIsSenhaModalOpen(false);
-        setUserID(null); // Limpa o ID ao fechar o modal
+        setUserID(null);
     };
-
     const handleOpenRegistroModal = () => {
         setIsRegistroModalOpen(true);
     };
-
     const handleCloseRegistroModal = () => {
         setIsRegistroModalOpen(false);
+    };
+    const handleOpenContaModal = () => {
+        setIsContaModalOpen(true);
+    };
+    const handleCloseContaModal = () => {
+        setIsContaModalOpen(false);
     };
 
     return (
@@ -41,6 +47,9 @@ function Config() {
                     <button className="button" onClick={handleOpenRegistroModal}>
                         Registrar Usuário
                     </button>
+                    <button className="button" onClick={handleOpenContaModal}>
+                        Conta Bancária
+                    </button>
                 </div>
 
                 {/* Modal para Alterar Senha */}
@@ -49,10 +58,7 @@ function Config() {
                     onClose={handleCloseSenhaModal}
                     title="Alterar Senha"
                 >
-                    <ModalSenha
-                        userID={userID}
-                        onClose={handleCloseSenhaModal}
-                    />
+                    <ModalSenha userID={userID} onClose={handleCloseSenhaModal} />
                 </Modal>
 
                 {/* Modal para Registrar Usuário */}
@@ -62,6 +68,15 @@ function Config() {
                     title="Registrar Usuário"
                 >
                     <ModalRegistro onClose={handleCloseRegistroModal} />
+                </Modal>
+
+                {/* Modal para Conta Bancária */}
+                <Modal
+                    isOpen={isContaModalOpen}
+                    onClose={handleCloseContaModal}
+                    title="Registrar Conta Bancária"
+                >
+                    <FormularioConta onClose={handleCloseContaModal} />
                 </Modal>
             </div>
         </div>

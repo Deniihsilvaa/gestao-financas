@@ -5,7 +5,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="modal-overlay" tabindex="-1">
+        <div className="modal-overlay">
             <div className="modal-container">
                 <div className="modal-header">
                     <h2>{title}</h2>
@@ -17,7 +17,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
                     {children}
                 </div>
                 <div className="modal-footer">
-                    <button onClick={onClose}>Fechar</button>
+                <i className="bi bi-database-fill"></i>
                 </div>
             </div>
         </div>

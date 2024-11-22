@@ -1,3 +1,4 @@
+// src/AuthContext.js
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from './services/supabaseClient'; // Importando o cliente Supabase
 
@@ -7,6 +8,16 @@ const AuthContext = createContext();
 // Provider que gerencia o estado de autenticação
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null); // Armazena o usuário autenticado
+  useEffect(() => {
+    const checkSession = async () => {
+        const { data: session, error } = await supabase.auth.getSession();
+        if (!session?.user) {
+            console.log("Usuário não autenticado. Redirecionando para login...");
+            // Redirecione para a página de login
+        }
+    };
+    checkSession();
+}, []);
 
   useEffect(() => {
     // Verifica se há uma sessão salva no Supabase

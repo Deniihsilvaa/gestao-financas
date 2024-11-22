@@ -1,0 +1,20 @@
+.table-responsive {
+    margin: 10px 0; /* Espaçamento ao redor da tabela */
+}
+
+.table td, .table th {
+    word-wrap: break-word; /* Quebra de texto em células muito longas */
+    vertical-align: middle; /* Centraliza verticalmente o conteúdo */
+}
+.table-responsive-custom {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Melhor experiência de scroll em dispositivos móveis */
+}
+
+
+@media (max-width: 768px) {
+    .btn {
+        font-size: 12px; /* Reduz o tamanho dos botões em telas menores */
+        padding: 5px 10px;
+    }
+}
