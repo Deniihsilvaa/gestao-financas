@@ -1,30 +1,36 @@
-// src/components/config/Formulario/formConta.jsx
 import React, { useState } from "react";
 import { supabase } from "../../../services/supabaseClient";
-import TableConta from "./TableConta.tsx";
-const FormularioConta = ({ onClose }) => {
-    const [banco, setBanco] = useState("");
-    const [agencia, setAgencia] = useState("");
-    const [conta, setConta] = useState("");
+import TableConta from "./TableConta";
 
-    const handleSubmit = async (e) => {
+interface FormularioContaProps {
+    onClose: () => void;
+}
+
+const FormularioConta: React.FC<FormularioContaProps> = ({ onClose }) => {
+    const [banco, setBanco] = useState<string>("");
+    const [agencia, setAgencia] = useState<string>("");
+    const [conta, setConta] = useState<string>("");
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         if (!banco || !agencia || !conta) {
             alert("Por favor, preencha todos os campos.");
             return;
         }
+
         try {
             const dadoslocal = localStorage.getItem("user");
-            const dados = JSON.parse(dadoslocal);
-            const user_id = dados.id;
+            if (!dadoslocal) {
+                throw new Error("Dados do usuário não encontrados.");
+            }
 
+            const dados = JSON.parse(dadoslocal);
+            const user_id: string = dados.id;
 
             const { error } = await supabase.from("bank_account").insert([
                 { banco, agencia, conta, user_id },
             ]);
-
-
-
 
             if (error) {
                 alert("Erro ao registrar conta. Tente novamente.");
@@ -33,6 +39,7 @@ const FormularioConta = ({ onClose }) => {
                 onClose(); // Fecha o modal
             }
         } catch (err) {
+            console.error(err);
             alert("Erro inesperado. Tente novamente.");
         }
     };
@@ -87,10 +94,8 @@ const FormularioConta = ({ onClose }) => {
                     </div>
                     <div className="row mt-3">
                         <TableConta />
-
                     </div>
                 </div>
-
             </div>
         </form>
     );

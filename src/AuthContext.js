@@ -1,10 +1,12 @@
 // src/AuthContext.js
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from './services/supabaseClient'; // Importando o cliente Supabase
-
+import PropTypes from 'prop-types';
 // Criando o contexto de autenticação
 const AuthContext = createContext();
-
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+}
 // Provider que gerencia o estado de autenticação
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null); // Armazena o usuário autenticado

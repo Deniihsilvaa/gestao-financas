@@ -1,3 +1,4 @@
+// components/Modal/Modal.js
 import React from 'react';
 import './Modal.css'; // Adicione estilos para o modal
 
