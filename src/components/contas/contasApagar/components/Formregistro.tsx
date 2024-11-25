@@ -1,26 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../../../services/supabaseClient";
 
-interface Conta {
-  descricao: string;
-  valor: number;
-  data_vencimento: string;
-  conta_bancaria: string;
-  tipo_categoria: string;
-  data_transacao: string;
-  data_registro: string;
-  situacao: string;
-  observacao: string;
-  user_id: string;
-  tipo_registro: string;
-}
+import {ContaProps,TemplateRegistrosProps} from "../types"
 
-interface TemplateRegistrosProps {
-  onClose: () => void;
-  onSave: () => void;
-}
 
-const TemplateRegistros: React.FC<TemplateRegistrosProps> = ({
+
+const FormRegistro: React.FC<TemplateRegistrosProps> = ({
   onClose,
   onSave,
 }) => {
@@ -113,7 +98,7 @@ const TemplateRegistros: React.FC<TemplateRegistrosProps> = ({
       const dados = JSON.parse(dadoslocal);
       const user_id: string = dados.id;
 
-      const novaConta: Conta = {
+      const novaConta: ContaProps = {
         user_id: user_id,
         descricao,
         valor: parseFloat(valor),
@@ -318,4 +303,4 @@ const TemplateRegistros: React.FC<TemplateRegistrosProps> = ({
   );
 };
 
-export default TemplateRegistros;
+export default FormRegistro;

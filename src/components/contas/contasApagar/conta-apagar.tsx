@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Modal from "../../Modal/Modal"; 
-import TemplateRegistros from "./components/registro"; 
+import FormRegistro from "./components/Formregistro"; 
 import { supabase } from "../../../services/supabaseClient";
 import TableRegistro from "./components/table";
-import {Registro} from "./types";
+import {RegistroProps} from "./types";
 
 
 
 function ContasApagar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [registros, setRegistros] = useState<Registro[]>([]);
+  const [registros, setRegistros] = useState<RegistroProps[]>([]);
 
   const fetchRegistros = async () => {
     const { data, error } = await supabase
@@ -102,7 +102,9 @@ function ContasApagar() {
             Valor total: R$
             {registros.reduce((acc, reg) => acc + Number(reg.valor), 0).toFixed(2)}
           </li>
-          <li>Próximas a vencer: {/* Lógica personalizada */}</li>
+          <li>Próximas a vencer: {/* Lógica personalizada */}
+            
+          </li>
         </ul>
       </aside>
 
@@ -111,7 +113,7 @@ function ContasApagar() {
         onClose={handleCloseModal}
         title="Registrar Conta a Pagar"
       >
-        <TemplateRegistros
+        <FormRegistro
           onClose={handleCloseModal}
           onSave={() => {
             fetchRegistros(); // Atualiza a tabela após salvar

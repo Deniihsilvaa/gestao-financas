@@ -1,4 +1,6 @@
-export interface Registro {
+import { Theme } from "@table-library/react-table-library/types/theme";
+
+export interface RegistroProps {
   id: number;
   descricao: string;
   data: string;
@@ -17,5 +19,22 @@ export interface Registro {
   
 }
 export interface TableRegistroProps {
-  registros: Registro[]; // Registros recebidos como prop
+  registros: RegistroProps[]; // Registros recebidos como prop
+}
+export interface ContaProps {
+  descricao: string;
+  valor: number;
+  data_vencimento: string;
+  conta_bancaria: string;
+  tipo_categoria: string;
+  data_transacao: string;
+  data_registro: string;
+  situacao: string;
+  observacao: string;
+  user_id: string;
+  tipo_registro: string;
+}
+export interface TemplateRegistrosProps {
+  onClose: () => void;
+  onSave: () => void;
 }
