@@ -11,11 +11,17 @@ export const formatCurrency = (value: number): string => {
   // Função para formatar datas no formato dd/mm/aaaa
   export const formatDate = (date: string): string => {
     const dateObj = new Date(date);
-    const day = String(dateObj.getDate()).padStart(2, "0");
-    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-    const year = dateObj.getFullYear();
+  
+    // Corrige a data levando em consideração o fuso horário
+    const adjustedDate = new Date(dateObj.getTime() + dateObj.getTimezoneOffset() * 60 * 1000);
+  
+    const day = String(adjustedDate.getDate()).padStart(2, "0");
+    const month = String(adjustedDate.getMonth() + 1).padStart(2, "0");
+    const year = adjustedDate.getFullYear();
+  
     return `${day}/${month}/${year}`;
   };
+  
   
   // Função para formatar valores numéricos com casas decimais
   export const formatNumber = (value: number, decimals: number = 2): string => {

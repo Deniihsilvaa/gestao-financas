@@ -25,7 +25,7 @@ export interface RowExpansionTemplateProps {
   data: {
     id?: number; // ID do registro
     observacao: string;
-    data_transacao: string;
+    data_vencimento: string;
   };
 }
 export interface ContaProps {

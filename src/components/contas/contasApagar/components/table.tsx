@@ -10,7 +10,7 @@ import FormRegistro from "./Formregistro";
 import Modal from "../../../Modal/Modal";
 import { RegistroProps, TableRegistroProps } from "../types";
 import { formatCurrency } from "../../../../utils/formatters";
-
+import {formatDate} from "../../../../utils/formatters";
 const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
 
   const [expandedRows, setExpandedRows] = useState<
@@ -88,7 +88,7 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
       >
         <Column expander style={{ width: "3em" }} />
         <Column field="descricao" header="Descrição" sortable />
-        <Column field="data_transacao" header="Data" sortable />
+        <Column field="data_transacao" header="Data" sortable body={(rowData) => formatDate(rowData.data_transacao)} />
         <Column
           field="valor"
           header="Valor"
@@ -100,22 +100,23 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
             <Button
               label="Editar"
               onClick={() => handleEdit(rowData)}
-              className="p-button-warning"
+              className="bg-gradient-to-r from-teal-100 to-blue-200 hover:from-pink-100 hover:to-indigo-400 ..."
             />
           )}
           header="Ações"
-          style={{ width: "10rem" }}
+        
         />
         <Column
+          
           body={(rowData: RegistroProps) => (
             <Button
               label="Excluir"
               onClick={() => handleDelete(rowData.id)}
-              className="p-button-danger "
+              className="bg-gradient-to-r from-teal-100 to-blue-200 hover:from-pink-100 hover:to-rose-800 ..."
             />
           )}
           header="Ações"
-          style={{ width: "10rem" }}
+
         />
       </DataTable>
 

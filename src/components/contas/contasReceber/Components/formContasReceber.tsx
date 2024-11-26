@@ -1,55 +1,59 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "primereact/button";
 import { supabase } from "../../../../services/supabaseClient";
+import { FormContasReceberProps } from "../types";
 
-import { RegistroProps,ContaPropsEdit, TemplateRegistrosProps } from "../types";
-
-import { Button } from 'primereact/button';
-        
-const FormRegistro: React.FC<TemplateRegistrosProps> = ({
+const FormContasReceber: React.FC<FormContasReceberProps> = ({
   onClose,
   onSave,
-  registroParaEdicao, // Prop opcional para edição
+  registroParaEdicao,
 }) => {
-  const [descricao, setDescricao] = useState(registroParaEdicao?.descricao || "");
-  const [situacao, setSituacao] = useState(registroParaEdicao?.situacao || "Pendente");
-  const [valor, setValor] = useState(registroParaEdicao?.valor?.toString() || "");
-  const [data_vencimento, setVencimento] = useState(
-    registroParaEdicao?.data_vencimento || ""
+  const [descricao, setDescricao] = useState(
+    registroParaEdicao?.descricao || ""
   );
   const [data_registro, setDataOriginal] = useState(
     registroParaEdicao?.data_registro || ""
   );
-  const [conta_bancaria, setBancoId] = useState<string | null>(
-    registroParaEdicao?.conta_bancaria || null
-  );
-  const [tipo_categoria, setTipoCategoria] = useState<string | null>(
-    registroParaEdicao?.tipo_categoria || null
+  const [data_vencimento, setVencimento] = useState(
+    registroParaEdicao?.data_vencimento || ""
   );
   const [data_transacao, setDatacompetencia] = useState(
     registroParaEdicao?.data_transacao || ""
   );
+  const [situacao, setSituacao] = useState("Pendente");
   const [observacao, setObservacao] = useState(
     registroParaEdicao?.observacao || ""
   );
-
-  const [bancos, setBancos] = useState<{ id: number; banco: string }[]>([]);
+  const [valor, setValor] = useState(
+    registroParaEdicao?.valor?.toString() || ""
+  );
+  const [conta_bancaria, setBancoId] = useState<string | null>(
+    registroParaEdicao?.conta_bancaria || null
+  );
   const [categorias, setCategorias] = useState<
     { id: number; categoria: string }[]
   >([]);
+  const [tipo_categoria, setTipoCategoria] = useState<string | null>(
+    registroParaEdicao?.tipo_categoria || null
+  );
+  const [tipo_registro, setTipoRegistro] = useState("Entrada");
 
+  const [bancos, setBancos] = useState<{ id: number; banco: string }[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({
     descricao: false,
     valor: false,
     data_vencimento: false,
     conta_bancaria: false,
-    tipo_categoria: false,
     data_registro: false,
     data_transacao: false,
   });
 
   useEffect(() => {
     const fetchBancos = async () => {
-      const { data, error } = await supabase.from("bank_account").select("id, banco");
+      const { data, error } = await supabase
+        .from("bank_account")
+        .select("id, banco");
+
       if (error) {
         console.error("Erro ao buscar bancos:", error);
       } else {
@@ -57,11 +61,16 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
       }
     };
 
+    fetchBancos();
+  }, []);
+
+  useEffect(() => {
     const fetchCategorias = async () => {
       const { data, error } = await supabase
         .from("type_categoria")
         .select("id, categoria")
-        .eq("tipo", "Saída");
+        .eq("tipo", "Entrada");
+
       if (error) {
         console.error("Erro ao buscar categorias:", error);
       } else {
@@ -69,86 +78,51 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
       }
     };
 
-    fetchBancos();
     fetchCategorias();
   }, []);
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     const validationErrors = {
       descricao: !descricao,
       valor: !valor,
       data_vencimento: !data_vencimento,
       conta_bancaria: !conta_bancaria,
-      tipo_categoria: !tipo_categoria,
       data_registro: !data_registro,
       data_transacao: !data_transacao,
     };
-    
-    // Atualiza o estado dos erros
+
     setErrors(validationErrors);
-  
+
     if (Object.values(validationErrors).includes(true)) {
       alert("Por favor, preencha todos os campos obrigatórios!");
       return;
     }
-  
-    try {
-      const dadoslocal = localStorage.getItem("user");
-      if (!dadoslocal) {
-          throw new Error("Dados do usuário não encontrados.");
-      }
-
-      const dados = JSON.parse(dadoslocal);
-      const user_id: string = dados.id;
-      
-      const registro: RegistroProps|null = {
-        user_id,
-        descricao,
-        valor: parseFloat(valor),
-        tipo_registro: "Saída",
-        data_transacao,
-        tipo_categoria: tipo_categoria as string,
-        situacao,
-        data_registro,
-        conta_bancaria: conta_bancaria as string,
-        data_vencimento,
-        observacao,
-      };
-  
-      if (registroParaEdicao) {
-        console.log('Editando',registroParaEdicao)
-        // Atualiza o registro existente
-        const updatedRegistro: ContaPropsEdit = {
-          ...registro,
-          id: registroParaEdicao.id,
-        };
-  
-        // Chama a função onSave com o objeto editado
-        onSave(updatedRegistro);
-        
-        const { error } = await supabase
-          .from("base_caixa")
-          .update(updatedRegistro)
-          .eq("id", registroParaEdicao.id);
-  
-        if (error) {
-          alert("Erro ao atualizar registro: " + error.message);
-          return;
-        }
-        alert("Registro atualizado com sucesso!");
-      } else {
-        // Insere novo registro
-        onSave(registro);
-      }
-  
-      onClose();
-    } catch (error: any) {
-      console.error("Erro ao salvar registro:", error.message);
-      alert("Erro ao salvar registro: " + error.message);
+    const dados = localStorage.getItem("user");
+    if (!dados) {
+      throw new Error("Dados do usuário não encontrados.");
     }
+    const dadoslocal = JSON.parse(dados);
+    const user_id: string = dadoslocal.id;
+
+    const novoRegistro = {
+      user_id,
+      descricao,
+      data_registro,
+      data_vencimento,
+      data_transacao,
+      situacao,
+      observacao,
+      valor: parseFloat(valor),
+      conta_bancaria,
+      tipo_categoria,
+      tipo_registro: "Entrada",
+    };
+    console.log("Registro", novoRegistro);
+    onSave(novoRegistro);
+    onClose();
   };
-  
 
   const getInputStyle = (field: string) => {
     return errors[field] ? { borderColor: "red" } : {};
@@ -172,7 +146,7 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
           id="descricao"
           type="text"
           className="form-control"
-          placeholder="Descrição do pagamento"
+          placeholder="Descrição da entrada"
           value={descricao}
           onChange={(e) => setDescricao(e.target.value)}
           style={getInputStyle("descricao")}
@@ -230,6 +204,7 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
           className="form-select"
           value={situacao}
           onChange={(e) => setSituacao(e.target.value)}
+          disabled
         >
           <option value="Pendente">Pendente</option>
         </select>
@@ -270,7 +245,7 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
         <select
           id="banco"
           className="form-select"
-          value={conta_bancaria ?? ""}
+          value={conta_bancaria || ""}
           onChange={(e) => setBancoId(e.target.value)}
           style={getInputStyle("conta_bancaria")}
         >
@@ -290,33 +265,24 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
         <select
           id="tipo_categoria"
           className="form-select"
-          value={tipo_categoria ?? ""}
+          value={tipo_categoria || ""}
           onChange={(e) => setTipoCategoria(e.target.value)}
           style={getInputStyle("tipo_categoria")}
         >
-          <option value="">Selecione a categoria</option>
-          {categorias.map((categoria) => (
-            <option key={categoria.id} value={categoria.id}>
-              {categoria.categoria}
+          <option value="">Selecione uma Categoria</option>
+          {categorias.map((cat) => (
+            <option key={cat.id} value={cat.categoria}>
+              {cat.categoria}
             </option>
           ))}
         </select>
       </div>
 
       <div className="grid grid-cols-2 gap-2 p-3">
-
         <Button type="submit" className="btn btn-primary">
           {registroParaEdicao ? "Atualizar" : "Salvar"}
         </Button>
-        <Button
-          type="button"
-          onClick={onClose}
-          style={{ marginRight: "10px" }}
-          icon="pi pi-check"
-          className="btn btn-secondary"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        >
+        <Button type="button" onClick={onClose} className="btn btn-secondary">
           Cancelar
         </Button>
       </div>
@@ -324,4 +290,4 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
   );
 };
 
-export default FormRegistro;
+export default FormContasReceber;
