@@ -1,9 +1,8 @@
 import { Theme } from "@table-library/react-table-library/types/theme";
 
 export interface RegistroProps {
-  id: number;
+  id?: number;
   descricao: string;
-  data: string;
   valor: number;
   situacao: string;
   observacao: string;
@@ -11,17 +10,41 @@ export interface RegistroProps {
   conta_bancaria: string;
   data_transacao: string;
   data_vencimento: string;
+
   data_registro: string;
   user_id: string;
   tipo_registro: string;
-  value: number;
-  
   
 }
 export interface TableRegistroProps {
   registros: RegistroProps[]; // Registros recebidos como prop
+  onDelete: (id: RegistroProps["id"]) => void; // Função para deletar um registro
+}
+
+export interface RowExpansionTemplateProps {
+  data: {
+    id?: number; // ID do registro
+    observacao: string;
+    data_transacao: string;
+  };
 }
 export interface ContaProps {
+  id?: number; // Torna id opcional
+  descricao: string;
+  valor: number;
+  data_vencimento: string;
+  conta_bancaria: string;
+  tipo_categoria: string;
+  data_transacao: string;
+  data_registro: string;
+  situacao: string;
+  observacao: string;
+  user_id: string;
+  tipo_registro: string;
+}
+
+export interface ContaPropsEdit {
+  id?: number;
   descricao: string;
   valor: number;
   data_vencimento: string;
@@ -35,6 +58,8 @@ export interface ContaProps {
   tipo_registro: string;
 }
 export interface TemplateRegistrosProps {
+  registro: RegistroProps | null; // Aceita RegistroProps ou null
   onClose: () => void;
-  onSave: () => void;
+  onSave: (novoRegistro: ContaProps) => void; // Aceita um argumento
+  registroParaEdicao?: ContaPropsEdit | null; // Opcional
 }

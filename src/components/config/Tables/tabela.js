@@ -20,6 +20,7 @@ function Tabela() {
                 setDados(data);  // Salva os dados na state
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
+               
             } finally {
                 setLoading(false); // Finaliza o carregamento
             }

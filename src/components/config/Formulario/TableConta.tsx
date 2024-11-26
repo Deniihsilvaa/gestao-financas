@@ -21,7 +21,11 @@ const TableConta = () => {
       setContas(data || []);
       setIsLoading(false);
     } catch (error) {
-      console.error("Erro ao buscar dados:", error);
+      const tratarErro = JSON.stringify(error)
+      console.error("Erro ao buscar dados:", tratarErro);
+      if (tratarErro) {
+
+      } 
     }
   };
 
@@ -42,15 +46,14 @@ const TableConta = () => {
   useEffect(() => {
     fetchContas(); // Carrega os dados iniciais
 
-    const channel = supabase
+    const channel = supabase // Inscreve-se no canal
       .channel("bank-account-delete")
       .on(
         "postgres_changes",
         { event: "DELETE", schema: "public", table: "bank_account" },
         (payload) => {
-          console.log("Exclusão detectada:", payload);
-          const deletedId = payload.old.id;
-
+          const deletedId = payload.old.id; // ID excluído
+    
           // Atualiza o estado com base na exclusão recebida
           setContas((prev) => prev.filter((conta) => conta.id !== deletedId));
         }

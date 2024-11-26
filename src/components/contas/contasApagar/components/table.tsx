@@ -1,56 +1,70 @@
-import React, { useState, useEffect, useRef } from "react";
+// src/components/Table/TableRegistro.tsx
+import React, { useState, useMemo, useRef } from "react";
 import { DataTable, DataTableExpandedRows } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
+import { Button } from "primereact/button";
 import RowExpansionTemplate from "./RowExpansionTemplate";
 import SearchBar from "./SearchBar";
-import "./table.css";
+import FormRegistro from "./Formregistro";
+import Modal from "../../../Modal/Modal";
 import { RegistroProps, TableRegistroProps } from "../types";
+import { formatCurrency } from "../../../../utils/formatters";
 
-const TableRegistro: React.FC<TableRegistroProps> = ({ registros }) => {
-  const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | undefined>(undefined);
-  const [search, setSearch] = useState<string>(""); // Texto de busca
-  const [dadosFiltrados, setDadosFiltrados] = useState<RegistroProps[]>(registros); // Dados exibidos na tabela
+const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
+
+  const [expandedRows, setExpandedRows] = useState<
+    DataTableExpandedRows | undefined
+  >(undefined);
+  const [search, setSearch] = useState<string>("");
+  const [registroSelecionado, setRegistroSelecionado] =
+    useState<RegistroProps | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const toast = useRef<Toast>(null);
 
-  // Atualiza os dados filtrados quando os registros ou a busca mudam
-  useEffect(() => {
-    if (search.trim() === "") {
-      setDadosFiltrados(registros); // Exibe todos os registros se não houver busca
-    } else {
-      const filtrados = registros.filter((registro) =>
+  // Filtro dos dados com useMemo para evitar cálculos desnecessários
+  const dadosFiltrados = useMemo(() => {
+    if (!search.trim()) return registros;
+    return registros.filter(
+      (registro) =>
         typeof registro.descricao === "string" &&
-        registro.descricao.toLowerCase().includes(search.toLowerCase()) // Filtra pela descrição
-      );
-      setDadosFiltrados(filtrados);
-    }
+        registro.descricao.toLowerCase().includes(search.toLowerCase())
+    );
   }, [search, registros]);
 
-  const onRowExpand = (event: any) => {
+  // Função para abrir o modal em modo de edição ou criação
+  const handleEdit = (registro: RegistroProps | null) => {
+    setRegistroSelecionado(registro);
+    setIsModalOpen(true);
+  };
+
+  // Fechar o modal
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  // Salvar ou editar o registro
+  const handleSave = (novoRegistro: RegistroProps) => {
     toast.current?.show({
-      severity: "info",
-      summary: "Linha expandida",
-      detail: event.data.descricao,
+      severity: registroSelecionado ? "success" : "info",
+      summary: registroSelecionado
+        ? "Registro atualizado"
+        : "Novo registro criado",
+      detail: `"${novoRegistro.descricao}" foi ${
+        registroSelecionado ? "atualizado" : "criado"
+      }.`,
       life: 3000,
     });
+    handleCloseModal();
   };
-
-  const onRowCollapse = (event: any) => {
+  const handleDelete = (id: RegistroProps["id"]) => {
+    console.log("ID a ser excluído:", id);
+    onDelete(id); 
     toast.current?.show({
-      severity: "success",
-      summary: "Linha recolhida",
-      detail: event.data.descricao,
+      severity: "warn",
+      summary: "Registro excluído",
+      detail: `O registro foi excluído.`,
       life: 3000,
     });
-  };
-
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  };
-
-  const priceBodyTemplate = (registro: RegistroProps) => {
-    return formatCurrency(registro.valor);
-  };
+  }
 
   return (
     <div className="container max-md:w-full">
@@ -61,27 +75,11 @@ const TableRegistro: React.FC<TableRegistroProps> = ({ registros }) => {
 
       {/* Tabela */}
       <DataTable
-        value={dadosFiltrados} // Exibe os dados filtrados ou todos
+        value={dadosFiltrados}
         expandedRows={expandedRows}
-        onRowToggle={(e) => setExpandedRows(e.data as DataTableExpandedRows)} // Garantir que o tipo de expandedRows é DataTableExpandedRows
-        onRowExpand={onRowExpand}
-        onRowCollapse={onRowCollapse}
+        onRowToggle={(e) => setExpandedRows(e.data as DataTableExpandedRows)}
         rowExpansionTemplate={(data: RegistroProps) => (
-          <RowExpansionTemplate
-            data={data}
-            onDelete={(id) => {
-              // Atualiza os dados após exclusão
-              const novosDados = dadosFiltrados.filter((registro) => registro.id !== id);
-              setDadosFiltrados(novosDados);
-
-              toast.current?.show({
-                severity: "warn",
-                summary: "Registro excluído",
-                detail: `Registro "${data.descricao}" foi removido.`,
-                life: 3000,
-              });
-            }}
-          />
+          <RowExpansionTemplate data={data} />
         )}
         dataKey="id"
         paginator
@@ -91,9 +89,50 @@ const TableRegistro: React.FC<TableRegistroProps> = ({ registros }) => {
         <Column expander style={{ width: "3em" }} />
         <Column field="descricao" header="Descrição" sortable />
         <Column field="data_transacao" header="Data" sortable />
-        <Column field="valor" header="Valor" body={priceBodyTemplate} sortable />
-        <Column field="situacao" header="Status" sortable />
+        <Column
+          field="valor"
+          header="Valor"
+          body={(rowData) => formatCurrency(rowData.valor)}
+          sortable
+        />
+        <Column
+          body={(rowData: RegistroProps) => (
+            <Button
+              label="Editar"
+              onClick={() => handleEdit(rowData)}
+              className="p-button-warning"
+            />
+          )}
+          header="Ações"
+          style={{ width: "10rem" }}
+        />
+        <Column
+          body={(rowData: RegistroProps) => (
+            <Button
+              label="Excluir"
+              onClick={() => handleDelete(rowData.id)}
+              className="p-button-danger "
+            />
+          )}
+          header="Ações"
+          style={{ width: "10rem" }}
+        />
       </DataTable>
+
+      {/* Modal e Formulário */}
+      {isModalOpen && (
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          title={registroSelecionado ? "Editar Registro" : "Novo Registro"}
+        >
+          <FormRegistro
+            registro={registroSelecionado}
+            onClose={handleCloseModal}
+            onSave={handleSave}
+          />
+        </Modal>
+      )}
     </div>
   );
 };

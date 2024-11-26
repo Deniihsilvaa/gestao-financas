@@ -1,23 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../../../services/supabaseClient";
 
-import {ContaProps,TemplateRegistrosProps} from "../types"
-
-
+import { RegistroProps,ContaPropsEdit, TemplateRegistrosProps } from "../types";
 
 const FormRegistro: React.FC<TemplateRegistrosProps> = ({
   onClose,
   onSave,
+  registroParaEdicao, // Prop opcional para edição
 }) => {
-  const [descricao, setDescricao] = useState("");
-  const [situacao, setSituacao] = useState("Pendente"); // Situação fixa como 'Pendente'
-  const [valor, setValor] = useState("");
-  const [data_vencimento, setVencimento] = useState("");
-  const [data_registro, setDataOriginal] = useState("");
-  const [conta_bancaria, setBancoId] = useState<string | null>(null);
-  const [tipo_categoria, setTipoCategoria] = useState<string | null>(null);
-  const [data_transacao, setDatacompetencia] = useState("");
-  const [observacao, setObservacao] = useState("");
+  const [descricao, setDescricao] = useState(registroParaEdicao?.descricao || "");
+  const [situacao, setSituacao] = useState(registroParaEdicao?.situacao || "Pendente");
+  const [valor, setValor] = useState(registroParaEdicao?.valor?.toString() || "");
+  const [data_vencimento, setVencimento] = useState(
+    registroParaEdicao?.data_vencimento || ""
+  );
+  const [data_registro, setDataOriginal] = useState(
+    registroParaEdicao?.data_registro || ""
+  );
+  const [conta_bancaria, setBancoId] = useState<string | null>(
+    registroParaEdicao?.conta_bancaria || null
+  );
+  const [tipo_categoria, setTipoCategoria] = useState<string | null>(
+    registroParaEdicao?.tipo_categoria || null
+  );
+  const [data_transacao, setDatacompetencia] = useState(
+    registroParaEdicao?.data_transacao || ""
+  );
+  const [observacao, setObservacao] = useState(
+    registroParaEdicao?.observacao || ""
+  );
 
   const [bancos, setBancos] = useState<{ id: number; banco: string }[]>([]);
   const [categorias, setCategorias] = useState<
@@ -36,38 +47,33 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
 
   useEffect(() => {
     const fetchBancos = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("bank_account")
-          .select("id, banco");
-        if (error) throw error;
-        setBancos(data || []);
-      } catch (error) {
+      const { data, error } = await supabase.from("bank_account").select("id, banco");
+      if (error) {
         console.error("Erro ao buscar bancos:", error);
+      } else {
+        setBancos(data || []);
       }
     };
 
     const fetchCategorias = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("type_categoria")
-          .select("id, categoria")
-          .eq("tipo", "Saída");
-        if (error) throw error;
-        setCategorias(data || []);
-      } catch (error) {
+      const { data, error } = await supabase
+        .from("type_categoria")
+        .select("id, categoria")
+        .eq("tipo", "Saída");
+      if (error) {
         console.error("Erro ao buscar categorias:", error);
+      } else {
+        setCategorias(data || []);
       }
     };
 
     fetchBancos();
     fetchCategorias();
   }, []);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    let validationErrors = {
+  
+    const validationErrors = {
       descricao: !descricao,
       valor: !valor,
       data_vencimento: !data_vencimento,
@@ -76,30 +82,25 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
       data_registro: !data_registro,
       data_transacao: !data_transacao,
     };
-
+  
     setErrors(validationErrors);
-
+  
     if (Object.values(validationErrors).includes(true)) {
       alert("Por favor, preencha todos os campos obrigatórios!");
       return;
     }
-
+  
     try {
-      const { data: user, error: userError } = await supabase.auth.getUser();
-      if (userError || !user) {
-        alert("Erro ao obter usuário autenticado!");
-        return;
-      }
-
       const dadoslocal = localStorage.getItem("user");
       if (!dadoslocal) {
-        throw new Error("Dados do usuário não encontrados.");
+          throw new Error("Dados do usuário não encontrados.");
       }
+
       const dados = JSON.parse(dadoslocal);
       const user_id: string = dados.id;
-
-      const novaConta: ContaProps = {
-        user_id: user_id,
+      
+      const registro: RegistroProps|null = {
+        user_id,
         descricao,
         valor: parseFloat(valor),
         tipo_registro: "Saída",
@@ -111,35 +112,47 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
         data_vencimento,
         observacao,
       };
-
-      const {  error } = await supabase
-        .from("base_caixa")
-        .insert([novaConta])
-        .select();
-
-      if (error) {
-        console.error("Erro ao salvar conta:", error);
-        alert("Erro ao salvar conta: " + error.message);
-        return;
+  
+      if (registroParaEdicao) {
+        console.log('Editando',registroParaEdicao)
+        // Atualiza o registro existente
+        const updatedRegistro: ContaPropsEdit = {
+          ...registro,
+          id: registroParaEdicao.id,
+        };
+  
+        // Chama a função onSave com o objeto editado
+        onSave(updatedRegistro);
+        
+        const { error } = await supabase
+          .from("base_caixa")
+          .update(updatedRegistro)
+          .eq("id", registroParaEdicao.id);
+  
+        if (error) {
+          alert("Erro ao atualizar registro: " + error.message);
+          return;
+        }
+        alert("Registro atualizado com sucesso!");
+      } else {
+        // Insere novo registro
+        const { error } = await supabase.from("base_caixa").insert([registro]);
+  
+        if (error) {
+          alert("Erro ao criar registro: " + error.message);
+          return;
+        }
+        alert("Registro criado com sucesso!");
       }
-
-      alert("Conta registrada com sucesso!");
-      setDescricao("");
-      setVencimento("");
-      setDataOriginal("");
-      setValor("");
-      setBancoId(null);
-      setTipoCategoria(null);
-      setSituacao("Pendente");
-      setObservacao("");
-
+  
       onClose();
-      onSave();
     } catch (error: any) {
-      console.error("Erro ao salvar conta:", error.message);
-      alert("Erro ao salvar conta: " + error.message);
+      console.error("Erro ao salvar registro:", error.message);
+      alert("Erro ao salvar registro: " + error.message);
     }
   };
+  
+  
 
   const getInputStyle = (field: string) => {
     return errors[field] ? { borderColor: "red" } : {};
@@ -294,9 +307,17 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
         </select>
       </div>
 
-      <div className="col-span-2" style={{ textAlign: "right" }}>
+      <div style={{ gridColumn: "1 / -1", textAlign: "right" }}>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={onClose}
+          style={{ marginRight: "10px" }}
+        >
+          Cancelar
+        </button>
         <button type="submit" className="btn btn-primary">
-          Salvar
+          {registroParaEdicao ? "Atualizar" : "Salvar"}
         </button>
       </div>
     </form>
