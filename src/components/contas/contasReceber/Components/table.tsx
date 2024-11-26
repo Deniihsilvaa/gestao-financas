@@ -8,6 +8,7 @@ import Modal from "../../../Modal/Modal";
 import FormContasReceber from "./formContasReceber";
 interface TabelaContasReceberProps {
     onSave: any
+    
 }
 
 function TabelaContasReceber( onSave: any) {
