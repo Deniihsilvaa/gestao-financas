@@ -6,14 +6,11 @@ import { BaseDataProps, ContasReceber } from "../types";
 import { formatDate, formatCurrency } from "../../../../utils/formatters";
 import Modal from "../../../Modal/Modal";
 import FormContasReceber from "./formContasReceber";
-interface TabelaContasReceberProps {
-    onSave: any
-    
-}
 
-function TabelaContasReceber( onSave: any) {
+
+function TabelaContasReceber( ) {
     const [registros, setRegistros] = useState<BaseDataProps[]>([]);
-    const [filtro, setFiltro] = useState("");
+    const [filtro] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleCloseModal = () => setIsModalOpen(false);
@@ -41,7 +38,6 @@ function TabelaContasReceber( onSave: any) {
 
     const handleEdit = (registro: BaseDataProps) => {
         console.log("Editando registro:", registro);
-        // Implementar lógica de edição
     };
     const handleSubmit =   async (novoRegistro: BaseDataProps) => {
         try {

@@ -36,7 +36,6 @@ const FormContasReceber: React.FC<FormContasReceberProps> = ({
   const [tipo_categoria, setTipoCategoria] = useState<string | null>(
     registroParaEdicao?.tipo_categoria || null
   );
-  const [tipo_registro, setTipoRegistro] = useState("Entrada");
 
   const [bancos, setBancos] = useState<{ id: number; banco: string }[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({

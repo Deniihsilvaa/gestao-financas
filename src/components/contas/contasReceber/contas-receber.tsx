@@ -42,18 +42,18 @@ function ContasResceber() {
     }
   }
 
-  const fetchRegistros = async () => {
-    try {
-      const { data: registros, error } = await ContasReceber.select('*');
-      if (error) {
-        console.error('Erro ao buscar registros:', error);
-      } else {
-        setBaseData(registros || []);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar registros:', error);
-    }
-  }
+  // const fetchRegistros = async () => {
+  //   try {
+  //     const { data: registros, error } = await ContasReceber.select('*');
+  //     if (error) {
+  //       console.error('Erro ao buscar registros:', error);
+  //     } else {
+  //       setBaseData(registros || []);
+  //     }
+  //   } catch (error) {
+  //     console.error('Erro ao buscar registros:', error);
+  //   }
+  // }
     return (
         <div className="flex h-screen">
         {/* Conteúdo principal */}
@@ -99,7 +99,6 @@ function ContasResceber() {
           {/* Tabela */}
           <div className="overflow-y-auto bg-white shadow rounded">
             <TabelaContasReceber
-            onSave={baseData}
             />
           </div>
           
