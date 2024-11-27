@@ -1,27 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../services/supabaseClient";
-import { RegistroProps } from "./types";  // Supondo que RegistroProps esteja no arquivo types.ts
-
+import { RegistroProps } from "./types"; // Supondo que RegistroProps esteja no arquivo types.ts
+import TableCaixaBancos from "./components/table";
 function CaixaBancos() {
-
   const [registros, setRegistros] = useState<RegistroProps[]>([]);
   const [totalEntrada, setTotalEntrada] = useState<number>(0);
   const [totalSaida, setTotalSaida] = useState<number>(0);
   const [saldo, setSaldo] = useState<number>(0);
   const [totalConta, setTotalConta] = useState<number>(0);
 
-
   const fetchRegistros = async (): Promise<void> => {
-    const { data, error } = await supabase
-    .from("base_caixa")
-    .select("*")
-    .order("data_transacao", { ascending: true });
-  
+    try { 
+      const { data, error } = await supabase
+      .from('base_caixa')
+      .select(`
+        id,
+        descricao,
+        valor,
+        tipo_registro,
+        data_transacao,
+        tipo_categoria (
+          categoria
+        ),
+        conta_bancaria (
+          banco
+        ),
+        data_vencimento,
+        observacao
+      `)
+      .eq('tipo_categoria', 'tipo_categoria_id') // Assegure-se que isso tenha a coluna correta de relacionamento
+      .order('data_registro', { ascending: false });
 
     if (error) {
       console.log("Erro de busca", error.message);
     } else {
+      console.log(data);
       setRegistros(data || []);
+    }
+    } catch (error) { 
+      console.log(error);
     }
   };
 
@@ -36,19 +53,21 @@ function CaixaBancos() {
       if (registro.tipo_registro === "Entrada") {
         totalEntrada += Number(registro.valor);
       }
-    });
+      return totalEntrada;
+    } );
     setTotalEntrada(totalEntrada);
   };
   const conta = (): void => {
     let totalConta = registros.length;
     setTotalConta(totalConta);
-}
+  };
   const saldoSaida = (): void => {
     let totalSaida = 0;
     registros.map((registro) => {
       if (registro.tipo_registro === "Saída") {
         totalSaida += Number(registro.valor);
       }
+      return totalSaida;
     });
     setTotalSaida(totalSaida);
   };
@@ -61,11 +80,11 @@ function CaixaBancos() {
     saldoEntrada();
     saldoSaida();
     saldoTotal();
+    conta();
   }, [registros]);
   return (
     <div className="flex h-screen">
       <main className="flex-1 bg-gray-100 p-6">
-
         {/* Barra de filtros */}
         <div className="flex items-center justify-between bg-white p-4 rounded shadow mb-6">
           <input
@@ -80,30 +99,7 @@ function CaixaBancos() {
 
         {/* Tabela */}
         <div className="overflow-x-auto bg-white shadow rounded">
-          <table className="min-w-full border border-gray-300 text-sm">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="px-4 py-2 border border-gray-300 text-left">Nome</th>
-                <th className="px-4 py-2 border border-gray-300 text-left">Categoria</th>
-                <th className="px-4 py-2 border border-gray-300 text-left">Valor</th>
-                <th className="px-4 py-2 border border-gray-300 text-left">Vencimento</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="px-4 py-2 border border-gray-300">Conta 1</td>
-                <td className="px-4 py-2 border border-gray-300">Energia</td>
-                <td className="px-4 py-2 border border-gray-300">R$ 200,00</td>
-                <td className="px-4 py-2 border border-gray-300">20/11/2024</td>
-              </tr>
-              <tr className="bg-gray-50">
-                <td className="px-4 py-2 border border-gray-300">Conta 2</td>
-                <td className="px-4 py-2 border border-gray-300">Água</td>
-                <td className="px-4 py-2 border border-gray-300">R$ 150,00</td>
-                <td className="px-4 py-2 border border-gray-300">22/11/2024</td>
-              </tr>
-            </tbody>
-          </table>
+          <TableCaixaBancos registros={registros} />
         </div>
       </main>
 
