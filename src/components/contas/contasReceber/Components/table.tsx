@@ -93,7 +93,7 @@ function TabelaContasReceber( ) {
                     style={{ minWidth: '12rem' }}
                     
                     body={(rowData) => (
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-3 gap-2">
                             <Button label="Editar"
                                 onClick={() => handleEdit(rowData)}
                                 className="bg-gradient-to-r from-teal-100 to-blue-200 hover:from-pink-100 hover:to-indigo-400 ..."

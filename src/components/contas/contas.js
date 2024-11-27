@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
 function Contas() {
   const navigate = useNavigate();
   const handleNavigation = (path) => {
