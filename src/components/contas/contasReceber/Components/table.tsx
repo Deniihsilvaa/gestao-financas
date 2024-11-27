@@ -70,6 +70,8 @@ function TabelaContasReceber( ) {
                 filterDisplay="row"
                 paginator
                 rows={10}
+                tableStyle={{ minWidth: "40rem" }}
+                
                 rowsPerPageOptions={[5, 10, 25, 50]}
                 emptyMessage="Nenhum registro encontrado"
                 paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
@@ -88,10 +90,16 @@ function TabelaContasReceber( ) {
                 <Column field="observacao" header="Observação" />
                 <Column
                     header="Ações"
+                    style={{ minWidth: '12rem' }}
+                    
                     body={(rowData) => (
-                        <div>
-                            <Button label="Editar" onClick={() => handleEdit(rowData)} />
-                            <Button label="Excluir" onClick={() => handleDelete(rowData.id)} />
+                        <div className="grid grid-cols-2 gap-2">
+                            <Button label="Editar"
+                                onClick={() => handleEdit(rowData)}
+                                className="bg-gradient-to-r from-teal-100 to-blue-200 hover:from-pink-100 hover:to-indigo-400 ..."
+                            />
+                            <Button label="Excluir" onClick={() => handleDelete(rowData.id)}
+                                className="bg-gradient-to-r from-teal-100 to-blue-200 hover:from-pink-100 hover:to-rose-800 ..."/>
                         </div>
                     )}
                 />
