@@ -1,28 +1,27 @@
 import React,{useEffect, useState} from "react";
 import Modal from "../../Modal/Modal";
-import { supabase } from "../../../services/supabaseClient";
 import { BaseDataProps,ContasReceber } from './types';
 import TabelaContasReceber from "./Components/table";
 import FormRegistro from "./Components/formContasReceber";
 
-function ContasResceber() {
+interface ContasReceberProps {
+  baseData: BaseDataProps[]
+}
+function ContasResceber(): React.ReactElement<ContasReceberProps> {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [baseData, setBaseData] = useState<BaseDataProps[]>([]);
     const fetchBaseData = async () => {
-      const { data: baseData, error } = await supabase.from('base_caixa').select('*');
+      const { data: baseData, error } = await ContasReceber.select("*").eq("tipo_registro", "Entrada").order("id", { ascending: true });
       if (error) {
           console.error('Erro ao buscar dados da base:', error);
       } else {
           setBaseData(baseData || []);
       }
   };
-    useEffect(() => {
+  useEffect(() => {
         fetchBaseData();
     }, []);
-  
-  
-  
-  
+
     const handleOpenModal = () => {
         setIsModalOpen(true);
   }
@@ -92,6 +91,7 @@ function ContasResceber() {
           {/* Tabela */}
           <div className="overflow-y-auto bg-white shadow rounded">
             <TabelaContasReceber
+              baseData={baseData}
             />
           </div>
           

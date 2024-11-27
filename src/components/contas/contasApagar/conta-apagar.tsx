@@ -51,6 +51,7 @@ function ContasApagar() {
       console.error("Erro ao salvar registro:", error);
     } else {
       fetchRegistros(); // Atualiza a tabela após salvar
+      alert("Registro salvo com sucesso!");
     }
     handleCloseModal(); // Fecha o modal após salvar
   };

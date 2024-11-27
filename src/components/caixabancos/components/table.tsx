@@ -51,7 +51,7 @@ const TableCaixaBancos = ({ registros }: { registros: RegistroProps[] }) => {
     return null;
   };
   return (
-    <div className="grid grid-cols-1 gap-3 m-2 bg-slate-50">
+    <div className="card z-0">
       <div className="flex justify-between mb-2">
         <button className="p-button p-button-success" onClick={addNewRegistro}>
           Adicionar Novo Registro
@@ -69,6 +69,7 @@ const TableCaixaBancos = ({ registros }: { registros: RegistroProps[] }) => {
         scrollHeight="400px"
         virtualScrollerOptions={{ itemSize: 46 }}
         columnResizeMode="expand"
+        sortMode="multiple"
         resizableColumns
         showGridlines
         value={registros}
@@ -89,19 +90,19 @@ const TableCaixaBancos = ({ registros }: { registros: RegistroProps[] }) => {
           headerStyle={{ width: "3rem", textAlign: "center" }}
         />
         <Column field="conta_bancaria" header="Conta" />
-        <Column field="descricao" header="Descrição" />
+        <Column field="descricao" header="Descrição" style={{ minWidth: "10rem", textAlign: "justify" } } body={(rowData) => rowData.descricao || "Sem descrição"}/>
         <Column
           field="valor"
           header="Valor"
-          style={{ minWidth: "5rem" }}
           body={(rowData) => formatCurrency(rowData.valor)}
+          style={{ minWidth: "10rem", justifyContent: "center" }}
         />
         <Column
           field="data_transacao"
-          header="Data de Registros"
+          header="Data Registros"
           body={(rowData) => formatDate(rowData.data_transacao)}
-                  style={{ minWidth: "10rem" }}
-                  sortable
+          style={{ minWidth: "10rem", textAlign: "center" }}
+          sortable
         />
         <Column
           field="tipo_registro"
@@ -109,8 +110,10 @@ const TableCaixaBancos = ({ registros }: { registros: RegistroProps[] }) => {
                   body={tipoRegistroTemplate}
                   sortable
           filterField="tipo_registro"
+          style={{ minWidth: "5rem" }}
         />
-        <Column field="tipo_categoria" header="Categoria" />
+        <Column field="tipo_categoria" header="Categoria" style={{ minWidth: "10rem" }}/>
+        <Column field="data_vencimento" header="Vencimento" style={{ minWidth: "10rem" }} />
         <Column
           field="situacao"
           header="Situação"

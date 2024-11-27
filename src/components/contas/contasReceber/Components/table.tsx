@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
@@ -7,41 +7,20 @@ import { formatDate, formatCurrency } from "../../../../utils/formatters";
 import Modal from "../../../Modal/Modal";
 import FormContasReceber from "./formContasReceber";
 
-
-function TabelaContasReceber( ) {
-    const [registros, setRegistros] = useState<BaseDataProps[]>([]);
+interface TabelaContasReceberProps {
+    baseData: BaseDataProps[];
+}
+function TabelaContasReceber({ baseData }: TabelaContasReceberProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleCloseModal = () => setIsModalOpen(false);
-
-    useEffect(() => {
-        async function fetchRegistros() {
-            const { data, error } = await ContasReceber.select("*").eq("tipo_registro", "Entrada").order("id", { ascending: true });
-            if (error) {
-                console.error("Erro ao buscar dados:", error);
-            } else {
-                setRegistros(data || []);
-            }
-        }
-
-        fetchRegistros();
-    }, []);
 
     const handleEdit = (registro: BaseDataProps) => {
         console.log("Editando registro:", registro);
     };
     const handleSubmit =   async (novoRegistro: BaseDataProps) => {
-        try {
-            const { error } = await ContasReceber.upsert([novoRegistro]);
-            if (error) {
-                console.error("Erro ao salvar registro:", error);
-            } else {
-                setRegistros((prev) => [...prev, novoRegistro]);
-            }
-            handleCloseModal();
-        } catch (error) {
-            console.error("Erro ao salvar registro:", error);
-        }
+        console.log('dados Salvo')
+        // Lógica para salvar ou editar o registro (no caso de edição, você pode atualizar na tabela)
     }
     const handleDelete = async (id?: number) => {
         if (!id) return;
@@ -50,14 +29,13 @@ function TabelaContasReceber( ) {
             console.error("Erro ao excluir registro:", error);
         } else {
             alert("Registro excluído com sucesso!");
-            setRegistros((prev) => prev.filter((registro) => registro.id !== id));
         }
     };
 
     return (
         <div className="container max-md:w-full">
             <DataTable
-                value={registros}
+                value={baseData}
                 filterDisplay="row"
                 paginator
                 rows={10}
