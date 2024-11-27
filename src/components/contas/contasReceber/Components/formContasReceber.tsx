@@ -47,21 +47,6 @@ const FormContasReceber: React.FC<FormContasReceberProps> = ({
     data_transacao: false,
   });
 
-  useEffect(() => {
-    const fetchBancos = async () => {
-      const { data, error } = await supabase
-        .from("bank_account")
-        .select("id, banco");
-
-      if (error) {
-        console.error("Erro ao buscar bancos:", error);
-      } else {
-        setBancos(data || []);
-      }
-    };
-
-    fetchBancos();
-  }, []);
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -76,7 +61,19 @@ const FormContasReceber: React.FC<FormContasReceberProps> = ({
         setCategorias(data || []);
       }
     };
+    const fetchBancos = async () => {
+      const { data, error } = await supabase
+        .from("bank_account")
+        .select("id, banco");
 
+      if (error) {
+        console.error("Erro ao buscar bancos:", error);
+      } else {
+        setBancos(data || []);
+      }
+    };
+
+    fetchBancos();
     fetchCategorias();
   }, []);
 
@@ -120,7 +117,6 @@ const FormContasReceber: React.FC<FormContasReceberProps> = ({
     };
     console.log("Registro", novoRegistro);
     onSave(novoRegistro);
-    onClose();
   };
 
   const getInputStyle = (field: string) => {
@@ -270,7 +266,7 @@ const FormContasReceber: React.FC<FormContasReceberProps> = ({
         >
           <option value="">Selecione uma Categoria</option>
           {categorias.map((cat) => (
-            <option key={cat.id} value={cat.categoria}>
+            <option key={cat.id} value={cat.id}>
               {cat.categoria}
             </option>
           ))}

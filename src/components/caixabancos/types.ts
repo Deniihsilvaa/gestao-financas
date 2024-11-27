@@ -1,21 +1,18 @@
-export interface TipoCategoria {
-  categoria: string;
+export interface CategoriaProps {
+  categoria?: any;
 }
-
-export interface ContaBancaria {
-  banco: string;
+export interface ContaProps {
+  banco?: any;
 }
-
 export interface RegistroProps {
-  id: number;                // ID do registro
-  descricao: string;         // Nome do registro
-  valor: string | number;    // Valor do registro, pode ser número ou string
-  tipo_registro: 'Entrada' | 'Saída'; // Tipo do registro
-  data_transacao: string;    // Data da transação
-  tipo_categoria: TipoCategoria[];    // Categoria do registro (como 'Entrada' ou 'Saída')
-  situacao?: string;         // Situação (opcional)
-  conta_bancaria?: ContaBancaria[];  // Conta bancária (opcional)
-  data_vencimento?: string;  // Data de vencimento (opcional)
-  observacao?: string;       // Observação (opcional)
-  totalConta?: number;       // Total da conta (opcional)
+  id: string;
+  descricao: string;
+  situacao?: string;
+  valor: number;
+  tipo_registro: string;
+  data_transacao: string;
+  data_vencimento?: string;
+  observacao?: string;
+  tipo_categoria?: CategoriaProps | null;
+  conta_bancaria?: ContaProps | null;
 }

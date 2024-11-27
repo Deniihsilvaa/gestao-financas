@@ -65,6 +65,7 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
       if (error) {
         console.error("Erro ao buscar categorias:", error);
       } else {
+        console.log(data);
         setCategorias(data || []);
       }
     };
@@ -314,7 +315,7 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
           style={{ marginRight: "10px" }}
           icon="pi pi-check"
           className="btn btn-secondary"
-          data-bs-dismiss="modal"
+          title="Fechar"
           aria-label="Close"
         >
           Cancelar

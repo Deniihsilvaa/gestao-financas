@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { supabase } from "../../services/supabaseClient";
 import { RegistroProps } from "./types"; // Supondo que RegistroProps esteja no arquivo types.ts
 import TableCaixaBancos from "./components/table";
+
 function CaixaBancos() {
   const [registros, setRegistros] = useState<RegistroProps[]>([]);
   const [totalEntrada, setTotalEntrada] = useState<number>(0);
@@ -10,58 +11,63 @@ function CaixaBancos() {
   const [totalConta, setTotalConta] = useState<number>(0);
 
   const fetchRegistros = async (): Promise<void> => {
-    try { 
+    try {
       const { data, error } = await supabase
-      .from('base_caixa')
-      .select(`
-        id,
-        descricao,
-        valor,
-        tipo_registro,
-        data_transacao,
-        tipo_categoria (
-          categoria
-        ),
-        conta_bancaria (
-          banco
-        ),
-        data_vencimento,
-        observacao
-      `)
-      .eq('tipo_categoria', 'tipo_categoria_id') // Assegure-se que isso tenha a coluna correta de relacionamento
-      .order('data_registro', { ascending: false });
-
-    if (error) {
-      console.log("Erro de busca", error.message);
-    } else {
-      console.log(data);
-      setRegistros(data || []);
-    }
-    } catch (error) { 
+        .from('base_caixa')
+        .select(`
+          id,
+          descricao,
+          valor,
+          situacao,
+          tipo_registro,
+          data_transacao,
+          tipo_categoria (
+            categoria
+          ),
+          conta_bancaria (
+            banco
+          ),
+          data_vencimento,
+          observacao
+        `)
+        .order('data_registro', { ascending: false });
+  
+      if (error) {
+        console.log("Erro de busca", error.message);
+      } else {
+        // Transformar os dados
+        const registrosFormatados = (data as RegistroProps[])?.map((registro) => ({
+          ...registro,
+          tipo_categoria: registro.tipo_categoria?.categoria || "N/A", // Acessa a propriedade 'registro' de tipo_categoria
+          conta_bancaria: registro.conta_bancaria?.banco || "N/A", 
+        }));
+        
+        console.log(' Dados Formatados',registrosFormatados);
+        setRegistros(registrosFormatados || []);
+      }
+    } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    fetchRegistros();
-  }, []);
-
-  // Funções para calcular entradas, saídas e saldo total
-  const saldoEntrada = (): void => {
+  // Funções para calcular entradas, saídas e saldo total, usando useCallback
+  const saldoEntrada = useCallback((): void => {
     let totalEntrada = 0;
     registros.map((registro) => {
       if (registro.tipo_registro === "Entrada") {
         totalEntrada += Number(registro.valor);
       }
       return totalEntrada;
-    } );
+    });
     setTotalEntrada(totalEntrada);
-  };
-  const conta = (): void => {
+  }, [registros]); // Dependência de registros
+
+  const conta = useCallback((): void => {
     let totalConta = registros.length;
     setTotalConta(totalConta);
-  };
-  const saldoSaida = (): void => {
+  }, [registros]); // Dependência de registros
+
+  const saldoSaida = useCallback((): void => {
     let totalSaida = 0;
     registros.map((registro) => {
       if (registro.tipo_registro === "Saída") {
@@ -70,18 +76,25 @@ function CaixaBancos() {
       return totalSaida;
     });
     setTotalSaida(totalSaida);
-  };
+  }, [registros]); // Dependência de registros
 
-  const saldoTotal = (): void => {
+  const saldoTotal = useCallback((): void => {
     setSaldo(totalEntrada - totalSaida);
-  };
+  }, [totalEntrada, totalSaida]); // Dependências de totalEntrada e totalSaida
+
+  // Chama as funções dentro do useEffect
+  useEffect(() => {
+    fetchRegistros();
+  }, []); // O fetchRegistros só precisa ser chamado uma vez ao montar o componente
 
   useEffect(() => {
     saldoEntrada();
     saldoSaida();
     saldoTotal();
     conta();
-  }, [registros]);
+  }, [registros, saldoEntrada, saldoSaida, saldoTotal, conta]); // Agora as funções são estáveis e não causam re-renders desnecessários
+
+
   return (
     <div className="flex h-screen">
       <main className="flex-1 bg-gray-100 p-6">

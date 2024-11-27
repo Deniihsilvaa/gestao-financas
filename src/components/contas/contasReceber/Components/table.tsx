@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
@@ -10,7 +10,6 @@ import FormContasReceber from "./formContasReceber";
 
 function TabelaContasReceber( ) {
     const [registros, setRegistros] = useState<BaseDataProps[]>([]);
-    const [filtro] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleCloseModal = () => setIsModalOpen(false);
@@ -27,14 +26,6 @@ function TabelaContasReceber( ) {
 
         fetchRegistros();
     }, []);
-
-    const dadosTable = useMemo(() => {
-        return registros.filter(
-            (registro) =>
-                typeof registro.descricao === "string" &&
-                registro.descricao.toLowerCase().includes(filtro.toLowerCase())
-        );
-    }, [registros, filtro]);
 
     const handleEdit = (registro: BaseDataProps) => {
         console.log("Editando registro:", registro);
@@ -66,7 +57,7 @@ function TabelaContasReceber( ) {
     return (
         <div className="container max-md:w-full">
             <DataTable
-                value={dadosTable}
+                value={registros}
                 filterDisplay="row"
                 paginator
                 rows={10}

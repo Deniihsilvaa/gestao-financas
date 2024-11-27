@@ -1,8 +1,13 @@
-// components/Modal/Modal.js
+// components/Modal/Modal.tsx
 import React from 'react';
 import './Modal.css'; // Adicione estilos para o modal
-
-const Modal = ({ isOpen, onClose, title, children }) => {
+interface ModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    title: string;
+    children: React.ReactNode;
+}
+const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
     if (!isOpen) return null;
 
     return (

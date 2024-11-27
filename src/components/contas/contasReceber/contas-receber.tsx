@@ -8,18 +8,21 @@ import FormRegistro from "./Components/formContasReceber";
 function ContasResceber() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [baseData, setBaseData] = useState<BaseDataProps[]>([]);
-
+    const fetchBaseData = async () => {
+      const { data: baseData, error } = await supabase.from('base_caixa').select('*');
+      if (error) {
+          console.error('Erro ao buscar dados da base:', error);
+      } else {
+          setBaseData(baseData || []);
+      }
+  };
     useEffect(() => {
-        const fetchBaseData = async () => {
-            const { data: baseData, error } = await supabase.from('base').select('*');
-            if (error) {
-                console.error('Erro ao buscar dados da base:', error);
-            } else {
-                setBaseData(baseData || []);
-            }
-        };
         fetchBaseData();
     }, []);
+  
+  
+  
+  
     const handleOpenModal = () => {
         setIsModalOpen(true);
   }
@@ -27,33 +30,23 @@ function ContasResceber() {
     setIsModalOpen(false);
   };
   const handleSubmit = async (novoRegistro: BaseDataProps) => {
-    console.log('dados Salvo',novoRegistro)
     try {
       const { error } = await ContasReceber.upsert([novoRegistro]);
       if (error) {
         console.error('Erro ao salvar registro:', error);
+        alert('Erro ao salvar registro. Tente novamente.');
       } else {
-        setBaseData((prev) => [...prev, novoRegistro]);
+        fetchBaseData();
+        alert('Registro salvo com sucesso!');
+        handleCloseModal();
       }
-      alert('Registro salvo com sucesso!');
-      handleCloseModal();
+
     } catch (error) {
       console.error('Erro ao salvar registro:', error);
     }
   }
 
-  // const fetchRegistros = async () => {
-  //   try {
-  //     const { data: registros, error } = await ContasReceber.select('*');
-  //     if (error) {
-  //       console.error('Erro ao buscar registros:', error);
-  //     } else {
-  //       setBaseData(registros || []);
-  //     }
-  //   } catch (error) {
-  //     console.error('Erro ao buscar registros:', error);
-  //   }
-  // }
+
     return (
         <div className="flex h-screen">
         {/* Conteúdo principal */}
