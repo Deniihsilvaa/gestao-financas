@@ -43,9 +43,7 @@ const Sidebar = ({ isOpen,onClose }) => {
                   <Link className="dropdown-item" to="/pessoas">
                     Pessoas
                   </Link>
-                  <Link className="dropdown-item" to="/conta">
-                    Conta
-                  </Link>
+
                 </li>
               </ul>
             </div>
