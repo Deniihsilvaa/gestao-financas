@@ -1,16 +1,31 @@
 // components/home/Home.js
 import React from 'react';
 
-import ChartVisualization from '../components/Graficos/Grafico de vendas/ChartVisualization';
+import ChartVisualization from '../components/Graficos/Grafico de entradas/ChartVisualization';
+import GraficoSaidas from '../components/Graficos/Graficos de saidas/grafico_visualizacao_saida.tsx';
+import GraficoConsolidado from '../components/Graficos/GraficoMensalConsolidado/grafico_consolidado';
 const Home = () => {
   return (
 <div>
-    <div className="container mx-auto p-4">
+    <div className="p-4">
       <h2 className='text-black'> Página Inicial</h2>
-      <div className='card'>
+        <div className='card w-100'>
+          <div className='row'>
+            <div className='col'>
+          <ChartVisualization />
+
+            </div>
+            <div className='col'>
+          <GraficoSaidas />
+
+            </div>
+            <div className='col'>
+              <GraficoConsolidado />
+            </div>
+          </div>
+          
       </div>
 
-        <ChartVisualization />
 
     </div>
     </div>
