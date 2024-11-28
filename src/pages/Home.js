@@ -1,6 +1,7 @@
 // components/home/Home.js
 import React from 'react';
-import ChartExample from '../components/ChartExample';
+
+import ChartVisualization from '../components/Graficos/Grafico de vendas/ChartVisualization';
 const Home = () => {
   return (
 <div>
@@ -8,7 +9,8 @@ const Home = () => {
       <h2 className='text-black'> Página Inicial</h2>
       <div className='card'>
       </div>
-      <ChartExample />
+
+        <ChartVisualization />
 
     </div>
     </div>

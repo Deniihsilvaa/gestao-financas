@@ -33,7 +33,6 @@ function CaixaBancos() {
         .order('data_registro', { ascending: false });
   
       if (error) {
-        console.log("Erro de busca", error.message);
       } else {
         // Transformar os dados
         const registrosFormatados = (data as RegistroProps[])?.map((registro) => ({
@@ -42,7 +41,6 @@ function CaixaBancos() {
           conta_bancaria: registro.conta_bancaria?.banco || "N/A", 
         }));
         
-        console.log(' Dados Formatados',registrosFormatados);
         setRegistros(registrosFormatados || []);
       }
     } catch (error) {
@@ -117,7 +115,7 @@ function CaixaBancos() {
       </main>
 
       {/* Barra escura no lado direito */}
-      <aside className="w-1/4 bg-gray-800 text-white p-4">
+      <aside className="w-1/6 bg-gray-800 text-white p-4 hidden md:block">
         <h2 className="text-lg font-semibold mb-4">Resumo</h2>
         <p>Dados importantes:</p>
         <ul className="list-disc ml-4 mt-2 space-y-2">

@@ -6,7 +6,7 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     width: 90%; /* Reduz o tamanho em telas menores */
     height: 60vh;
-    max-height: 80%; /* Evita que o modal ultrapasse a altura */
+    max-height: 100%; /* Evita que o modal ultrapasse a altura */
     overflow-y: auto; /* Adiciona rolagem interna caso o conteúdo ultrapasse a altura */
     padding: 20px;
     position: relative;
@@ -21,6 +21,12 @@
     to {
         opacity: 1;
         transform: scale(1);
+    }
+}
+
+@media (max-width:400px){
+    .container{
+        max-width:90vw;
     }
 }
 

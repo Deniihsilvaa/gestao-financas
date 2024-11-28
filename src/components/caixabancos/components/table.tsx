@@ -51,7 +51,7 @@ const TableCaixaBancos = ({ registros }: { registros: RegistroProps[] }) => {
     return null;
   };
   return (
-    <div className="card z-0">
+    <div className="card p-fluid">
       <div className="flex justify-between mb-2">
         <button className="p-button p-button-success" onClick={addNewRegistro}>
           Adicionar Novo Registro

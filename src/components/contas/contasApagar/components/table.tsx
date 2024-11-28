@@ -10,7 +10,8 @@ import FormRegistro from "./Formregistro";
 import Modal from "../../../Modal/Modal";
 import { RegistroProps, TableRegistroProps } from "../types";
 import { formatCurrency } from "../../../../utils/formatters";
-import {formatDate} from "../../../../utils/formatters";
+import { formatDate } from "../../../../utils/formatters";
+import "./table.css";
 const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
 
   const [expandedRows, setExpandedRows] = useState<
@@ -67,12 +68,13 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
   }
 
   return (
-    <div className="container max-md:w-full">
+    <div className="container">
       <Toast ref={toast} />
-
+      <div className="flex justify-between mb-2">
       {/* Barra de pesquisa */}
       <SearchBar search={search} setSearch={setSearch} />
-
+      </div>
+      
       {/* Tabela */}
       <DataTable
         value={dadosFiltrados}
@@ -84,6 +86,7 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
         dataKey="id"
         paginator
         rows={10}
+        className="p-datatable-small"
         tableStyle={{ minWidth: "40rem" }}
       >
         <Column expander style={{ width: "3em" }} />

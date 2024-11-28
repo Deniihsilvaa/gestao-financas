@@ -98,7 +98,7 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
         </main>
   
         {/* Barra escura no lado direito */}
-        <aside className="w-1/6 bg-gray-800 text-white p-4">
+        <aside className="w-1/6 bg-gray-800 text-white p-4 hidden md:block">
           <h2 className="text-lg font-semibold mb-4">Resumo</h2>
           <p>Dados importantes:</p>
           <ul className="list-disc ml-4 mt-2 space-y-2">
