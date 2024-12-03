@@ -77,10 +77,6 @@ function Contas() {
     return dados.filter((item) => item.tipo_registro === "Saída");
   };
 
-  const filtrarEntradas = (dados) => {
-    return dados.filter((item) => item.tipo_registro === "Entrada");
-  };
-
   const filtrarPorCategoria = (dados) => {
     return dados.reduce((acc, item) => {
       if (item.tipo_categoria) {
