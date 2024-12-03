@@ -11,11 +11,11 @@ const FormularioConta: React.FC<FormularioContaProps> = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-        console.log("banco:", banco, "agencia:", agencia, "conta:", conta);
-      if (!banco || !agencia || !conta) {
-        alert("Por favor, preencha todos os campos.");
-        return;
+    event.preventDefault();
+    console.log("banco:", banco, "agencia:", agencia, "conta:", conta);
+    if (!banco || !agencia || !conta) {
+      alert("Por favor, preencha todos os campos.");
+      return;
     }
 
     try {
@@ -63,10 +63,22 @@ const FormularioConta: React.FC<FormularioContaProps> = ({ onClose }) => {
         .delete()
         .eq("id", id);
       if (error) throw error;
-        alert("Conta excluida com sucesso!");
-      fetchContas()
+      alert("Conta excluida com sucesso!");
+      fetchContas();
     } catch (error) {
-      console.error("Erro ao excluir a conta bancária:", error);
+       // Verifica se o erro é um objeto e possui a propriedade "code"
+  if (error && typeof error === 'object' && 'code' in error) {
+    const err = error as { code: string; message: string; details?: string };
+
+    // Verifica se o código do erro é "23503"
+    if (err.code === '23503') {
+      alert("Não é possível excluir uma conta bancária que contém dados vinculados.");
+    } else {
+      alert("Erro ao excluir a conta bancária. Tente novamente.");
+    }
+  } else {
+    alert("Ocorreu um erro inesperado. Tente novamente.");
+  }
     }
   };
 
@@ -77,8 +89,8 @@ const FormularioConta: React.FC<FormularioContaProps> = ({ onClose }) => {
     <form onSubmit={handleSubmit}>
       <div className="card">
         <div className="card-body">
-          <div className="row mt-3">
-            <div className="input-group mb-3">
+          <div className="mt-3 row">
+            <div className="mb-3 input-group">
               <span className="input-group-text">Banco</span>
               <input
                 type="text"
@@ -88,7 +100,7 @@ const FormularioConta: React.FC<FormularioContaProps> = ({ onClose }) => {
                 onChange={(e) => setBanco(e.target.value)}
               />
             </div>
-            <div className="input-group mb-3">
+            <div className="mb-3 input-group">
               <span className="input-group-text">Agência</span>
               <input
                 type="text"
@@ -98,7 +110,7 @@ const FormularioConta: React.FC<FormularioContaProps> = ({ onClose }) => {
                 onChange={(e) => setAgencia(e.target.value)}
               />
             </div>
-            <div className="input-group mb-3">
+            <div className="mb-3 input-group">
               <span className="input-group-text">Conta</span>
               <input
                 type="text"
@@ -121,7 +133,7 @@ const FormularioConta: React.FC<FormularioContaProps> = ({ onClose }) => {
               </button>
             </div>
           </div>
-          <div className="row mt-3">
+          <div className="mt-3 row">
             <TableConta
               contas={contas}
               isLoading={isLoading}
