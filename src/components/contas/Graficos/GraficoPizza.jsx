@@ -1,16 +1,15 @@
 import React from "react";
 import { Chart } from "primereact/chart";
 import PropTypes from "prop-types";
-
+import { formatCurrency } from "../../../utils/formatters";
 function GraficoPizza({ data }) {
-
   // Soma os valores por categoria
   const categoriaSoma = data.reduce((acc, item) => {
-    if (item.tipo_categoria && item.total) {
+    if (item.tipo_categoria && item.valor) {
       if (acc[item.tipo_categoria]) {
-        acc[item.tipo_categoria] += item.total; // Soma o valor se a categoria já existe
+        acc[item.tipo_categoria] += item.valor; // Soma o valor se a categoria já existe
       } else {
-        acc[item.tipo_categoria] = item.total; // Cria a categoria se não existir
+        acc[item.tipo_categoria] = item.valor; // Cria a categoria se não existir
       }
     }
     return acc;
@@ -33,6 +32,7 @@ function GraficoPizza({ data }) {
     ].toFixed(2)}%)`;
   });
 
+
   // Dados para o gráfico de pizza
   const pieData = {
     labels: labels,
@@ -51,7 +51,8 @@ function GraficoPizza({ data }) {
   };
 
   return (
-    <div className="size-56">
+    <div className="content size-auto">
+      <div className="header">Total Despesas Mes: R$ {formatCurrency(total)}</div>
       <Chart type="doughnut" data={pieData} />
     </div>
   );

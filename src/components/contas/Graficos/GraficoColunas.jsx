@@ -2,7 +2,6 @@ import React from "react";
 import { Chart } from "primereact/chart";
 import PropTypes from "prop-types";
 function GraficoColunas({ data }) {
-  console.log("Grafico Colunas", data);
   const barData = {
     labels: Object.keys(data),
     datasets: [

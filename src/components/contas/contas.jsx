@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./conta.css";
 import { supabase } from "../../services/supabaseClient";
 import TabelaCategoria from "./Tabela/TabelaCategoria";
 import GraficoPizza from "./Graficos/GraficoPizza";
@@ -8,7 +9,7 @@ import GraficoReceitaDespesas from "./Graficos/GraficoReceitaDespesas";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { formatCurrency } from "../../utils/formatters";
-
+import PropTypes from "prop-types";
 function Contas() {
   const [data, setData] = useState([]);
   const [receita, setReceita] = useState(0);
@@ -92,24 +93,30 @@ function Contas() {
 
   // Funções de opções do Dropdown
   const situacaoOptions = [
+    { label: "Todas", value: "" },
     { label: "Pendente", value: "Pendente" },
     { label: "Concluído", value: "Concluido" },
   ];
+  const handleClearFilters = () => {
+    setSelectedSituacao(null);
+    setSelectedStartDate(null);
+    setSelectedEndDate(null);
+  };
 
   return (
-    <div className="p-6 text-white rounded-lg shadow-xl bg-gradient-to-r from-blue-900 to-black">
+    <div className="min-h-screen p-6 space-y-8 text-white sbg-gray-900 text- bg-gradient-to-b from-blue-900 to-black">
       <h2 className="mb-8 text-3xl font-bold text-center">
-        Dashboard de Contas
+        Dashboard de Caixa Entrada e Saída
       </h2>
 
       <div className="flex items-center justify-between mb-6">
-        <div className="flex gap-4">
+        <div className="flex gap-4 p-4 text-black bg-white rounded-lg">
           <Dropdown
             value={selectedSituacao}
             options={situacaoOptions}
             onChange={(e) => setSelectedSituacao(e.value)}
             placeholder="Filtrar por Situação"
-            className="w-40"
+            className="w-40 hover:bg-gray-200"
           />
 
           <div className="flex gap-4">
@@ -127,8 +134,9 @@ function Contas() {
               showIcon
               dateFormat="dd/mm/yy"
               placeholder="Data Fim"
-              className="w-40"
+              className="w-40 text-black "
             />
+            <button className="btn" onClick={handleClearFilters}>Limpar</button>
           </div>
         </div>
 
@@ -172,5 +180,14 @@ function Contas() {
     </div>
   );
 }
-
+Contas.propTypes = {
+  data: PropTypes.array.isRequired,
+  receita: PropTypes.number.isRequired,
+  despesa: PropTypes.number.isRequired,
+  selectedSituacao: PropTypes.string.isRequired,
+  selectedStartDate: PropTypes.instanceOf(Date).isRequired,
+  selectedEndDate: PropTypes.instanceOf(Date).isRequired,
+  setSelectedSituacao: PropTypes.func.isRequired,
+  setSelectedStartDate: PropTypes.func.isRequired,
+};
 export default Contas;

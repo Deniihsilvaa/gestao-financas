@@ -1,0 +1,13 @@
+.p-dropdown-items-wrapper {
+  background-color: aliceblue;
+  border-radius: 1em;
+  padding-inline: 0.5em;
+}
+.p-dropdown-items-wrapper .p-dropdown-item {
+  padding-inline: 0.5em;
+}
+
+.p-datepicker-group-container {
+    background: white;
+    max-width: 24vw;
+  }
