@@ -57,5 +57,9 @@ export interface Banco {
     id: string;
     banco: string;
 }
+export interface DeleteProps {
+    id: number;
+    onClose: () => void;
+}
 
 export const ContasReceber = supabase.from("base_caixa");

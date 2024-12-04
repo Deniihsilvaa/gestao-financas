@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
-import { BaseDataProps, ContasReceber } from "../types";
+import { BaseDataProps ,DeleteProps} from "../types";
 import { formatDate, formatCurrency } from "../../../../utils/formatters";
 import Modal from "../../../Modal/Modal";
 import FormContasReceber from "./formContasReceber";
 
 interface TabelaContasReceberProps {
     baseData: BaseDataProps[];
-    onDelete: (id: number) => void;
+    onDelete: (data: DeleteProps) => Promise<void>;
 }
 function TabelaContasReceber({ baseData,onDelete }: TabelaContasReceberProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);

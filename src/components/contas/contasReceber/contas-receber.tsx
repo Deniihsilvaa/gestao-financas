@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "../../Modal/Modal";
-import { BaseDataProps, ContasReceber } from "./types";
+import { BaseDataProps, ContasReceber,DeleteProps } from "./types";
 import TabelaContasReceber from "./Components/table";
 import FormRegistro from "./Components/formContasReceber";
 import { supabase } from "../../../services/supabaseClient";
@@ -50,7 +50,7 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
       console.error("Erro ao salvar registro:", error);
     }
   };
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: DeleteProps) => {
     try {
       const { error } = await ContasReceber.delete().eq("id", id);
       if (error) throw error;
