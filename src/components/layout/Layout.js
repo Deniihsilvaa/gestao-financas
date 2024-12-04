@@ -23,7 +23,7 @@ const Layout = () => {
           onClose={() => setIsSidebarOpen(false)}
         />
         <main
-          className={`flex-grow transition-all duration-500 ${
+          className={`flex-grow transition-all duration-500 w-100 ${
             isSidebarOpen ? "ml-20" : "ml-0"
           }`}
         >

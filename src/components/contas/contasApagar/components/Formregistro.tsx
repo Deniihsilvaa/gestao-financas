@@ -65,7 +65,6 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
       if (error) {
         console.error("Erro ao buscar categorias:", error);
       } else {
-        console.log(data);
         setCategorias(data || []);
       }
     };
@@ -118,7 +117,6 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
       };
   
       if (registroParaEdicao) {
-        console.log('Editando',registroParaEdicao)
         // Atualiza o registro existente
         const updatedRegistro: ContaPropsEdit = {
           ...registro,

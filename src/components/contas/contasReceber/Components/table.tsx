@@ -9,8 +9,9 @@ import FormContasReceber from "./formContasReceber";
 
 interface TabelaContasReceberProps {
     baseData: BaseDataProps[];
+    onDelete: (id: number) => void;
 }
-function TabelaContasReceber({ baseData }: TabelaContasReceberProps) {
+function TabelaContasReceber({ baseData,onDelete }: TabelaContasReceberProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleCloseModal = () => setIsModalOpen(false);
@@ -22,15 +23,7 @@ function TabelaContasReceber({ baseData }: TabelaContasReceberProps) {
         console.log('dados Salvo')
         // Lógica para salvar ou editar o registro (no caso de edição, você pode atualizar na tabela)
     }
-    const handleDelete = async (id?: number) => {
-        if (!id) return;
-        const { error } = await ContasReceber.delete().eq("id", id);
-        if (error) {
-            console.error("Erro ao excluir registro:", error);
-        } else {
-            alert("Registro excluído com sucesso!");
-        }
-    };
+
 
     return (
         <div className="container max-md:w-full">
@@ -67,7 +60,8 @@ function TabelaContasReceber({ baseData }: TabelaContasReceberProps) {
                                 onClick={() => handleEdit(rowData)}
                                 className="bg-gradient-to-r from-teal-100 to-blue-200 hover:from-pink-100 hover:to-indigo-400 ..."
                             />
-                            <Button label="Excluir" onClick={() => handleDelete(rowData.id)}
+                            <Button label="Excluir" 
+                                onClick={() => onDelete(rowData.id)} // Chamada da função recebida do componente pai
                                 className="bg-gradient-to-r from-teal-100 to-blue-200 hover:from-pink-100 hover:to-rose-800 ..."/>
                         </div>
                     )}

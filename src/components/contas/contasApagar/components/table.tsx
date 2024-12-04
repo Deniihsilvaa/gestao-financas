@@ -13,7 +13,6 @@ import { formatCurrency } from "../../../../utils/formatters";
 import { formatDate } from "../../../../utils/formatters";
 import "./table.css";
 const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
-
   const [expandedRows, setExpandedRows] = useState<
     DataTableExpandedRows | undefined
   >(undefined);
@@ -57,24 +56,24 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
     handleCloseModal();
   };
   const handleDelete = (id: RegistroProps["id"]) => {
-    console.log("ID a ser excluído:", id);
-    onDelete(id); 
+    alert("Registro excluido com sucesso!");
+    onDelete(id);
     toast.current?.show({
       severity: "warn",
       summary: "Registro excluído",
       detail: `O registro foi excluído.`,
       life: 3000,
     });
-  }
+  };
 
   return (
-    <div className="container">
+    <div>
       <Toast ref={toast} />
       <div className="flex justify-between mb-2">
-      {/* Barra de pesquisa */}
-      <SearchBar search={search} setSearch={setSearch} />
+        {/* Barra de pesquisa */}
+        <SearchBar search={search} setSearch={setSearch} />
       </div>
-      
+
       {/* Tabela */}
       <DataTable
         value={dadosFiltrados}
@@ -91,7 +90,12 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
       >
         <Column expander style={{ width: "3em" }} />
         <Column field="descricao" header="Descrição" sortable />
-        <Column field="data_transacao" header="Data" sortable body={(rowData) => formatDate(rowData.data_transacao)} />
+        <Column
+          field="data_transacao"
+          header="Data"
+          sortable
+          body={(rowData) => formatDate(rowData.data_transacao)}
+        />
         <Column
           field="valor"
           header="Valor"
@@ -107,10 +111,8 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
             />
           )}
           header="Ações"
-        
         />
         <Column
-          
           body={(rowData: RegistroProps) => (
             <Button
               label="Excluir"
@@ -119,7 +121,6 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
             />
           )}
           header="Ações"
-
         />
       </DataTable>
 
