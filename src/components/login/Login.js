@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../../services/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import logo from "../../img/logo.png";
-import BackFUndo from "../../img/Login.jpg";
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
