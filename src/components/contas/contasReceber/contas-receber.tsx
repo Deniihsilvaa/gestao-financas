@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "../../Modal/Modal";
-import { BaseDataProps, ContasReceber,DeleteProps } from "./types";
+import { BaseDataProps, ContasReceber, DeleteProps } from "./types";
 import TabelaContasReceber from "./Components/table";
 import FormRegistro from "./Components/formContasReceber";
 import { supabase } from "../../../services/supabaseClient";
@@ -12,19 +12,20 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [baseData, setBaseData] = useState<BaseDataProps[]>([]);
   const fetchBaseData = async () => {
-    const { data, error } = await supabase.from("base_caixa").select("*")
+    const { data, error } = await supabase
+      .from("base_caixa")
+      .select("*")
       .eq("tipo_registro", "Entrada")
       .order("data_transacao", { ascending: true });
-      
+
     if (error) {
       console.error("Erro ao buscar dados da base:", error);
     } else {
-      console.log('dados da base',data);
+      console.log("dados da base", data);
       setBaseData(data || []);
     }
   };
 
-  
   useEffect(() => {
     fetchBaseData();
   }, []);
@@ -54,19 +55,18 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
     try {
       const { error } = await ContasReceber.delete().eq("id", id);
       if (error) throw error;
-        fetchBaseData();
-        
-        alert("Registro excluido com sucesso!");
+      fetchBaseData();
 
+      alert("Registro excluido com sucesso!");
     } catch (error) {
       alert("Erro ao excluir o registro. Tente novamente.");
     }
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen rounded-2xl">
       {/* Conteúdo principal */}
-      <main className="flex-1 p-1 bg-gray-100">
+      <main className="flex-1 p-2 overflow-y-auto bg-gray-100">
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="mb-4">
           <ol className="flex items-center space-x-4">

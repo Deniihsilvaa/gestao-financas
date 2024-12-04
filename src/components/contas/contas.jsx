@@ -104,7 +104,7 @@ function Contas() {
   };
 
   return (
-    <div className="min-h-screen p-6 space-y-8 text-white sbg-gray-900 text- bg-gradient-to-b from-blue-900 to-black">
+    <div className="min-h-screen p-6 space-y-8 text-white shadow-sm rounded-2xl sbg-gray-900 text- bg-gradient-to-b from-blue-900 to-black">
       <h2 className="mb-8 text-3xl font-bold text-center">
         Dashboard de Caixa Entrada e Saída
       </h2>
@@ -136,7 +136,9 @@ function Contas() {
               placeholder="Data Fim"
               className="w-40 text-black "
             />
-            <button className="btn" onClick={handleClearFilters}>Limpar</button>
+            <button className="btn" onClick={handleClearFilters}>
+              Limpar
+            </button>
           </div>
         </div>
 
