@@ -95,30 +95,32 @@ function CaixaBancos() {
 
   return (
     <div className="flex h-screen">
-      <main className="flex-1 bg-gray-100 p-6">
+      
+      <main className="flex-1 p-6 bg-gray-100">
+      <h2 className="mb-4 text-lg font-semibold">Caixa Bancos</h2>
         {/* Barra de filtros */}
-        <div className="flex items-center justify-between bg-white p-4 rounded shadow mb-6">
+        <div className="flex items-center justify-between p-4 mb-6 bg-white rounded shadow">
           <input
             type="text"
             placeholder="Pesquisar por nome ou categoria..."
-            className="border border-gray-300 rounded px-4 py-2 w-1/2 focus:outline-none focus:ring focus:ring-blue-300"
+            className="w-1/2 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
           />
-          <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+          <button className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
             Filtrar
           </button>
         </div>
 
         {/* Tabela */}
-        <div className="overflow-x-auto bg-white shadow rounded">
+        <div className="overflow-x-auto bg-white rounded shadow">
           <TableCaixaBancos registros={registros} />
         </div>
       </main>
 
       {/* Barra escura no lado direito */}
-      <aside className="w-1/6 bg-gray-800 text-white p-4 hidden md:block">
-        <h2 className="text-lg font-semibold mb-4">Resumo</h2>
+      <aside className="hidden w-1/6 p-4 text-white bg-gray-800 md:block">
+        <h2 className="mb-4 text-lg font-semibold">Resumo</h2>
         <p>Dados importantes:</p>
-        <ul className="list-disc ml-4 mt-2 space-y-2">
+        <ul className="mt-2 ml-4 space-y-2 list-disc">
           <li>Total de contas: {totalConta}</li>
           <li>Total Entrada: R$ {totalEntrada}</li>
           <li>Total Saída: R$ {totalSaida}</li>

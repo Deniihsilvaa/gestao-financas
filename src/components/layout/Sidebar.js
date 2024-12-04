@@ -20,7 +20,7 @@ const Sidebar = ({ isOpen,onClose }) => {
 
         {isOpen && (
           <div>
-            <h2 className="text-lg font-semibold mb-4">Menu</h2>
+            <h2 className="mb-4 text-lg font-semibold">Menu</h2>
             <div className="dropdown">
               <button
                 className="buton dropdown-toggle"
@@ -63,7 +63,7 @@ const Sidebar = ({ isOpen,onClose }) => {
                     className="dropdown-item"
                     onClick={() => handleNavigation("/contas")}
                   >
-                    Contas Gerais
+                    Dashboard e Relatórios
                   </button>
                   <button
                     className="dropdown-item"

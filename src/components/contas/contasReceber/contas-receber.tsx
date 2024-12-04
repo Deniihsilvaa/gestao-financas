@@ -67,6 +67,7 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
     <div className="flex h-screen rounded-2xl">
       {/* Conteúdo principal */}
       <main className="flex-1 p-2 overflow-y-auto bg-gray-100">
+        <h2 className="mb-4 text-lg font-semibold">Contas a Receber</h2>
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="mb-4">
           <ol className="flex items-center space-x-4">
@@ -89,10 +90,6 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
             </li>
           </ol>
         </nav>
-
-        <h2 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
-          Contas a Receber
-        </h2>
 
         {/* Barra de filtros */}
         <div className="flex items-center justify-between p-4 mb-6 bg-white rounded shadow">
