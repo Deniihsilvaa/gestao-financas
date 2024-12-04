@@ -16,3 +16,11 @@ export interface RegistroProps {
   tipo_categoria?: CategoriaProps | null;
   conta_bancaria?: ContaProps | null;
 }
+export interface FiltrobancosProps {
+  id: string;
+  banco: string;
+}
+interface TableCaixaBancosProps {
+  registros: RegistroProps[];
+  mapearSituacao: (situacao: string) => JSX.Element; // Adicione esta linha
+}

@@ -1,3 +1,4 @@
+//  src/components/contas/contasApagar/components/Formregistro.tsx
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../../../services/supabaseClient";
 

@@ -17,6 +17,8 @@ function ContasApagar() {
       .eq("tipo_registro", "Saída")
       .order("data_transacao", { ascending: true });
 
+      
+
     if (error) {
       console.error("Erro ao buscar registros:", error);
     } else {

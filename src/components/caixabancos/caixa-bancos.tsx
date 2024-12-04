@@ -1,113 +1,150 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { supabase } from "../../services/supabaseClient";
-import { RegistroProps } from "./types"; // Supondo que RegistroProps esteja no arquivo types.ts
+import { RegistroProps, FiltrobancosProps } from "./types";
 import TableCaixaBancos from "./components/table";
+import { Dropdown } from "primereact/dropdown";
+import { Calendar } from "primereact/calendar";
+import { Button } from "primereact/button";
 
 function CaixaBancos() {
   const [registros, setRegistros] = useState<RegistroProps[]>([]);
-  const [totalEntrada, setTotalEntrada] = useState<number>(0);
-  const [totalSaida, setTotalSaida] = useState<number>(0);
-  const [saldo, setSaldo] = useState<number>(0);
-  const [totalConta, setTotalConta] = useState<number>(0);
+  const [filtroBanco, setFiltroBanco] = useState<string | null>(null);
+  const [filtroDataInicio, setFiltroDataInicio] = useState<Date | null>(null);
+  const [filtroDataFim, setFiltroDataFim] = useState<Date | null>(null);
+  const [bancosDisponiveis, setBancosDisponiveis] = useState<
+    FiltrobancosProps[]
+  >([]);
+  const [totais, setTotais] = useState({
+    totalEntrada: 0,
+    totalSaida: 0,
+    saldo: 0,
+    totalConta: 0,
+  });
 
   const fetchRegistros = async (): Promise<void> => {
     try {
-      const { data, error } = await supabase
-        .from('base_caixa')
-        .select(`
+      let query = supabase
+        .from("base_caixa")
+        .select(
+          `
           id,
           descricao,
           valor,
           situacao,
           tipo_registro,
           data_transacao,
-          tipo_categoria (
-            categoria
-          ),
-          conta_bancaria (
-            banco
-          ),
+          tipo_categoria ( categoria ),
+          conta_bancaria ( banco ),
           data_vencimento,
           observacao
-        `)
-        .order('data_registro', { ascending: false });
-  
-      if (error) {
-      } else {
-        // Transformar os dados
-        const registrosFormatados = (data as RegistroProps[])?.map((registro) => ({
-          ...registro,
-          tipo_categoria: registro.tipo_categoria?.categoria || "N/A", // Acessa a propriedade 'registro' de tipo_categoria
-          conta_bancaria: registro.conta_bancaria?.banco || "N/A", 
-        }));
-        
-        setRegistros(registrosFormatados || []);
+        `
+        )
+        .order("data_transacao", { ascending: false });
+
+      // Aplicar filtros ao banco de dados
+      if (filtroBanco) {
+        console.log("filtroBanco", filtroBanco);
+        query = query.eq("conta_bancaria.banco", filtroBanco); // Filtro de banco
+        console.log("query", query);
       }
+      if (filtroDataInicio && filtroDataFim) {
+        query = query
+          .gte("data_transacao", filtroDataInicio.toISOString())
+          .lte("data_transacao", filtroDataFim.toISOString()); // Filtro de data
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      // Somente formata os dados dos registros que foram filtrados corretamente
+      const registrosFormatados = (data as RegistroProps[]).map((registro) => ({
+        ...registro,
+        tipo_categoria: registro.tipo_categoria?.categoria || "N/A",
+        conta_bancaria: registro.conta_bancaria?.banco || "N/A",
+      }));
+
+      setRegistros(registrosFormatados || []);
     } catch (error) {
-      console.log(error);
+      console.error("Erro ao buscar registros:", error);
     }
   };
 
-  // Funções para calcular entradas, saídas e saldo total, usando useCallback
-  const saldoEntrada = useCallback((): void => {
-    let totalEntrada = 0;
-    registros.map((registro) => {
-      if (registro.tipo_registro === "Entrada") {
-        totalEntrada += Number(registro.valor);
-      }
-      return totalEntrada;
-    });
-    setTotalEntrada(totalEntrada);
-  }, [registros]); // Dependência de registros
+  const fetchBancos = async (): Promise<void> => {
+    try {
+      const { data, error } = await supabase
+        .from("bank_account")
+        .select("id, banco")
+        .order("banco", { ascending: true });
+      if (error) throw error;
+      setBancosDisponiveis(data || []);
+    } catch (error) {
+      console.error("Erro ao buscar bancos:", error);
+    }
+  };
 
-  const conta = useCallback((): void => {
-    let totalConta = registros.length;
-    setTotalConta(totalConta);
-  }, [registros]); // Dependência de registros
+  const calcularTotais = useCallback(() => {
+    const totalEntrada = registros.reduce(
+      (acc, reg) =>
+        reg.tipo_registro === "Entrada" ? acc + Number(reg.valor) : acc,
+      0
+    );
+    const totalSaida = registros.reduce(
+      (acc, reg) =>
+        reg.tipo_registro === "Saída" ? acc + Number(reg.valor) : acc,
+      0
+    );
+    const saldo = totalEntrada - totalSaida;
+    const totalConta = registros.length;
 
-  const saldoSaida = useCallback((): void => {
-    let totalSaida = 0;
-    registros.map((registro) => {
-      if (registro.tipo_registro === "Saída") {
-        totalSaida += Number(registro.valor);
-      }
-      return totalSaida;
-    });
-    setTotalSaida(totalSaida);
-  }, [registros]); // Dependência de registros
+    setTotais({ totalEntrada, totalSaida, saldo, totalConta });
+  }, [registros]);
 
-  const saldoTotal = useCallback((): void => {
-    setSaldo(totalEntrada - totalSaida);
-  }, [totalEntrada, totalSaida]); // Dependências de totalEntrada e totalSaida
-
-  // Chama as funções dentro do useEffect
   useEffect(() => {
     fetchRegistros();
-  }, []); // O fetchRegistros só precisa ser chamado uma vez ao montar o componente
+    fetchBancos();
+  }, [filtroBanco, filtroDataInicio, filtroDataFim]);
 
   useEffect(() => {
-    saldoEntrada();
-    saldoSaida();
-    saldoTotal();
-    conta();
-  }, [registros, saldoEntrada, saldoSaida, saldoTotal, conta]); // Agora as funções são estáveis e não causam re-renders desnecessários
-
+    calcularTotais();
+  }, [registros, calcularTotais]);
 
   return (
     <div className="flex h-screen">
-      
+      {/* Conteúdo principal */}
       <main className="flex-1 p-6 bg-gray-100">
-      <h2 className="mb-4 text-lg font-semibold">Caixa Bancos</h2>
+        <h2 className="mb-4 text-lg font-semibold">Caixa Bancos</h2>
+
         {/* Barra de filtros */}
-        <div className="flex items-center justify-between p-4 mb-6 bg-white rounded shadow">
-          <input
-            type="text"
-            placeholder="Pesquisar por nome ou categoria..."
-            className="w-1/2 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+        <div className="flex items-center gap-4 p-4 mb-6 bg-white rounded shadow">
+          <Dropdown
+            value={filtroBanco}
+            onChange={(e) => setFiltroBanco(e.value)}
+            options={bancosDisponiveis.map((banco) => ({
+              label: banco.banco,
+              value: banco.banco,
+            }))}
+            placeholder="Selecione um banco"
+            className="w-full md:w-14rem"
           />
-          <button className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
-            Filtrar
-          </button>
+          <Calendar
+            value={filtroDataInicio}
+            onChange={(e) => setFiltroDataInicio(e.value as Date | null)}
+            placeholder="Data início"
+            className="w-full md:w-14rem"
+            dateFormat="dd/mm/yy"
+          />
+          <Calendar
+            value={filtroDataFim}
+            onChange={(e) => setFiltroDataFim(e.value as Date | null)}
+            placeholder="Data fim"
+            className="w-full md:w-14rem"
+            dateFormat="dd/mm/yy"
+          />
+          <Button
+            label="Filtrar"
+            onClick={fetchRegistros}
+            className="p-button-primary"
+          />
         </div>
 
         {/* Tabela */}
@@ -116,15 +153,14 @@ function CaixaBancos() {
         </div>
       </main>
 
-      {/* Barra escura no lado direito */}
+      {/* Barra lateral */}
       <aside className="hidden w-1/6 p-4 text-white bg-gray-800 md:block">
         <h2 className="mb-4 text-lg font-semibold">Resumo</h2>
-        <p>Dados importantes:</p>
         <ul className="mt-2 ml-4 space-y-2 list-disc">
-          <li>Total de contas: {totalConta}</li>
-          <li>Total Entrada: R$ {totalEntrada}</li>
-          <li>Total Saída: R$ {totalSaida}</li>
-          <li>Saldo Total: R$ {saldo}</li>
+          <li>Total de contas: {totais.totalConta}</li>
+          <li>Total Entrada: R$ {totais.totalEntrada.toFixed(2)}</li>
+          <li>Total Saída: R$ {totais.totalSaida.toFixed(2)}</li>
+          <li>Saldo Total: R$ {totais.saldo.toFixed(2)}</li>
         </ul>
       </aside>
     </div>
