@@ -183,13 +183,12 @@ function Contas() {
   );
 }
 Contas.propTypes = {
-  data: PropTypes.array.isRequired,
-  receita: PropTypes.number.isRequired,
-  despesa: PropTypes.number.isRequired,
-  selectedSituacao: PropTypes.string.isRequired,
-  selectedStartDate: PropTypes.instanceOf(Date).isRequired,
-  selectedEndDate: PropTypes.instanceOf(Date).isRequired,
-  setSelectedSituacao: PropTypes.func.isRequired,
-  setSelectedStartDate: PropTypes.func.isRequired,
+  data: PropTypes.array,
+  receita: PropTypes.number,
+  despesa: PropTypes.number,
+  selectedSituacao: PropTypes.string,
+  selectedStartDate: PropTypes.instanceOf(Date),
+  selectedEndDate: PropTypes.instanceOf(Date),
 };
+
 export default Contas;

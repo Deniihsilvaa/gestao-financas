@@ -5,6 +5,8 @@ import FormRegistroH from "./components/FormRegistroH";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.css";
 import Modal from "../Modal/Modal";
 
 function CaixaBancos() {
@@ -111,7 +113,30 @@ function CaixaBancos() {
   const handleOpenModal = () => {
     setModalOpen(true);
   };
-
+  const handleDelete = async (id) => {
+    try {
+      // Aguarde o resultado da exclusão
+      const { error } = await supabase
+        .from("base_caixa")
+        .delete()
+        .eq("id", id);
+  
+      if (error) {
+        alert("Erro ao excluir o registro. Tente novamente.");
+        console.error("Erro ao excluir:", error);
+        return;
+      }
+  
+      // Atualize os registros após a exclusão
+      fetchRegistros();
+  
+      alert("Registro excluído com sucesso!");
+    } catch (err) {
+      console.error("Erro inesperado:", err);
+      alert("Ocorreu um erro inesperado. Tente novamente.");
+    }
+  };
+  
   const handleCloseModal = () => {
     setModalOpen(false);
   };
@@ -126,11 +151,15 @@ function CaixaBancos() {
   }, [registros, calcularTotais]); // Calcula os totais sempre que registros mudarem
 
   return (
-    <div className="flex h-screen">
+    <div className="flex flex-col h-full md:flex-row">
+      {/* Main Content */}
       <main className="flex-1 p-6 bg-gray-100">
-        <h2 className="mb-4 text-lg font-semibold">Caixa Bancos</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-800">
+          Caixa Bancos
+        </h2>
 
-        <div className="flex items-center gap-4 p-4 mb-6 bg-white rounded shadow">
+        {/* Filter Section */}
+        <div className="flex flex-col items-start gap-4 p-4 mb-6 bg-white rounded-lg shadow md:flex-row md:items-center">
           <Dropdown
             value={filtroBanco}
             onChange={(e) => setFiltroBanco(e.value)}
@@ -139,45 +168,48 @@ function CaixaBancos() {
               value: banco.banco,
             }))}
             placeholder="Selecione um banco"
-            className="w-full md:w-14rem"
+            className="w-full md:w-52"
           />
           <Calendar
             value={filtroDataInicio}
             onChange={(e) => setFiltroDataInicio(e.value)}
             placeholder="Data início"
-            className="w-full md:w-14rem"
+            className="w-full md:w-52"
             dateFormat="dd/mm/yy"
           />
           <Calendar
             value={filtroDataFim}
             onChange={(e) => setFiltroDataFim(e.value)}
             placeholder="Data fim"
-            className="w-full md:w-14rem"
+            className="w-full md:w-52"
             dateFormat="dd/mm/yy"
           />
           <Button
             label="Filtrar"
             onClick={fetchRegistros}
-            className="p-button-primary"
+            className="w-full md:w-auto p-button-primary"
           />
           <button
             onClick={handleOpenModal}
-            className="px-4 py-2 text-sm font-semibold text-white bg-green-500 rounded-lg hover:bg-green-600"
+            className="w-full px-4 py-2 text-sm font-semibold text-white bg-green-500 rounded-lg md:w-auto hover:bg-green-600"
           >
             Registrar
           </button>
         </div>
 
-        <div className="overflow-x-auto bg-white rounded shadow">
-          <TableCaixaBancos registros={registros} />
+        {/* Table Section */}
+        <div className="overflow-x-auto bg-white rounded-lg shadow">
+          <TableCaixaBancos registros={registros} onDelete={handleDelete} />
         </div>
       </main>
 
+      {/* Modal */}
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} title="Registro">
         <FormRegistroH onSave={handlerSubmit} onClose={handleCloseModal} />
       </Modal>
 
-      <aside className="hidden w-1/6 p-4 text-white bg-gray-800 md:block">
+      {/* Sidebar */}
+      <aside className="w-full p-4 text-white bg-gray-800 md:w-1/4 lg:w-1/6">
         <h2 className="mb-4 text-lg font-semibold">Resumo</h2>
         <ul className="mt-2 ml-4 space-y-2 list-disc">
           <li>Total de contas: {totais.totalConta}</li>

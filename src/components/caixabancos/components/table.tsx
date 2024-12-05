@@ -6,9 +6,10 @@ import { formatDate, formatCurrency } from "../../../utils/formatters";
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.css";
 
-const TableCaixaBancos = ({ registros }: { registros: RegistroProps[] }) => {
+const TableCaixaBancos = ({ registros, onDelete }: { registros: RegistroProps[]; onDelete: (id: string) => void }) => {
+
   const [selectedRows, setSelectedRows] = useState<RegistroProps[]>([]);
-  const [expandedRows, setExpandedRows] = useState<RegistroProps[]>([]); 
+  const [expandedRows, setExpandedRows] = useState<RegistroProps[]>([]);
 
   // Função para lidar com a seleção das linhas
   const onRowSelect = (e: any) => {
@@ -51,19 +52,31 @@ const TableCaixaBancos = ({ registros }: { registros: RegistroProps[] }) => {
           ["Categoria", rowData.tipo_categoria || "Sem categoria"],
           ["Conta Bancária", rowData.conta_bancaria || "N/A"],
           ["Observação", rowData.observacao || "Sem observações"],
+          ["Situação", rowData.situacao || "N/A"],
         ].map(([label, value], index) => (
           <div key={index}>
             <strong>{String(label)}</strong>: {String(value)}
           </div>
         ))}
       </div>
+      <div className="mt-4">
+        <button
+          className="p-button p-component p-button-danger"
+          onClick={() => onDelete(rowData.id)}
+        >
+          <i className="pi pi-trash" style={{ marginRight: '0.5rem' }} />
+          Deletar
+        </button>
+      </div>
     </div>
   );
+  
 
   return (
-    <div className="card p-fluid">
+    <div className="p-3 m-1">
       <DataTable
         scrollHeight="400px"
+        scrollable
         virtualScrollerOptions={{ itemSize: 46 }}
         columnResizeMode="expand"
         sortMode="multiple"
