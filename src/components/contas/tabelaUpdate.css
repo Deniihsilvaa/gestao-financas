@@ -13,6 +13,22 @@
     animation: fadeIn 0.3s ease-in-out; /* Animação de entrada */
 }
 
+
+#popup_menu {
+  background: whitesmoke;
+  padding: 1em;
+  border-radius: 2em;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 90%; /* Reduz o tamanho em telas menores */
+  height: 60vh;
+  max-height: 100%; /* Evita que o modal ultrapasse a altura */
+  overflow-y: auto; /* Adiciona rolagem interna caso o conteúdo ultrapasse a altura */
+  padding: 20px;
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out; /* Animação de entrada */
+}
+
+
 @keyframes fadeIn {
     from {
         opacity: 0;

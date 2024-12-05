@@ -21,13 +21,7 @@ export interface TableRegistroProps {
   onDelete: (id: RegistroProps["id"]) => void; // Função para deletar um registro
 }
 
-export interface RowExpansionTemplateProps {
-  data: {
-    id?: number; // ID do registro
-    observacao: string;
-    data_vencimento: string;
-  };
-}
+
 export interface ContaProps {
   id?: number; // Torna id opcional
   descricao: string;

@@ -1,17 +1,17 @@
-// src/components/Table/TableRegistro.tsx
+// src/components/contas/Tabela/tabelaUpdate.tsx
 import React, { useState, useMemo, useRef } from "react";
 import { DataTable, DataTableExpandedRows } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
+import { Menu } from "primereact/menu";
 import { Button } from "primereact/button";
-import RowExpansionTemplate from "./RowExpansionTemplate";
-import SearchBar from "./SearchBar";
-import FormRegistro from "./Formregistro";
-import Modal from "../../../Modal/Modal";
-import { RegistroProps, TableRegistroProps } from "../types";
-import { formatCurrency } from "../../../../utils/formatters";
-import { formatDate } from "../../../../utils/formatters";
-import "./table.css";
+import RowExpansionTemplate from "../Tabela/RowExpansionTemplate";
+import SearchBar from "../contasApagar/components/SearchBar";
+import FormRegistro from "../contasApagar/components/Formregistro";
+import Modal from "../../Modal/Modal";
+import { RegistroProps, TableRegistroProps } from "../contasApagar/types";
+import { formatCurrency, formatDate } from "../../../utils/formatters";
+
 const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
   const [expandedRows, setExpandedRows] = useState<
     DataTableExpandedRows | undefined
@@ -32,7 +32,7 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
     );
   }, [search, registros]);
 
-  // Função para abrir o modal em modo de edição ou criação
+  // Abrir o modal em modo de edição ou criação
   const handleEdit = (registro: RegistroProps | null) => {
     setRegistroSelecionado(registro);
     setIsModalOpen(true);
@@ -55,8 +55,9 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
     });
     handleCloseModal();
   };
+
+  // Excluir o registro
   const handleDelete = (id: RegistroProps["id"]) => {
-    alert("Registro excluido com sucesso!");
     onDelete(id);
     toast.current?.show({
       severity: "warn",
@@ -64,6 +65,52 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
       detail: `O registro foi excluído.`,
       life: 3000,
     });
+  };
+
+  // Pagar a conta
+  const handlePagar = (registro: RegistroProps) => {
+    toast.current?.show({
+      severity: "success",
+      summary: "Conta Paga",
+      detail: `A conta "${registro.descricao}" foi marcada como paga.`,
+      life: 3000,
+    });
+  };
+
+  // Configurar menu de ações
+  const ActionMenuTemplate = (rowData: RegistroProps) => {
+    const menuRef = useRef<Menu>(null); // Tipando o useRef corretamente
+
+    const items = [
+      {
+        label: "Editar",
+        icon: "pi pi-pencil",
+        command: () => handleEdit(rowData),
+      },
+      {
+        label: "Excluir",
+        icon: "pi pi-trash",
+        command: () => handleDelete(rowData.id),
+      },
+      {
+        label: "Pagar",
+        icon: "pi pi-check",
+        command: () => handlePagar(rowData),
+      },
+    ];
+
+    return (
+      <div className="flex justify-content-center">
+        <Menu model={items} popup ref={menuRef} id="popup_menu"  />
+        <Button
+          icon="pi pi-ellipsis-v"
+          className="p-button-rounded p-button-text"
+          onClick={(e) => menuRef.current?.toggle(e)}
+          aria-controls="popup_menu"
+          aria-haspopup
+        />
+      </div>
+    );
   };
 
   return (
@@ -85,17 +132,18 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
         dataKey="id"
         paginator
         rows={10}
-        className="p-datatable-small"
+        className="p-datatable-sm"
         tableStyle={{ minWidth: "40rem" }}
       >
         <Column expander style={{ width: "3em" }} />
         <Column field="descricao" header="Descrição" sortable />
         <Column
-          field="data_transacao"
-          header="Data"
+          field="data_vencimento"
+          header="Vencimento"
+          body={(rowData) => formatDate(rowData.data_vencimento)}
           sortable
-          body={(rowData) => formatDate(rowData.data_transacao)}
         />
+        <Column field="tipo_categoria" header="Tipo de Categoria" sortable />
         <Column
           field="valor"
           header="Valor"
@@ -103,24 +151,9 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
           sortable
         />
         <Column
-          body={(rowData: RegistroProps) => (
-            <Button
-              label="Editar"
-              onClick={() => handleEdit(rowData)}
-              className="bg-gradient-to-r from-teal-100 to-blue-200 hover:from-pink-100 hover:to-indigo-400 ..."
-            />
-          )}
+          body={ActionMenuTemplate}
           header="Ações"
-        />
-        <Column
-          body={(rowData: RegistroProps) => (
-            <Button
-              label="Excluir"
-              onClick={() => handleDelete(rowData.id)}
-              className="bg-gradient-to-r from-teal-100 to-blue-200 hover:from-pink-100 hover:to-rose-800 ..."
-            />
-          )}
-          header="Ações"
+          style={{ textAlign: "center", width: "8rem" }}
         />
       </DataTable>
 
