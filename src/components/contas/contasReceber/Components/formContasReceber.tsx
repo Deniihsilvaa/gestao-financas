@@ -18,7 +18,7 @@ const FormContasReceber: React.FC<FormContasReceberProps> = ({
     registroParaEdicao?.data_vencimento || ""
   );
   const [data_transacao, setDatacompetencia] = useState(
-    registroParaEdicao?.data_transacao || ""
+    registroParaEdicao?.data_transacao || new Date().toISOString()
   );
   const [situacao, setSituacao] = useState("Pendente");
   const [observacao, setObservacao] = useState(
@@ -46,7 +46,6 @@ const FormContasReceber: React.FC<FormContasReceberProps> = ({
     data_registro: false,
     data_transacao: false,
   });
-
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -164,7 +163,7 @@ const FormContasReceber: React.FC<FormContasReceberProps> = ({
 
       <div>
         <label htmlFor="data_vencimento" className="form-label">
-          Data de Vencimento *
+          Vencimento *
         </label>
         <input
           id="data_vencimento"
@@ -178,7 +177,7 @@ const FormContasReceber: React.FC<FormContasReceberProps> = ({
 
       <div>
         <label htmlFor="data_transacao" className="form-label">
-          Data de Competência *
+          Data da emissão *
         </label>
         <input
           id="data_transacao"

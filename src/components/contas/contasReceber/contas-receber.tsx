@@ -16,6 +16,7 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
       .from("base_caixa")
       .select("*")
       .eq("tipo_registro", "Entrada")
+      .eq("situacao", "Pendente")
       .order("data_transacao", { ascending: true });
 
     if (error) {

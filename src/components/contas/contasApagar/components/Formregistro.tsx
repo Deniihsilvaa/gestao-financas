@@ -2,18 +2,28 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../../../services/supabaseClient";
 
-import { RegistroProps, ContaPropsEdit, TemplateRegistrosProps } from "../types";
+import {
+  RegistroProps,
+  ContaPropsEdit,
+  TemplateRegistrosProps,
+} from "../types";
 
-import { Button } from 'primereact/button';
+import { Button } from "primereact/button";
 
 const FormRegistro: React.FC<TemplateRegistrosProps> = ({
   onClose,
   onSave,
   registroParaEdicao, // Prop opcional para edição
 }) => {
-  const [descricao, setDescricao] = useState(registroParaEdicao?.descricao || "");
-  const [situacao, setSituacao] = useState(registroParaEdicao?.situacao || "Concluído");
-  const [valor, setValor] = useState(registroParaEdicao?.valor?.toString() || "");
+  const [descricao, setDescricao] = useState(
+    registroParaEdicao?.descricao || ""
+  );
+  const [situacao, setSituacao] = useState(
+    registroParaEdicao?.situacao || "Pendente"
+  );
+  const [valor, setValor] = useState(
+    registroParaEdicao?.valor?.toString() || ""
+  );
   const [data_vencimento, setVencimento] = useState(
     registroParaEdicao?.data_vencimento || ""
   );
@@ -50,7 +60,9 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
 
   useEffect(() => {
     const fetchBancos = async () => {
-      const { data, error } = await supabase.from("bank_account").select("id, banco");
+      const { data, error } = await supabase
+        .from("bank_account")
+        .select("id, banco");
       if (error) {
         console.error("Erro ao buscar bancos:", error);
       } else {
@@ -195,7 +207,7 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
 
       <div>
         <label htmlFor="data_vencimento" className="form-label">
-          Data de Vencimento *
+          Vencimento *
         </label>
         <input
           id="data_vencimento"
@@ -209,7 +221,7 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
 
       <div>
         <label htmlFor="data_transacao" className="form-label">
-          Data de Competência *
+          Data da emissão *
         </label>
         <input
           id="data_transacao"
@@ -231,7 +243,7 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
           value={situacao}
           onChange={(e) => setSituacao(e.target.value)}
         >
-          <option value="Concluído">Concluído</option>
+          <option value="Pendente">Pendente</option>
         </select>
       </div>
 

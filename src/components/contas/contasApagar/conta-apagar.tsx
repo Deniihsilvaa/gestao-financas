@@ -15,9 +15,8 @@ function ContasApagar() {
       .from("base_caixa")
       .select("*")
       .eq("tipo_registro", "Saída")
+      .eq("situacao", "Pendente")
       .order("data_transacao", { ascending: true });
-
-      
 
     if (error) {
       console.error("Erro ao buscar registros:", error);
