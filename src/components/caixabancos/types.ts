@@ -24,3 +24,25 @@ interface TableCaixaBancosProps {
   registros: RegistroProps[];
   mapearSituacao: (situacao: string) => JSX.Element; // Adicione esta linha
 }
+//////////////////////////////////////////////////////////////////////
+export interface ContaPropsEdit {
+  id?: number;
+  descricao: string;
+  valor: number;
+  data_vencimento: string;
+  conta_bancaria: string;
+  tipo_categoria: string;
+  data_transacao: string;
+  data_registro: string;
+  situacao: string;
+  observacao: string;
+  user_id: string;
+  tipo_registro: string;
+}
+
+export interface TemplateRegistrosProps {
+  registro: RegistroProps | null; // Aceita RegistroProps ou null
+  onClose: () => void;
+  onSave: (registro: RegistroProps) => Promise<void>;
+  registroParaEdicao?: ContaPropsEdit | null; // Opcional
+}

@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { supabase } from "../../services/supabaseClient";
-import { RegistroProps, FiltrobancosProps } from "./types";
 import TableCaixaBancos from "./components/table";
+import FormRegistroH from "./components/FormRegistroH";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
+import Modal from "../Modal/Modal";
 
 function CaixaBancos() {
-  const [registros, setRegistros] = useState<RegistroProps[]>([]);
-  const [filtroBanco, setFiltroBanco] = useState<string | null>(null);
-  const [filtroDataInicio, setFiltroDataInicio] = useState<Date | null>(null);
-  const [filtroDataFim, setFiltroDataFim] = useState<Date | null>(null);
-  const [bancosDisponiveis, setBancosDisponiveis] = useState<
-    FiltrobancosProps[]
-  >([]);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [registros, setRegistros] = useState([]);
+  const [filtroBanco, setFiltroBanco] = useState(null);
+  const [filtroDataInicio, setFiltroDataInicio] = useState(null);
+  const [filtroDataFim, setFiltroDataFim] = useState(null);
+  const [bancosDisponiveis, setBancosDisponiveis] = useState([]);
   const [totais, setTotais] = useState({
     totalEntrada: 0,
     totalSaida: 0,
@@ -21,7 +21,8 @@ function CaixaBancos() {
     totalConta: 0,
   });
 
-  const fetchRegistros = async (): Promise<void> => {
+  // Use useCallback to memorize fetchRegistros
+  const fetchRegistros = useCallback(async () => {
     try {
       let query = supabase
         .from("base_caixa")
@@ -41,23 +42,19 @@ function CaixaBancos() {
         )
         .order("data_transacao", { ascending: false });
 
-      // Aplicar filtros ao banco de dados
       if (filtroBanco) {
-        console.log("filtroBanco", filtroBanco);
-        query = query.eq("conta_bancaria.banco", filtroBanco); // Filtro de banco
-        console.log("query", query);
+        query = query.eq("conta_bancaria.banco", filtroBanco);
       }
       if (filtroDataInicio && filtroDataFim) {
         query = query
           .gte("data_transacao", filtroDataInicio.toISOString())
-          .lte("data_transacao", filtroDataFim.toISOString()); // Filtro de data
+          .lte("data_transacao", filtroDataFim.toISOString());
       }
 
       const { data, error } = await query;
       if (error) throw error;
 
-      // Somente formata os dados dos registros que foram filtrados corretamente
-      const registrosFormatados = (data as RegistroProps[]).map((registro) => ({
+      const registrosFormatados = data.map((registro) => ({
         ...registro,
         tipo_categoria: registro.tipo_categoria?.categoria || "N/A",
         conta_bancaria: registro.conta_bancaria?.banco || "N/A",
@@ -67,9 +64,9 @@ function CaixaBancos() {
     } catch (error) {
       console.error("Erro ao buscar registros:", error);
     }
-  };
+  }, [filtroBanco, filtroDataInicio, filtroDataFim]); // Dependências de filtro
 
-  const fetchBancos = async (): Promise<void> => {
+  const fetchBancos = async () => {
     try {
       const { data, error } = await supabase
         .from("bank_account")
@@ -79,6 +76,18 @@ function CaixaBancos() {
       setBancosDisponiveis(data || []);
     } catch (error) {
       console.error("Erro ao buscar bancos:", error);
+    }
+  };
+
+  const handlerSubmit = async (data) => {
+    try {
+      console.log(data);
+      const { error } = await supabase.from("base_caixa").insert([data]);
+      if (error) throw error;
+      alert("Registro registrado com sucesso!");
+      fetchRegistros(); // Atualiza os registros após inserir
+    } catch (error) {
+      alert("Erro ao registrar o registro. Tente novamente.");
     }
   };
 
@@ -97,24 +106,30 @@ function CaixaBancos() {
     const totalConta = registros.length;
 
     setTotais({ totalEntrada, totalSaida, saldo, totalConta });
-  }, [registros]);
+  }, [registros]); // Depende de registros
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
 
   useEffect(() => {
     fetchRegistros();
     fetchBancos();
-  }, [filtroBanco, filtroDataInicio, filtroDataFim]);
+  }, [fetchRegistros]); // Agora, use o fetchRegistros memorado
 
   useEffect(() => {
     calcularTotais();
-  }, [registros, calcularTotais]);
+  }, [registros, calcularTotais]); // Calcula os totais sempre que registros mudarem
 
   return (
     <div className="flex h-screen">
-      {/* Conteúdo principal */}
       <main className="flex-1 p-6 bg-gray-100">
         <h2 className="mb-4 text-lg font-semibold">Caixa Bancos</h2>
 
-        {/* Barra de filtros */}
         <div className="flex items-center gap-4 p-4 mb-6 bg-white rounded shadow">
           <Dropdown
             value={filtroBanco}
@@ -128,14 +143,14 @@ function CaixaBancos() {
           />
           <Calendar
             value={filtroDataInicio}
-            onChange={(e) => setFiltroDataInicio(e.value as Date | null)}
+            onChange={(e) => setFiltroDataInicio(e.value)}
             placeholder="Data início"
             className="w-full md:w-14rem"
             dateFormat="dd/mm/yy"
           />
           <Calendar
             value={filtroDataFim}
-            onChange={(e) => setFiltroDataFim(e.value as Date | null)}
+            onChange={(e) => setFiltroDataFim(e.value)}
             placeholder="Data fim"
             className="w-full md:w-14rem"
             dateFormat="dd/mm/yy"
@@ -145,15 +160,23 @@ function CaixaBancos() {
             onClick={fetchRegistros}
             className="p-button-primary"
           />
+          <button
+            onClick={handleOpenModal}
+            className="px-4 py-2 text-sm font-semibold text-white bg-green-500 rounded-lg hover:bg-green-600"
+          >
+            Registrar
+          </button>
         </div>
 
-        {/* Tabela */}
         <div className="overflow-x-auto bg-white rounded shadow">
           <TableCaixaBancos registros={registros} />
         </div>
       </main>
 
-      {/* Barra lateral */}
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} title="Registro">
+        <FormRegistroH onSave={handlerSubmit} onClose={handleCloseModal} />
+      </Modal>
+
       <aside className="hidden w-1/6 p-4 text-white bg-gray-800 md:block">
         <h2 className="mb-4 text-lg font-semibold">Resumo</h2>
         <ul className="mt-2 ml-4 space-y-2 list-disc">

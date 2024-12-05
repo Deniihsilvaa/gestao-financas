@@ -150,7 +150,7 @@ const FormContasReceber: React.FC<FormContasReceberProps> = ({
 
       <div>
         <label htmlFor="data_registro" className="form-label">
-          Data Original *
+          Data Competencia *
         </label>
         <input
           id="data_registro"

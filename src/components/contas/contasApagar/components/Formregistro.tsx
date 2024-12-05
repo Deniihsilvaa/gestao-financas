@@ -1,18 +1,18 @@
-//  src/components/contas/contasApagar/components/Formregistro.tsx
+// src/components/contas/contasApagar/components/FormRegistro.tsx
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../../../services/supabaseClient";
 
-import { RegistroProps,ContaPropsEdit, TemplateRegistrosProps } from "../types";
+import { RegistroProps, ContaPropsEdit, TemplateRegistrosProps } from "../types";
 
 import { Button } from 'primereact/button';
-        
+
 const FormRegistro: React.FC<TemplateRegistrosProps> = ({
   onClose,
   onSave,
   registroParaEdicao, // Prop opcional para edição
 }) => {
   const [descricao, setDescricao] = useState(registroParaEdicao?.descricao || "");
-  const [situacao, setSituacao] = useState(registroParaEdicao?.situacao || "Pendente");
+  const [situacao, setSituacao] = useState(registroParaEdicao?.situacao || "Concluído");
   const [valor, setValor] = useState(registroParaEdicao?.valor?.toString() || "");
   const [data_vencimento, setVencimento] = useState(
     registroParaEdicao?.data_vencimento || ""
@@ -62,7 +62,7 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
       const { data, error } = await supabase
         .from("type_categoria")
         .select("id, categoria")
-        .eq("tipo", "Saída");
+        .in("tipo", ["Entrada", "Saída"]); // Obtendo tanto entradas quanto saídas
       if (error) {
         console.error("Erro ao buscar categorias:", error);
       } else {
@@ -73,9 +73,10 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
     fetchBancos();
     fetchCategorias();
   }, []);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     const validationErrors = {
       descricao: !descricao,
       valor: !valor,
@@ -85,29 +86,29 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
       data_registro: !data_registro,
       data_transacao: !data_transacao,
     };
-    
+
     // Atualiza o estado dos erros
     setErrors(validationErrors);
-  
+
     if (Object.values(validationErrors).includes(true)) {
       alert("Por favor, preencha todos os campos obrigatórios!");
       return;
     }
-  
+
     try {
       const dadoslocal = localStorage.getItem("user");
       if (!dadoslocal) {
-          throw new Error("Dados do usuário não encontrados.");
+        throw new Error("Dados do usuário não encontrados.");
       }
 
       const dados = JSON.parse(dadoslocal);
       const user_id: string = dados.id;
-      
-      const registro: RegistroProps|null = {
+
+      const registro: RegistroProps | null = {
         user_id,
         descricao,
         valor: parseFloat(valor),
-        tipo_registro: "Saída",
+        tipo_registro: tipo_categoria === "Entrada" ? "Entrada" : "Saída", // Define o tipo baseado na categoria
         data_transacao,
         tipo_categoria: tipo_categoria as string,
         situacao,
@@ -116,22 +117,22 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
         data_vencimento,
         observacao,
       };
-  
+
       if (registroParaEdicao) {
         // Atualiza o registro existente
         const updatedRegistro: ContaPropsEdit = {
           ...registro,
           id: registroParaEdicao.id,
         };
-  
+
         // Chama a função onSave com o objeto editado
         onSave(updatedRegistro);
-        
+
         const { error } = await supabase
           .from("base_caixa")
           .update(updatedRegistro)
           .eq("id", registroParaEdicao.id);
-  
+
         if (error) {
           alert("Erro ao atualizar registro: " + error.message);
           return;
@@ -141,14 +142,13 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
         // Insere novo registro
         onSave(registro);
       }
-  
+
       onClose();
     } catch (error: any) {
       console.error("Erro ao salvar registro:", error.message);
       alert("Erro ao salvar registro: " + error.message);
     }
   };
-  
 
   const getInputStyle = (field: string) => {
     return errors[field] ? { borderColor: "red" } : {};
@@ -181,7 +181,7 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
 
       <div>
         <label htmlFor="data_registro" className="form-label">
-          Data Original *
+          Data competência *
         </label>
         <input
           id="data_registro"
@@ -231,7 +231,7 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
           value={situacao}
           onChange={(e) => setSituacao(e.target.value)}
         >
-          <option value="Pendente">Pendente</option>
+          <option value="Concluído">Concluído</option>
         </select>
       </div>
 
@@ -294,7 +294,7 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
           onChange={(e) => setTipoCategoria(e.target.value)}
           style={getInputStyle("tipo_categoria")}
         >
-          <option value="">Selecione a categoria</option>
+          <option value="">Selecione a Categoria</option>
           {categorias.map((categoria) => (
             <option key={categoria.id} value={categoria.id}>
               {categoria.categoria}
@@ -303,22 +303,8 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
         </select>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 p-3">
-
-        <Button type="submit" className="btn btn-primary">
-          {registroParaEdicao ? "Atualizar" : "Salvar"}
-        </Button>
-        <Button
-          type="button"
-          onClick={onClose}
-          style={{ marginRight: "10px" }}
-          icon="pi pi-check"
-          className="btn btn-secondary"
-          title="Fechar"
-          aria-label="Close"
-        >
-          Cancelar
-        </Button>
+      <div style={{ gridColumn: "span 2" }}>
+        <Button type="submit" label="Salvar" icon="pi pi-check" />
       </div>
     </form>
   );
