@@ -14,7 +14,6 @@ import { RegistroProps, TableRegistroProps } from "../contasApagar/types";
 import { formatCurrency, formatDate } from "../../../utils/formatters";
 
 const TableRegistro = ({ registros, onDelete, onEdit }: TableRegistroProps) => {
-  
   const [expandedRows, setExpandedRows] = useState<
     DataTableExpandedRows | undefined
   >(undefined);
@@ -70,9 +69,12 @@ const TableRegistro = ({ registros, onDelete, onEdit }: TableRegistroProps) => {
   };
 
   // Pagar a conta
-  const handlePagar = (id: RegistroProps["id"], descricao: RegistroProps["descricao"]) => {
+  const handlePagar = (
+    id: RegistroProps["id"],
+    descricao: RegistroProps["descricao"]
+  ) => {
     onEdit(id);
-  
+
     toast.current?.show({
       severity: "success",
       summary: "Conta Paga",
@@ -82,7 +84,6 @@ const TableRegistro = ({ registros, onDelete, onEdit }: TableRegistroProps) => {
       className: "custom-toast",
     });
   };
-  
 
   // Configurar menu de ações
   const ActionMenuTemplate = (rowData: RegistroProps) => {
@@ -121,7 +122,7 @@ const TableRegistro = ({ registros, onDelete, onEdit }: TableRegistroProps) => {
   };
 
   return (
-    <div>
+    <div className="p-4 shadow-md h-100 scroll-smooth">
       <Toast ref={toast} />
       <div className="flex justify-between mb-2">
         {/* Barra de pesquisa */}
@@ -159,7 +160,7 @@ const TableRegistro = ({ registros, onDelete, onEdit }: TableRegistroProps) => {
         />
         <Column
           body={ActionMenuTemplate}
-          header="Ações"
+          header=""
           style={{ textAlign: "center", width: "8rem" }}
         />
       </DataTable>

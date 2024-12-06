@@ -77,9 +77,9 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
     }
   };
   return (
-    <div className="flex h-screen rounded-2xl">
+    <div className="flex h-screen overflow-hidden bg-gray-100">
       {/* Conteúdo principal */}
-      <main className="flex-1 p-2 overflow-y-auto bg-gray-100">
+      <main className="flex-1 p-2 ml-0 overflow-y-auto bg-gray-100 rounded-2xl">
         <h2 className="mb-4 text-lg font-semibold">Contas a Receber</h2>
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="mb-4">

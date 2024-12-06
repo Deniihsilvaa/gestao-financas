@@ -24,7 +24,7 @@ const Layout = () => {
         />
         <main
           className={`flex-grow transition-all duration-500 w-100 ${
-            isSidebarOpen ? "ml-20" : "ml-0"
+            isSidebarOpen ? "ml-10" : "ml-0"
           }`}
         >
           <Outlet />

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { RegistroProps } from "../types";
-import { formatDate, formatCurrency } from "../../../utils/formatters";
+import { formatDate, formatCurrency } from "../../../../utils/formatters";
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.css";
 

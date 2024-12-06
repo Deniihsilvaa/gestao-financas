@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { supabase } from "../../services/supabaseClient";
+import { supabase } from "../../../services/supabaseClient";
 import TableCaixaBancos from "./components/table";
 import FormRegistroH from "./components/FormRegistroH";
 import { Dropdown } from "primereact/dropdown";
@@ -7,7 +7,7 @@ import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.css";
-import Modal from "../Modal/Modal";
+import Modal from "../../Modal/Modal";
 
 function CaixaBancos() {
   const [isModalOpen, setModalOpen] = useState(false);

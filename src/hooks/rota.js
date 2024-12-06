@@ -9,10 +9,12 @@ import Home from '../pages/Home';
 import About from '../pages/About';
 import Contact from '../pages/Contact';
 import Config from '../components/config/config';
-import CaixaBancos from '../components/caixabancos/caixa-bancos';
+
+import CaixaBancos from '../components/contas/caixabancos/caixaBancos';
+
 import ContasApagar from '../components/contas/contasApagar/conta-apagar';
 import Contas from '../components/contas/contas';
-import ContasResceber from '../components/contas/contasReceber/contas-receber';
+import ContasResceber from '../components/contas/contasReceber/contasAReceber';
 
 const Rota = () => {    
     return (
