@@ -22,7 +22,6 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
     if (error) {
       console.error("Erro ao buscar dados da base:", error);
     } else {
-      console.log("dados da base", data);
       setBaseData(data || []);
     }
   };
