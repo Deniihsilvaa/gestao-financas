@@ -15,6 +15,7 @@ import CaixaBancos from '../components/contas/caixabancos/caixaBancos';
 import ContasApagar from '../components/contas/contasApagar/conta-apagar';
 import Contas from '../components/contas/contas';
 import ContasResceber from '../components/contas/contasReceber/contasAReceber';
+import UploadAndTable from '../components/importDadosExterno/UploadAndTable';
 
 const Rota = () => {    
     return (
@@ -39,6 +40,7 @@ const Rota = () => {
                     <Route path="contas" element={<Contas/>} />
                     <Route path="contasapagar" element={<ContasApagar/>} />
                     <Route path="contasresceber" element={<ContasResceber/>} />
+                    <Route path="uploadandtable" element={<UploadAndTable/>} />
                     <Route path="*" element={<Home />} />
                 </Route>
             </Routes>

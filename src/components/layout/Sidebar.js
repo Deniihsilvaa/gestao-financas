@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./layout.css"; // Arquivo de estilos para animações
 
-const Sidebar = ({ isOpen,onClose }) => {
+const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
   const handleNavigation = (path) => {
@@ -17,7 +17,6 @@ const Sidebar = ({ isOpen,onClose }) => {
       }`}
     >
       <div className="p-4">
-
         {isOpen && (
           <div>
             <h2 className="mb-4 text-lg font-semibold">Menu</h2>
@@ -43,7 +42,6 @@ const Sidebar = ({ isOpen,onClose }) => {
                   <Link className="dropdown-item" to="/pessoas">
                     Pessoas
                   </Link>
-
                 </li>
               </ul>
             </div>
@@ -86,6 +84,27 @@ const Sidebar = ({ isOpen,onClose }) => {
                   <Link className="dropdown-item" to="/relatorio">
                     Relatório
                   </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div className="dropdown">
+              <button
+                className="buton dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Importação
+              </button>
+              <ul className="dropdown-menu">
+                <li>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => handleNavigation("/uploadandtable")}
+                  >
+                    Importa dados de Arquivo
+                  </button>
                 </li>
               </ul>
             </div>
