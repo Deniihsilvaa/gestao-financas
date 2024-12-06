@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "../../Modal/Modal";
-import { BaseDataProps, ContasReceber, DeleteProps } from "./types";
-import TabelaContasReceber from "./Components/table";
+import { BaseDataProps, ContasReceber } from "./types";
+import TableRegistro from "../Tabela/TabelaFomsCaixa";
 import FormRegistro from "./Components/formContasReceber";
 import { supabase } from "../../../services/supabaseClient";
 
@@ -51,15 +51,24 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
       console.error("Erro ao salvar registro:", error);
     }
   };
-  const handleDelete = async (id: DeleteProps) => {
-    try {
-      const { error } = await ContasReceber.delete().eq("id", id);
-      if (error) throw error;
-      fetchBaseData();
+  const onDelete = async (id: number | undefined): Promise<void> => {
+    if (id === undefined) {
+      console.error("ID inválido ou indefinido.");
+      return;
+    }
 
-      alert("Registro excluido com sucesso!");
+    try {
+      const { error } = await supabase.from("base_caixa").delete().eq("id", id);
+
+      if (error) {
+        console.error("Erro ao excluir registro:", error);
+        throw error;
+      }
+
+      alert("Registro excluído com sucesso!");
+      fetchBaseData(); // Atualize a tabela após a exclusão
     } catch (error) {
-      alert("Erro ao excluir o registro. Tente novamente.");
+      console.error("Erro ao excluir registro:", error);
     }
   };
 
@@ -103,7 +112,7 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
 
         {/* Tabela */}
         <div className="overflow-y-auto bg-white rounded shadow">
-          <TabelaContasReceber baseData={baseData} onDelete={handleDelete} />
+          <TableRegistro registros={baseData} onDelete={onDelete} />
         </div>
       </main>
 

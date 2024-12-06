@@ -14,7 +14,7 @@ function ContasApagar() {
   // Função para buscar os registros da tabela base_caixa
   const fetchRegistros = async () => {
     const { data, error } = await supabase
-      .from("base_caixa")
+      .from("viewBaseCaixa")
       .select("*")
       .eq("tipo_registro", "Saída")
       .eq("situacao", "Pendente")
