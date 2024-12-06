@@ -11,7 +11,7 @@ import FormRegistro from "../contasApagar/components/Formregistro";
 import Modal from "../../Modal/Modal";
 import { RegistroProps, TableRegistroProps } from "../contasApagar/types";
 import { formatCurrency, formatDate } from "../../../utils/formatters";
-
+import '../Tabela/table.css'
 const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
   const [expandedRows, setExpandedRows] = useState<
     DataTableExpandedRows | undefined
@@ -101,7 +101,7 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
 
     return (
       <div className="flex justify-content-center">
-        <Menu model={items} popup ref={menuRef} id="popup_menu"  />
+        <Menu model={items} popup ref={menuRef} id="popup_menu" />
         <Button
           icon="pi pi-ellipsis-v"
           className="p-button-rounded p-button-text"
@@ -152,7 +152,7 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
         />
         <Column
           body={ActionMenuTemplate}
-          header="Ações"
+          header=""
           style={{ textAlign: "center", width: "8rem" }}
         />
       </DataTable>
