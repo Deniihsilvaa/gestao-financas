@@ -15,7 +15,9 @@ function CaixaBancos() {
   const [filtroBanco, setFiltroBanco] = useState(null);
   const [filtroDataInicio, setFiltroDataInicio] = useState(null);
   const [filtroDataFim, setFiltroDataFim] = useState(null);
-  const [bancosDisponiveis, setBancosDisponiveis] = useState([]);
+  const [bancosDisponiveis, setBancosDisponiveis] = useState([
+    "Selecione um banco",
+  ]);
   const [totais, setTotais] = useState({
     totalEntrada: 0,
     totalSaida: 0,
@@ -27,7 +29,7 @@ function CaixaBancos() {
   const fetchRegistros = useCallback(async () => {
     try {
       let query = supabase
-        .from("base_caixa")
+        .from("viewBaseCaixa")
         .select(
           `
           id,
@@ -36,8 +38,8 @@ function CaixaBancos() {
           situacao,
           tipo_registro,
           data_transacao,
-          tipo_categoria ( categoria ),
-          conta_bancaria ( banco ),
+          tipo_categoria ,
+          conta_bancaria,
           data_vencimento,
           observacao
         `
@@ -45,7 +47,7 @@ function CaixaBancos() {
         .order("data_transacao", { ascending: false });
 
       if (filtroBanco) {
-        query = query.eq("conta_bancaria.banco", filtroBanco);
+        query = query.eq("conta_bancaria", filtroBanco);
       }
       if (filtroDataInicio && filtroDataFim) {
         query = query
@@ -58,8 +60,8 @@ function CaixaBancos() {
 
       const registrosFormatados = data.map((registro) => ({
         ...registro,
-        tipo_categoria: registro.tipo_categoria?.categoria || "N/A",
-        conta_bancaria: registro.conta_bancaria?.banco || "N/A",
+        tipo_categoria: registro.tipo_categoria || "N/A",
+        conta_bancaria: registro.conta_bancaria || "N/A",
       }));
 
       setRegistros(registrosFormatados || []);
@@ -116,27 +118,24 @@ function CaixaBancos() {
   const handleDelete = async (id) => {
     try {
       // Aguarde o resultado da exclusão
-      const { error } = await supabase
-        .from("base_caixa")
-        .delete()
-        .eq("id", id);
-  
+      const { error } = await supabase.from("base_caixa").delete().eq("id", id);
+
       if (error) {
         alert("Erro ao excluir o registro. Tente novamente.");
         console.error("Erro ao excluir:", error);
         return;
       }
-  
+
       // Atualize os registros após a exclusão
       fetchRegistros();
-  
+
       alert("Registro excluído com sucesso!");
     } catch (err) {
       console.error("Erro inesperado:", err);
       alert("Ocorreu um erro inesperado. Tente novamente.");
     }
   };
-  
+
   const handleCloseModal = () => {
     setModalOpen(false);
   };
