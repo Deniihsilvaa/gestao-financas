@@ -5,7 +5,7 @@ import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
 import { Menu } from "primereact/menu";
 import { Button } from "primereact/button";
-import RowExpansionTemplate from "../Tabela/RowExpansionTemplate";
+import RowExpansionTemplate from "./RowExpansionTemplate";
 import SearchBar from "../contasApagar/components/SearchBar";
 import FormRegistro from "../contasApagar/components/Formregistro";
 import Modal from "../../Modal/Modal";

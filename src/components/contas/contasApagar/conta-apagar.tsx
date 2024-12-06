@@ -3,7 +3,7 @@ import Modal from "../../Modal/Modal";
 import FormRegistro from "./components/Formregistro";
 
 import { supabase } from "../../../services/supabaseClient";
-import TableRegistro from "../Tabela/TabelaUpdate";
+import TableRegistro from "../Tabela/TabelaFomsCaixa";
 
 import { RegistroProps } from "./types";
 
@@ -94,7 +94,7 @@ function ContasApagar() {
             placeholder="Pesquisar por nome ou categoria..."
             className="flex-1 px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
           />
-          
+
           <div className="flex gap-2">
             <button className="px-4 py-2 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600">
               Filtrar
