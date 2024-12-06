@@ -13,7 +13,7 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
   const [baseData, setBaseData] = useState<BaseDataProps[]>([]);
   const fetchBaseData = async () => {
     const { data, error } = await supabase
-      .from("base_caixa")
+      .from("viewBaseCaixa")
       .select("*")
       .eq("tipo_registro", "Entrada")
       .eq("situacao", "Pendente")
