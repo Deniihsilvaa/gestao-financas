@@ -134,20 +134,6 @@ const FormContasReceber: React.FC<FormContasReceberProps> = ({
     >
       <div>
         <label htmlFor="descricao" className="form-label">
-          Fornecedor *
-        </label>
-        <input
-          id="fornecedorRegistro"
-          type="text"
-          className="form-control"
-          placeholder="Descrição da entrada"
-          value={descricao}
-          onChange={(e) => setDescricao(e.target.value)}
-          style={getInputStyle("descricao")}
-        />
-      </div>
-      <div>
-        <label htmlFor="descricao" className="form-label">
           Descrição *
         </label>
         <input

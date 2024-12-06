@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "../../Modal/Modal";
 import { BaseDataProps, ContasReceber } from "./types";
-import TableRegistro from "../Tabela/TabelaFomsCaixa";
+import TabelaContasReceber from "../Tabela/TabelaFomsCaixa";
 import FormRegistro from "./Components/formContasReceber";
 import { supabase } from "../../../services/supabaseClient";
 
@@ -11,6 +11,7 @@ interface ContasReceberProps {
 function ContasResceber(): React.ReactElement<ContasReceberProps> {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [baseData, setBaseData] = useState<BaseDataProps[]>([]);
+
   const fetchBaseData = async () => {
     const { data, error } = await supabase
       .from("viewBaseCaixa")
@@ -22,6 +23,7 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
     if (error) {
       console.error("Erro ao buscar dados da base:", error);
     } else {
+      console.log("dados da base", data);
       setBaseData(data || []);
     }
   };
@@ -51,27 +53,29 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
       console.error("Erro ao salvar registro:", error);
     }
   };
-  const onDelete = async (id: number | undefined): Promise<void> => {
-    if (id === undefined) {
-      console.error("ID inválido ou indefinido.");
-      return;
-    }
-
+  const onDelete = async (id: BaseDataProps["id"]) => {
     try {
       const { error } = await supabase.from("base_caixa").delete().eq("id", id);
-
-      if (error) {
-        console.error("Erro ao excluir registro:", error);
-        throw error;
-      }
-
-      alert("Registro excluído com sucesso!");
-      fetchBaseData(); // Atualize a tabela após a exclusão
+      if (error) throw error;
+      fetchBaseData(); // Atualiza a tabela após a exclusão
     } catch (error) {
-      console.error("Erro ao excluir registro:", error);
+      console.error("Erro ao excluir o registro:", error);
     }
   };
+  const onEdit = async (id: BaseDataProps["id"]) => {
+    try {
+      const { error } = await supabase
+        .from("base_caixa") //tabela
+        .update({ situacao: "Concluido" }) //atualiza o registro
+        .eq("id", id); //busca o id
 
+      if (error) throw error;
+      alert("Registro pago com sucesso!");
+      fetchBaseData();
+    } catch (error) {
+      console.error("Erro ao pagar o registro:", error);
+    }
+  };
   return (
     <div className="flex h-screen rounded-2xl">
       {/* Conteúdo principal */}
@@ -112,7 +116,11 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
 
         {/* Tabela */}
         <div className="overflow-y-auto bg-white rounded shadow">
-          <TableRegistro registros={baseData} onDelete={onDelete} />
+          <TabelaContasReceber
+            registros={baseData}
+            onDelete={onDelete}
+            onEdit={onEdit}
+          />
         </div>
       </main>
 

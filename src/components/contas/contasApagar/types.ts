@@ -1,5 +1,3 @@
-import { Theme } from "@table-library/react-table-library/types/theme";
-
 export interface RegistroProps {
   id?: number;
   descricao: string;
@@ -19,6 +17,7 @@ export interface RegistroProps {
 export interface TableRegistroProps {
   registros: RegistroProps[]; // Registros recebidos como prop
   onDelete: (id: RegistroProps["id"]) => void; // Função para deletar um registro
+  onEdit: (id: RegistroProps["id"]) => void;
 }
 
 

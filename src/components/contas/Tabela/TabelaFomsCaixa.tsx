@@ -10,9 +10,11 @@ import SearchBar from "../contasApagar/components/SearchBar";
 import FormRegistro from "../contasApagar/components/Formregistro";
 import Modal from "../../Modal/Modal";
 import { RegistroProps, TableRegistroProps } from "../contasApagar/types";
+
 import { formatCurrency, formatDate } from "../../../utils/formatters";
-import '../Tabela/table.css'
-const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
+
+const TableRegistro = ({ registros, onDelete, onEdit }: TableRegistroProps) => {
+  
   const [expandedRows, setExpandedRows] = useState<
     DataTableExpandedRows | undefined
   >(undefined);
@@ -68,14 +70,19 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
   };
 
   // Pagar a conta
-  const handlePagar = (registro: RegistroProps) => {
+  const handlePagar = (id: RegistroProps["id"], descricao: RegistroProps["descricao"]) => {
+    onEdit(id);
+  
     toast.current?.show({
       severity: "success",
       summary: "Conta Paga",
-      detail: `A conta "${registro.descricao}" foi marcada como paga.`,
+      detail: `A conta "${descricao}" foi marcada como paga.`,
       life: 3000,
+      icon: "pi pi-check",
+      className: "custom-toast",
     });
   };
+  
 
   // Configurar menu de ações
   const ActionMenuTemplate = (rowData: RegistroProps) => {
@@ -95,7 +102,7 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
       {
         label: "Pagar",
         icon: "pi pi-check",
-        command: () => handlePagar(rowData),
+        command: () => handlePagar(rowData.id, rowData.descricao),
       },
     ];
 
@@ -152,7 +159,7 @@ const TableRegistro = ({ registros, onDelete }: TableRegistroProps) => {
         />
         <Column
           body={ActionMenuTemplate}
-          header=""
+          header="Ações"
           style={{ textAlign: "center", width: "8rem" }}
         />
       </DataTable>

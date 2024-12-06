@@ -65,6 +65,36 @@ function ContasApagar() {
       console.error("Erro ao excluir o registro:", error);
     }
   };
+  const onEdit = async (id: RegistroProps["id"]) => {
+    if (!id) {
+      console.error("ID inválido. Não é possível editar o registro.");
+      alert("Erro: ID inválido.");
+      return;
+    }
+
+    console.log("Editando registro ", id);
+
+    try {
+      const { error } = await supabase
+        .from("base_caixa") // tabela
+        .update({ situacao: "Concluido" }) // atualiza o registro
+        .eq("id", id); // busca o id
+
+      if (error) {
+        console.error("Erro ao pagar o registro:", error.message);
+        alert("Erro ao pagar o registro. Tente novamente.");
+        return;
+      }
+
+      alert("Registro pago com sucesso!");
+      fetchRegistros(); // Atualiza os registros
+    } catch (error) {
+      console.error("Erro ao pagar o registro:", error);
+      alert(
+        "Erro inesperado ao pagar o registro. Verifique o console para mais detalhes."
+      );
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen md:flex-row">
@@ -110,7 +140,11 @@ function ContasApagar() {
 
         {/* Tabela */}
         <div className="overflow-hidden bg-white rounded-lg shadow">
-          <TableRegistro registros={registros} onDelete={onDelete} />
+          <TableRegistro
+            registros={registros} // os registros que vêm do seu Supabase
+            onDelete={onDelete} // sua função para deletar registros
+            onEdit={onEdit} // aqui passamos a função corretamente
+          />
         </div>
       </main>
 
