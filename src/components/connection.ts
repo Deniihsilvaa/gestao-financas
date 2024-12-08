@@ -117,7 +117,22 @@ export const buscaDadosConsolidado = async () => {
 export async function fetchProdutos() {
   const { data, error } = await supabase.from('base_product').select('*');
   if (error) throw error;
+  
+  // Tratamento direto dos dados, se necessário
+  return (data || []).map(produto => ({
+    ...produto,
+    descricao: produto.descricao || "Descrição não disponível",
+    quantidade: produto.quantidade || 0,
+    price: produto.price || 0,
+    costPrice: produto.costPrice !== null ? produto.costPrice : 0,
+    familia: produto.familia || "Sem categoria",
+    categoria: produto.categoria || "Sem categoria",
+  }));
+}
+
+export async function CadastroProduto (produto:any){
+  const { data, error } = await supabase.from('base_product').insert(produto);
+  if (error) throw error;
   if (data) return data;
   return [];
-  
 }

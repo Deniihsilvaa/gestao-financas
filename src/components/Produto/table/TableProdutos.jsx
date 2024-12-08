@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import PropTypes from "prop-types";
-import {formatCurrency} from "../../../utils/formatters";
+import { formatCurrency } from "../../../utils/formatters";
 
 const TabelaProdutos = ({ produtos }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -20,12 +20,46 @@ const TabelaProdutos = ({ produtos }) => {
       responsiveLayout="scroll"
       tableStyle={{ minWidth: "50rem" }}
     >
-      <Column field="descricao" header="Descrição" sortable  />
+      <Column field="descricao" header="Descrição" sortable />
       <Column field="familia" header="Tipo" />
-      <Column field="quantidade" header="Quantidade" />
-      <Column field="price" header="Preço" body={(rowData) => formatCurrency(rowData.price)} />
-      <Column field="costPrice" header="Custo de Produto" body={(rowData) => formatCurrency(rowData.costPrice)} />
-
+      <Column
+        field="quantidade"
+        header="Quantidade"
+        body={(rowData) =>
+          !isNaN(rowData.quantidade) && rowData.quantidade !== null
+            ? rowData.quantidade === 0
+              ? "Sem estoque"
+              : rowData.quantidade
+            : "Quantidade não definida"
+        }
+      />
+      <Column
+        field="price"
+        header="Preço"
+        body={(rowData) =>
+          !isNaN(rowData.price) && rowData.price !== null
+            ? formatCurrency(rowData.price)
+            : "Preço não definido"
+        }
+      />
+      <Column
+        field="costPrice"
+        header="Custo de Produto"
+        body={(rowData) =>
+          !isNaN(rowData.costPrice) && rowData.costPrice !== null
+            ? formatCurrency(rowData.costPrice)
+            : "Custo não definido"
+        }
+      />
+      <Column
+        field="categoria"
+        header="Categoria"
+        style={{
+          maxWidth: "10rem",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      />
     </DataTable>
   );
 };
@@ -37,6 +71,8 @@ TabelaProdutos.propTypes = {
       descricao: PropTypes.string.isRequired,
       quantidade: PropTypes.number.isRequired,
       preco: PropTypes.number.isRequired,
+      costPrice: PropTypes.number.isRequired,
+      familia: PropTypes.string.isRequired,
     })
   ).isRequired,
 };
