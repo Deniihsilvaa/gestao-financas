@@ -2,7 +2,13 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./layout.css"; // Arquivo de estilos para animações
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean,
+  onClose: () => void,
+}) => {
   const navigate = useNavigate();
 
   const handleNavigation = (path) => {
@@ -104,6 +110,27 @@ const Sidebar = ({ isOpen, onClose }) => {
                     onClick={() => handleNavigation("/uploadandtable")}
                   >
                     Importa dados de Arquivo
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <div className="dropdown">
+              <button
+                className="buton dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Produtos
+              </button>
+              <ul className="dropdown-menu">
+                <li>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => handleNavigation("/produto")}
+                  >
+                    Produtos
                   </button>
                 </li>
               </ul>

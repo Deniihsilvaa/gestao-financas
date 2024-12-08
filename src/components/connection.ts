@@ -113,3 +113,11 @@ export const buscaDadosConsolidado = async () => {
     return null;
   }
 };
+
+export async function fetchProdutos() {
+  const { data, error } = await supabase.from('base_product').select('*');
+  if (error) throw error;
+  if (data) return data;
+  return [];
+  
+}
