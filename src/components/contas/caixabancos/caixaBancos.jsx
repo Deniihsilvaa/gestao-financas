@@ -23,6 +23,11 @@ function CaixaBancos() {
     totalSaida: 0,
     saldo: 0,
     totalConta: 0,
+
+    totalEntradaPendente: 0,
+    totalSaidaPendente: 0,
+    totalSaldoPendente: 0,
+    totalRegistroPendente: 0,
   });
 
   // Use useCallback to memorize fetchRegistros
@@ -96,20 +101,53 @@ function CaixaBancos() {
   };
 
   const calcularTotais = useCallback(() => {
-    const totalEntrada = registros.reduce(
+    const registrosFiltrado = registros.filter(
+      (reg) => reg.situacao === "Concluído"
+    );
+
+    const totalEntrada = registrosFiltrado.reduce(
       (acc, reg) =>
         reg.tipo_registro === "Entrada" ? acc + Number(reg.valor) : acc,
       0
     );
-    const totalSaida = registros.reduce(
+    const totalSaida = registrosFiltrado.reduce(
       (acc, reg) =>
         reg.tipo_registro === "Saída" ? acc + Number(reg.valor) : acc,
       0
     );
     const saldo = totalEntrada - totalSaida;
-    const totalConta = registros.length;
+    const totalConta = registrosFiltrado.length;
 
-    setTotais({ totalEntrada, totalSaida, saldo, totalConta });
+    const totalEntradaPendente = registros.reduce(
+      (acc, reg) =>
+        reg.situacao === "Pendente" && reg.tipo_registro === "Entrada"
+          ? acc + Number(reg.valor)
+          : acc,
+      0
+    );
+    const totalSaidaPendente = registros.reduce(
+      (acc, reg) =>
+        reg.situacao === "Pendente" && reg.tipo_registro === "Saída"
+          ? acc + Number(reg.valor)
+          : acc,
+      0
+    );
+    const totalSaldoPendente = totalEntradaPendente - totalSaidaPendente;
+    const totalRegistroPendente = registros.reduce(
+      (acc, reg) => (reg.situacao === "Pendente" ? acc + 1 : acc),
+      0
+    );
+
+    setTotais({
+      totalEntrada,
+      totalSaida,
+      saldo,
+      totalConta,
+      totalEntradaPendente,
+      totalSaidaPendente,
+      totalSaldoPendente,
+      totalRegistroPendente,
+    });
   }, [registros]); // Depende de registros
 
   const handleOpenModal = () => {
@@ -208,13 +246,17 @@ function CaixaBancos() {
       </Modal>
 
       {/* Sidebar */}
-      <aside className="w-full p-4 text-white bg-gray-800 md:w-1/4 lg:w-1/6">
+      <aside className="w-full p-4 text-white bg-gray-800 md:w-1/4 lg:w-1/6 fontesize-sm">
         <h2 className="mb-4 text-lg font-semibold">Resumo</h2>
         <ul className="mt-2 ml-4 space-y-2 list-disc">
           <li>Total de contas: {totais.totalConta}</li>
           <li>Total Entrada: R$ {totais.totalEntrada.toFixed(2)}</li>
           <li>Total Saída: R$ {totais.totalSaida.toFixed(2)}</li>
           <li>Saldo Total: R$ {totais.saldo.toFixed(2)}</li>
+
+          <li>Contas a Receber pendentes: {totais.totalEntradaPendente}</li>
+          <li>Contas a Paga pendentes: {totais.totalSaidaPendente}</li>
+          <li>Saldo pendentes: R$ {totais.totalSaldoPendente.toFixed(2)}</li>
         </ul>
       </aside>
     </div>
