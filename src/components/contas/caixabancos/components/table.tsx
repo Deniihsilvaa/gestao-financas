@@ -60,7 +60,7 @@ const TableCaixaBancos = ({ registros, onDelete }: { registros: RegistroProps[];
           </div>
         ))}
       </div>
-      <div className="p-3 mt-4 bg-gray-200 w-25 hover:cursor-pointer hover:bg-gray-300">
+      <div className="p-3 mt-4 bg-gray-200 rounded-lg w-25 hover:cursor-pointer hover:bg-gray-300">
         <Button
           label="Excluir"
           icon="pi pi-trash"

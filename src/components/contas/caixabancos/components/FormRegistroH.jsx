@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../../../services/supabaseClient";
 import PropTypes from "prop-types";
-
+import { AutoComplete } from "primereact/autocomplete";
 const FormRegistroH = ({ onClose, onSave }) => {
   const [descricao, setDescricao] = useState("");
   const [situacao] = useState("Concluído");
@@ -24,6 +24,8 @@ const FormRegistroH = ({ onClose, onSave }) => {
     tipo_categoria: false,
     tipo_registro: false,
   });
+  const [value, setValue] = useState("");
+  const [items, setItems] = useState([]);
 
   // Fetch bancárias
   const fetchBancos = async () => {
@@ -35,6 +37,9 @@ const FormRegistroH = ({ onClose, onSave }) => {
     } else {
       setBancos(data || []);
     }
+  };
+  const search = (event) => {
+    setItems([...Array(10).keys()].map((item) => event.query + "-" + item));
   };
 
   // Fetch categorias
@@ -131,6 +136,21 @@ const FormRegistroH = ({ onClose, onSave }) => {
           required
           style={getInputStyle("descricao")}
         />
+      </div>
+      <div className="field">
+        <div className="w-full">
+          <span className="p-float-label">Fornecedor * </span>
+          <AutoComplete
+            value={value}
+            suggestions={items}
+            completeMethod={search}
+            disabled
+            style={getInputStyle("fornecedor")}
+            placeholder="selecione um fornecedor"
+            className="w-full h-full border rounded"
+            onChange={(e) => setValue(e.value)}
+          />
+        </div>
       </div>
 
       <div className="field">
