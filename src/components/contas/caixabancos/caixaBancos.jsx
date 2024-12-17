@@ -82,11 +82,13 @@ function CaixaBancos() {
         .select("id, banco")
         .order("banco", { ascending: true });
       if (error) throw error;
+      
       setBancosDisponiveis(data || []);
     } catch (error) {
       console.error("Erro ao buscar bancos:", error);
     }
   };
+
 
   const handlerSubmit = async (data) => {
     try {
@@ -200,10 +202,13 @@ function CaixaBancos() {
           <Dropdown
             value={filtroBanco}
             onChange={(e) => setFiltroBanco(e.value)}
-            options={bancosDisponiveis.map((banco) => ({
-              label: banco.banco,
-              value: banco.banco,
-            }))}
+            options={[
+              { label: "Todos", value: "" }, // Aqui adicionamos a opção "Todos"
+              ...bancosDisponiveis.map((banco) => ({
+                label: banco.banco,
+                value: banco.banco,
+              })),
+            ]}
             placeholder="Selecione um banco"
             className="w-full md:w-52"
           />
