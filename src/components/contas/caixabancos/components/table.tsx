@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { Button } from "primereact/button";
 import { RegistroProps } from "../types";
 import { formatDate, formatCurrency } from "../../../../utils/formatters";
 import "primeicons/primeicons.css";
@@ -43,8 +44,8 @@ const TableCaixaBancos = ({ registros, onDelete }: { registros: RegistroProps[];
   // Template para a expansão de linhas
   const rowExpansionTemplate = (rowData: RegistroProps) => (
     <div className="p-3">
-      <h5>Detalhes do Registro</h5>
-      <div className="grid grid-cols-2 gap-4">
+      <h5 className="font-bold">Detalhes do Registro</h5>
+      <div className="grid grid-cols-2 gap-4 p-2 shadow-neutral-500 card">
         {[
           ["Descrição", rowData.descricao || "Sem descrição"],
           ["Valor", formatCurrency(rowData.valor)],
@@ -59,14 +60,13 @@ const TableCaixaBancos = ({ registros, onDelete }: { registros: RegistroProps[];
           </div>
         ))}
       </div>
-      <div className="mt-4">
-        <button
-          className="p-button p-component p-button-danger"
+      <div className="p-3 mt-4 bg-gray-200 w-25 hover:cursor-pointer hover:bg-gray-300">
+        <Button
+          label="Excluir"
+          icon="pi pi-trash"
+          className="p-button-danger"
           onClick={() => onDelete(rowData.id)}
-        >
-          <i className="pi pi-trash" style={{ marginRight: '0.5rem' }} />
-          Deletar
-        </button>
+        />
       </div>
     </div>
   );

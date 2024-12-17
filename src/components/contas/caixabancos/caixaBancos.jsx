@@ -194,7 +194,7 @@ function CaixaBancos() {
       {/* Main Content */}
       <main className="flex-1 p-6 bg-gray-100">
         <h2 className="mb-4 text-lg font-semibold text-gray-800">
-          Caixa Bancos
+          Carteira
         </h2>
 
         {/* Filter Section */}
