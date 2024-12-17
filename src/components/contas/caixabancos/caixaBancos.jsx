@@ -226,11 +226,6 @@ function CaixaBancos() {
             className="w-full md:w-52"
             dateFormat="dd/mm/yy"
           />
-          <Button
-            label="Filtrar"
-            onClick={fetchRegistros}
-            className="w-full md:w-auto p-button-primary"
-          />
           <button
             onClick={handleOpenModal}
             className="w-full px-4 py-2 text-sm font-semibold text-white bg-green-500 rounded-lg md:w-auto hover:bg-green-600"
