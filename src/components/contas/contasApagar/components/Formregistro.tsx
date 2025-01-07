@@ -42,6 +42,11 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
   const [observacao, setObservacao] = useState(
     registroParaEdicao?.observacao || ""
   );
+  const [tipo_pagamento, setTipoPagamento] = useState<string>(
+    registroParaEdicao?.tipo_pagamento || "Dinheiro"
+  );
+
+  const [paymentMethods, setPaymentMethods] = useState<any[]>([]);
 
   const [bancos, setBancos] = useState<{ id: number; banco: string }[]>([]);
   const [categorias, setCategorias] = useState<
@@ -57,8 +62,18 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
     data_registro: false,
     data_transacao: false,
   });
-
+    
   useEffect(() => {
+    const fetchPaymentMethods = async () => {
+      const { data, error } = await supabase
+        .from("payment_methods")
+        .select("id, paymentType, cardName, pixKey");
+      if (error) {
+        console.error("Erro ao buscar métodos de pagamento:", error);
+      } else {
+        setPaymentMethods(data || []);
+      }
+    };
     const fetchBancos = async () => {
       const { data, error } = await supabase
         .from("bank_account")
@@ -82,9 +97,12 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
       }
     };
 
+    fetchPaymentMethods();
     fetchBancos();
     fetchCategorias();
   }, []);
+
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -313,6 +331,70 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
             </option>
           ))}
         </select>
+        <div>
+        <label htmlFor="tipo_pagamento" className="form-label">
+          Tipo de Pagamento *
+        </label>
+        <select
+          id="tipo_pagamento"
+          className="form-select"
+          value={tipo_pagamento}
+          onChange={(e) => setTipoPagamento(e.target.value)}
+          style={getInputStyle("tipo_pagamento")}
+        >
+          <option value="3">Dinheiro</option>
+          <option value="2">Cartão</option>
+          <option value="4">Pix</option>
+        </select>
+      </div>
+
+      {tipo_pagamento === "Cartão" && (
+        <div>
+          <label htmlFor="cartao" className="form-label">
+            Nome do Cartão *
+          </label>
+          <select
+            id="cartao"
+            className="form-select"
+            value={conta_bancaria ?? ""}
+            onChange={(e) => setBancoId(e.target.value)}
+            style={getInputStyle("conta_bancaria")}
+          >
+            <option value="">Selecione o Cartão</option>
+            {paymentMethods
+              .filter((method) => method.paymentType === "Cartão")
+              .map((method) => (
+                <option key={method.id} value={method.id}>
+                  {method.cardName}
+                </option>
+              ))}
+          </select>
+        </div>
+      )}
+
+      {tipo_pagamento === "Pix" && (
+        <div>
+          <label htmlFor="pix" className="form-label">
+            Chave Pix *
+          </label>
+          <select
+            id="pix"
+            className="form-select"
+            value={conta_bancaria ?? ""}
+            onChange={(e) => setBancoId(e.target.value)}
+            style={getInputStyle("conta_bancaria")}
+          >
+            <option value="">Selecione a Chave Pix</option>
+            {paymentMethods
+              .filter((method) => method.paymentType === "Pix")
+              .map((method) => (
+                <option key={method.id} value={method.id}>
+                  {method.pixKey}
+                </option>
+              ))}
+          </select>
+        </div>
+      )}
       </div>
 
       <div style={{ gridColumn: "span 2" }}>

@@ -49,6 +49,7 @@ export interface ContaPropsEdit {
   observacao: string;
   user_id: string;
   tipo_registro: string;
+  tipo_pagamento?: string;
 }
 export interface TemplateRegistrosProps {
   registro: RegistroProps | null; // Aceita RegistroProps ou null
