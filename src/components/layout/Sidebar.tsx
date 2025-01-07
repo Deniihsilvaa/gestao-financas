@@ -11,7 +11,7 @@ const Sidebar = ({
 }) => {
   const navigate = useNavigate();
 
-  const handleNavigation = (path) => {
+  const handleNavigation = (path:any) => {
     navigate(path);
     onClose();
   };

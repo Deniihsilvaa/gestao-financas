@@ -1,10 +1,14 @@
 import React from 'react';
+import {Button} from 'primereact/button';
 import { useNavigate } from 'react-router-dom'; // Para navegação entre rotas
 import { supabase } from '../../services/supabaseClient'; // Configuração do Supabase
 import './layout.css'; // Estilos para o layout
-import IconeUser from '../../img/iconeuser.svg'
-import IconeLogout from '../../img//iconelogout.svg'
-const Header = ({ toggleSidebar, isSidebarOpen }) => {
+
+interface HeaderProps {
+  toggleSidebar: () => void;
+  isSidebarOpen: boolean;
+}
+const Header = ({ toggleSidebar, isSidebarOpen }: HeaderProps) => {
   const navigate = useNavigate(); // Hook para navegação entre rotas
 
   // Função para lidar com o logout
@@ -22,16 +26,16 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
   };
 
   // Função para navegar para uma rota específica
-  const handleNavigation = (path) => {
+  const handleNavigation = (path:any) => {
     navigate(path);
   };
 
   return (
-    <header className="bg-blue-600 text-white aba">
+    <header className="text-white bg-blue-600 aba">
       <div className="ma">
       <nav aria-label="Global" className="flex items-center justify-between p-2">
 
-        <div className="border-x-2 border-white">
+        <div className="border-white border-x-2">
         <button
           onClick={toggleSidebar}
           className="text-white focus:outline-none"
@@ -56,23 +60,21 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
 
         {/* Botão de Logout à direita */}
         <div className="flex justify-end">
-    <div className="flex items-center">
+        <div className="flex items-center">
+      <Button
+        icon="pi pi-cog"
+        className="bttUser p-button-text p-button-rounded p-button-plain"
+        onClick={() => handleNavigation('/config')}
+        aria-label="Configurações"
+      />
 
-    <button
-            onClick={() => handleNavigation('/config')}
-            className="bttUser"
-          >
-            <img src={IconeUser} alt="IconeUser" />
-          </button>
-
-          <button
-          className="bttUser"
-            onClick={handleLogout}
-          >
-            <img src={IconeLogout} alt="IconeLogout" />
-            
-          </button>
-      </div>
+      <Button
+        icon="pi pi-sign-out"
+        className="bttUser p-button-text p-button-rounded p-button-plain"
+        onClick={handleLogout}
+        aria-label="Sair"
+      />
+    </div>
 
         </div>
       </nav>
