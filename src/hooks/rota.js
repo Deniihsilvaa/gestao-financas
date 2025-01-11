@@ -14,6 +14,7 @@ import ContasApagar from "../components/contas/contasApagar/conta-apagar";
 import Contas from "../components/contas/contas";
 import ContasResceber from "../components/contas/contasReceber/contasAReceber";
 import UploadAndTable from "../components/importDadosExterno/UploadAndTable";
+import AnaliseMovimentacao from "../components/contas/AnaliseMovimentacao/AnaliseMovimentacao";
 
 import HomeProduto from "../components/Produto/HomeProduto";
 
@@ -42,6 +43,7 @@ const Rota = () => {
           <Route path="contasresceber" element={<ContasResceber />} />
           <Route path="uploadandtable" element={<UploadAndTable />} />
           <Route path="produto" element={<HomeProduto />} />
+          <Route path="analisemovimentacao" element={<AnaliseMovimentacao />} />
           <Route path="*" element={<Home />} />
         </Route>
       </Routes>

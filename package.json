@@ -22,6 +22,7 @@
     "formik": "^2.4.6",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
+    "lucide-react": "^0.471.0",
     "primeicons": "^7.0.0",
     "primereact": "^9.6.4",
     "react": "^18.3.1",

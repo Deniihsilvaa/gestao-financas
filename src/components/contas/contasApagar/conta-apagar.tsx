@@ -45,13 +45,12 @@ function ContasApagar() {
   // Função de salvar e atualizar registros
   const handleSave = async (novoRegistro: RegistroProps) => {
     alert("Registro salvo com sucesso!");
-    // Lógica para salvar ou editar o registro (no caso de edição, você pode atualizar na tabela)
     const { error } = await supabase.from("base_caixa").upsert([novoRegistro]);
 
     if (error) {
       console.error("Erro ao salvar registro:", error);
     } else {
-      fetchRegistros(); // Atualiza a tabela após salvar
+      fetchRegistros(); 
       alert("Registro salvo com sucesso!");
     }
     handleCloseModal(); // Fecha o modal após salvar

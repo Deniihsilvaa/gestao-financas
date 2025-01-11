@@ -8,6 +8,7 @@ export interface RegistroProps {
   conta_bancaria: string;
   data_transacao: string;
   data_vencimento: string;
+  tipo_pagamento: string;
 
   data_registro: string;
   user_id: string;
@@ -34,6 +35,7 @@ export interface ContaProps {
   observacao: string;
   user_id: string;
   tipo_registro: string;
+  tipo_pagamento: string;
 }
 
 export interface ContaPropsEdit {
@@ -49,7 +51,7 @@ export interface ContaPropsEdit {
   observacao: string;
   user_id: string;
   tipo_registro: string;
-  tipo_pagamento?: string;
+  tipo_pagamento: string;
 }
 export interface TemplateRegistrosProps {
   registro: RegistroProps | null; // Aceita RegistroProps ou null

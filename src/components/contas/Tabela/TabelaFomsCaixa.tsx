@@ -44,6 +44,7 @@ const TableRegistro = ({ registros, onDelete, onEdit }: TableRegistroProps) => {
 
   // Salvar ou editar o registro
   const handleSave = (novoRegistro: RegistroProps) => {
+    
     toast.current?.show({
       severity: registroSelecionado ? "success" : "info",
       summary: registroSelecionado

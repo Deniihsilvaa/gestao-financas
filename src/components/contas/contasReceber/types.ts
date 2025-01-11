@@ -8,6 +8,7 @@ export interface BaseDataProps {
     situacao: string;
     observacao: string;
     tipo_categoria: string;
+    tipo_pagamento: string;
     conta_bancaria: string;
     data_transacao: string;
     data_vencimento: string;

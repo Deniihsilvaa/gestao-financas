@@ -23,7 +23,6 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
                     {children}
                 </div>
                 <div className="modal-footer">
-                <i className="bi bi-database-fill"></i>
                 </div>
             </div>
         </div>

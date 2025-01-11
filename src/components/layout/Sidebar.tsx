@@ -115,6 +115,7 @@ const Sidebar = ({
               </ul>
             </div>
 
+
             <div className="dropdown">
               <button
                 className="buton dropdown-toggle"
@@ -131,6 +132,27 @@ const Sidebar = ({
                     onClick={() => handleNavigation("/produto")}
                   >
                     Produtos
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <div className="dropdown">
+              <button
+                className="buton dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                DEV
+              </button>
+              <ul className="dropdown-menu">
+                <li>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => handleNavigation("/analisemovimentacao")}
+                  >
+                    DEV 1
                   </button>
                 </li>
               </ul>
