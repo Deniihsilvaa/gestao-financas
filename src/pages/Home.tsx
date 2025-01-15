@@ -6,80 +6,135 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Card } from 'primereact/card';
 import { Tag } from 'primereact/tag';
-import { useState, useEffect } from 'react';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { Toast } from 'primereact/toast';
+import { useState, useEffect, useRef } from 'react';
 import { ChartData, ChartOptions } from 'chart.js';
 
+import DashboardHome from '../pages/DashBoardHome/types';
+
+interface Transaction {
+  id: string;
+  type: 'Entrada' | 'saída';
+  category: string;
+  paymentMethod: string;
+  date: string;
+  amount: number;
+  previousBalance: number;
+  currentBalance: number;
+}
+
+interface FinancialSummary {
+  totalBalance: number;
+  totalIncome: number;
+  totalExpenses: number;
+  monthlyChange: string;
+}
+
 export default function Home() {
+  const [dadosViewBaseCaixa, setDadosViewBaseCaixa] = useState<Transaction[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [summary, setSummary] = useState<FinancialSummary>({
+    totalBalance: 0,
+    totalIncome: 0,
+    totalExpenses: 0,
+    monthlyChange: '0%'
+  });
   const [chartData, setChartData] = useState<ChartData>({
     labels: [],
     datasets: []
   });
   const [chartOptions, setChartOptions] = useState<ChartOptions>({});
+  const toast = useRef<Toast>(null);
 
-  const mockTransactions = [
-    {
-      id: 1,
-      type: 'entrada',
-      category: 'Vendas',
-      paymentMethod: 'Cartão de Crédito',
-      date: '2024-03-15',
-      amount: 2500.00,
-      previousBalance: 5000.00,
-      currentBalance: 7500.00
-    },
-    {
-      id: 2,
-      type: 'saída',
-      category: 'Fornecedores',
-      paymentMethod: 'Transferência',
-      date: '2024-03-14',
-      amount: -1200.00,
-      previousBalance: 6200.00,
-      currentBalance: 5000.00
-    },
-    {
-      id: 3,
-      type: 'entrada',
-      category: 'Serviços',
-      paymentMethod: 'PIX',
-      date: '2024-03-13',
-      amount: 1800.00,
-      previousBalance: 4400.00,
-      currentBalance: 6200.00
-    },
-    {
-      id: 4,
-      type: 'saída',
-      category: 'Despesas',
-      paymentMethod: 'Débito',
-      date: '2024-03-12',
-      amount: -600.00,
-      previousBalance: 5000.00,
-      currentBalance: 4400.00
-    }
-  ];
+  const calculateSummary = (transactions: Transaction[]): FinancialSummary => {
+    const currentMonth = new Date().getMonth();
+    const lastMonth = currentMonth - 1;
+    
+    const result = transactions.reduce((acc, transaction) => {
+      const transactionDate = new Date(transaction.date);
+      const amount = transaction.amount;
+      
+      if (transaction.type === 'Entrada') {
+        acc.totalIncome += amount;
+        if (transactionDate.getMonth() === currentMonth) acc.currentMonthIncome += amount;
+        if (transactionDate.getMonth() === lastMonth) acc.lastMonthIncome += amount;
+      } else {
+        acc.totalExpenses += amount;
+        if (transactionDate.getMonth() === currentMonth) acc.currentMonthExpenses += amount;
+        if (transactionDate.getMonth() === lastMonth) acc.lastMonthExpenses += amount;
+      }
+      return acc;
+    }, {
+      totalIncome: 0,
+      totalExpenses: 0,
+      currentMonthIncome: 0,
+      currentMonthExpenses: 0,
+      lastMonthIncome: 0,
+      lastMonthExpenses: 0
+    });
 
-  const summaryData = {
-    totalBalance: 7500.00,
-    totalIncome: 4300.00,
-    totalExpenses: 1800.00,
-    monthlyChange: '+15%'
+    const totalBalance = result.totalIncome - result.totalExpenses;
+    const currentMonthTotal = result.currentMonthIncome - result.currentMonthExpenses;
+    const lastMonthTotal = result.lastMonthIncome - result.lastMonthExpenses;
+    
+    const monthlyChange = lastMonthTotal !== 0 
+      ? ((currentMonthTotal - lastMonthTotal) / Math.abs(lastMonthTotal) * 100).toFixed(1)
+      : '0';
+
+    return {
+      totalBalance,
+      totalIncome: result.totalIncome,
+      totalExpenses: result.totalExpenses,
+      monthlyChange: `${monthlyChange}%`
+    };
   };
 
-  useEffect(() => {
+  const carregarDados = async () => {
+    try {
+      setIsLoading(true);
+      const response = await DashboardHome();
+      console.log(' Retorno:',response[0]);
+      const transactions = response[0].map((transaction: any) => ({
+        ...transaction,
+        previousBalance: 0, 
+        currentBalance: 0,  
+      }));
+      
+      setDadosViewBaseCaixa(transactions);
+      const calculatedSummary = calculateSummary(transactions);
+      setSummary(calculatedSummary);
+      
+      updateChartData(transactions);
+    } catch (error) {
+      console.error('Erro ao carregar os dados:', error);
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Não foi possível carregar os dados do dashboard',
+        life: 3000
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateChartData = (transactions: Transaction[]) => {
+    const monthlyData = processMonthlyData(transactions);
+    
     const data: ChartData = {
-      labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+      labels: monthlyData.labels,
       datasets: [
         {
           label: 'Entradas',
-          data: [3500, 4200, 4800, 4300, 5200, 5800],
+          data: monthlyData.incomes,
           backgroundColor: '#22c55e',
           borderColor: '#22c55e',
           tension: 0.4
         },
         {
           label: 'Saídas',
-          data: [2100, 2400, 2900, 2800, 3100, 3400],
+          data: monthlyData.expenses,
           backgroundColor: '#ef4444',
           borderColor: '#ef4444',
           tension: 0.4
@@ -95,6 +150,10 @@ export default function Home() {
           labels: {
             color: '#475569'
           }
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false
         }
       },
       scales: {
@@ -108,17 +167,60 @@ export default function Home() {
         },
         y: {
           ticks: {
-            color: '#475569'
+            color: '#475569',
+            callback: (value) => formatCurrency(Number(value))
           },
           grid: {
             color: '#e2e8f0'
           }
         }
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index'
       }
     };
 
     setChartData(data);
     setChartOptions(options);
+  };
+
+  const processMonthlyData = (transactions: Transaction[]) => {
+    const months: { [key: string]: { incomes: number; expenses: number } } = {};
+    
+    transactions.forEach(transaction => {
+      const date = new Date(transaction.date);
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      
+      if (!months[monthKey]) {
+        months[monthKey] = { incomes: 0, expenses: 0 };
+      }
+      
+      if (transaction.type === 'Entrada') {
+        months[monthKey].incomes += transaction.amount;
+      } else {
+        months[monthKey].expenses += transaction.amount;
+      }
+    });
+
+    const sortedMonths = Object.keys(months).sort();
+    
+    return {
+      labels: sortedMonths.map(month => {
+        const [year, monthNum] = month.split('-');
+        return `${monthNum}/${year}`;
+      }),
+      incomes: sortedMonths.map(month => months[month].incomes),
+      expenses: sortedMonths.map(month => months[month].expenses)
+    };
+  };
+
+  useEffect(() => {
+    carregarDados();
+    
+    // Atualizar dados a cada 5 minutos
+    const interval = setInterval(carregarDados, 5 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const formatCurrency = (value: number) => {
@@ -128,26 +230,39 @@ export default function Home() {
     }).format(value);
   };
 
-  const typeTemplate = (rowData: any) => {
+  const typeTemplate = (rowData: Transaction) => {
     return (
       <Tag
-        value={rowData.type === 'entrada' ? 'Entrada' : 'Saída'}
-        severity={rowData.type === 'entrada' ? 'success' : 'danger'}
+        value={rowData.type === 'Entrada' ? 'Entrada' : 'Saída'}
+        severity={rowData.type === 'Entrada' ? 'success' : 'danger'}
       />
     );
   };
 
-  const amountTemplate = (rowData: any) => {
+  const amountTemplate = (rowData: Transaction) => {
     return (
-      <span className={rowData.amount >= 0 ? 'text-green-500' : 'text-red-500'}>
+      <span className={rowData.type === 'Entrada' ? 'text-green-500' : 'text-red-500'}>
         {formatCurrency(rowData.amount)}
       </span>
     );
   };
 
+  const dateTemplate = (rowData: Transaction) => {
+    return new Date(rowData.date).toLocaleDateString('pt-BR');
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <ProgressSpinner />
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Home Financeiro</h1>
+      <Toast ref={toast} />
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard Financeiro</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <motion.div
@@ -156,11 +271,11 @@ export default function Home() {
           className="col-span-1"
         >
           <Card className="bg-white shadow-lg">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-2 rounded">
               <div>
-                <p className="text-sm text-gray-600">Saldo Total</p>
+                <p className="text-sm text-gray-600 ">Saldo Total</p>
                 <p className="text-2xl font-bold text-gray-800">
-                  {formatCurrency(summaryData.totalBalance)}
+                  {formatCurrency(summary.totalBalance)}
                 </p>
               </div>
               <Wallet className="w-8 h-8 text-blue-500" />
@@ -175,11 +290,11 @@ export default function Home() {
           className="col-span-1"
         >
           <Card className="bg-white shadow-lg">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-2 rounded">
               <div>
                 <p className="text-sm text-gray-600">Total Entradas</p>
                 <p className="text-2xl font-bold text-green-500">
-                  {formatCurrency(summaryData.totalIncome)}
+                  {formatCurrency(summary.totalIncome)}
                 </p>
               </div>
               <TrendingUp className="w-8 h-8 text-green-500" />
@@ -194,11 +309,11 @@ export default function Home() {
           className="col-span-1"
         >
           <Card className="bg-white shadow-lg">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-2 rounded">
               <div>
                 <p className="text-sm text-gray-600">Total Saídas</p>
                 <p className="text-2xl font-bold text-red-500">
-                  {formatCurrency(summaryData.totalExpenses)}
+                  {formatCurrency(summary.totalExpenses)}
                 </p>
               </div>
               <TrendingDown className="w-8 h-8 text-red-500" />
@@ -213,11 +328,17 @@ export default function Home() {
           className="col-span-1"
         >
           <Card className="bg-white shadow-lg">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-2 rounded">
               <div>
                 <p className="text-sm text-gray-600">Variação Mensal</p>
-                <p className="text-2xl font-bold text-blue-500">
-                  {summaryData.monthlyChange}
+                <p
+                  className={`text-2xl font-bold ${
+                    parseFloat(summary.monthlyChange) >= 0
+                      ? 'text-green-500'
+                      : 'text-red-500'
+                  }`}
+                >
+                  {summary.monthlyChange}
                 </p>
               </div>
               <BarChart3 className="w-8 h-8 text-blue-500" />
@@ -232,28 +353,36 @@ export default function Home() {
         transition={{ delay: 0.4 }}
         className="grid grid-cols-1 gap-4"
       >
-        <Card className="bg-white shadow-lg col-span-2 p-4 ">
+        <Card className="bg-white shadow-lg col-span-2 p-4">
           <h2 className="text-xl font-semibold mb-4">Fluxo de Caixa</h2>
-          <div className="w-full max-h-64">
-            <Chart type="line" data={chartData} options={chartOptions} className="max-h-64" />
+          <div className="w-full">
+            <Chart type="line" data={chartData} options={chartOptions} />
           </div>
         </Card>
-        <p></p>
-        <Card className="bg-white shadow-lg col-span-2 p-4 overflow-y-auto">
+
+        <Card className="bg-white shadow-lg col-span-2 p-4">
           <h2 className="text-xl font-semibold mb-4">Últimas Transações</h2>
           <DataTable
-            value={mockTransactions}
+            value={dadosViewBaseCaixa}
             paginator
-            rows={5}
-            rowsPerPageOptions={[5, 10, 25]}
+            rows={10}
+            rowsPerPageOptions={[5, 10, 25, 50]}
             className="p-datatable-sm"
             stripedRows
+            emptyMessage="Nenhuma transação encontrada"
+            sortField="date"
+            sortOrder={-1}
+            responsiveLayout="stack"
           >
-            <Column field="type" header="Tipo" body={typeTemplate} />
-            <Column field="category" header="Categoria" />
-            <Column field="paymentMethod" header="Forma de Pagamento" />
-            <Column field="date" header="Data" />
-            <Column field="amount" header="Valor" body={amountTemplate} />
+            <Column field="type" header="Tipo" body={typeTemplate} sortable />
+            <Column field="category" header="Categoria" sortable />
+            <Column
+              field="paymentMethod"
+              header="Forma de Pagamento"
+              sortable
+            />
+            <Column field="date" header="Data" body={dateTemplate} sortable />
+            <Column field="amount" header="Valor" body={amountTemplate} sortable />
             <Column
               field="currentBalance"
               header="Saldo"
