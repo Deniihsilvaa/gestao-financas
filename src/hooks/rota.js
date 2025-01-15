@@ -1,5 +1,6 @@
 // src/hooks/rota.js
 import React from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "../ProtectedRoute"; // Importando o ProtectedRoute
 import Login from "../components/login/Login";
@@ -18,35 +19,85 @@ import AnaliseMovimentacao from "../components/contas/AnaliseMovimentacao/Analis
 
 import HomeProduto from "../components/Produto/HomeProduto";
 
+const variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+  exit: { opacity: 0 },
+};
+
 const Rota = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Layout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Home />} />
-          <Route path="home" element={<Home />} />
-          <Route path="redefinir-senha" element={<LoginRedefinirSenha />} />
-          <Route path="about" element={<About />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="config" element={<Config />} />
-          <Route path="caixabancos" element={<CaixaBancos />} />
-          <Route path="contas" element={<Contas />} />
-          <Route path="contasapagar" element={<ContasApagar />} />
-          <Route path="contasresceber" element={<ContasResceber />} />
-          <Route path="uploadandtable" element={<UploadAndTable />} />
-          <Route path="produto" element={<HomeProduto />} />
-          <Route path="analisemovimentacao" element={<AnaliseMovimentacao />} />
-          <Route path="*" element={<Home />} />
-        </Route>
-      </Routes>
+      <AnimatePresence>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Layout />
+              </ProtectedRoute>
+            }
+          >
+            <Route
+              index
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><Home /></motion.div>}
+            />
+            <Route
+              path="home"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><Home /></motion.div>}
+            />
+            <Route
+              path="redefinir-senha"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><LoginRedefinirSenha /></motion.div>}
+            />
+            <Route
+              path="about"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><About /></motion.div>}
+            />
+            <Route
+              path="contact"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><Contact /></motion.div>}
+            />
+            <Route
+              path="config"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><Config /></motion.div>}
+            />
+            <Route
+              path="caixabancos"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><CaixaBancos /></motion.div>}
+            />
+            <Route
+              path="contas"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><Contas /></motion.div>}
+            />
+            <Route
+              path="contasapagar"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><ContasApagar /></motion.div>}
+            />
+            <Route
+              path="contasresceber"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><ContasResceber /></motion.div>}
+            />
+            <Route
+              path="uploadandtable"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><UploadAndTable /></motion.div>}
+            />
+            <Route
+              path="produto"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><HomeProduto /></motion.div>}
+            />
+            <Route
+              path="analisemovimentacao"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><AnaliseMovimentacao /></motion.div>}
+            />
+            <Route
+              path="*"
+              element={<motion.div variants={variants} initial="hidden" animate="visible" exit="exit"><Home /></motion.div>}
+            />
+          </Route>
+        </Routes>
+      </AnimatePresence>
     </Router>
   );
 };
