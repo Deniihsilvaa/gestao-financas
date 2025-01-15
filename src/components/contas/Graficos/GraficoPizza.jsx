@@ -51,9 +51,11 @@ function GraficoPizza({ data }) {
   };
 
   return (
-    <div className="content size-auto">
-      <div className="header">Total Despesas Mes: R$ {formatCurrency(total)}</div>
+    <div className="content ">
+      <div className="rounded-lg shadow-lg p-3 flex flex-col">
+      <div className="header">Despesas Mensal: R$ {formatCurrency(total)}</div>
       <Chart type="doughnut" data={pieData} />
+      </div>
     </div>
   );
 }

@@ -5,9 +5,8 @@ import { Dropdown } from 'primereact/dropdown';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { PencilLine, Users } from 'lucide-react';
 
-import { calcularTotais, calcularPorBanco, calcularPorDinheiro, calcularTotalPorMetodo, formatarMoeda } from './AnaliseFunctions';
+import { calcularTotais, calcularPorBanco, calcularPorDinheiro, formatarMoeda } from './AnaliseFunctions';
 import { buscarBancos, buscarDados } from './AnaliseService';
 import { Movement, Bank, Nullable } from './AnaliseTypes';
 
@@ -19,6 +18,7 @@ function AnaliseMovimentacao() {
   const [movements, setMovements] = useState<Movement[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [selectedPaymentType, setSelectedPaymentType] = useState<Nullable<string>>(null);
 
   useEffect(() => {
     async function fetchAllData() {
@@ -26,11 +26,9 @@ function AnaliseMovimentacao() {
       try {
         const [bankData, movementData] = await Promise.all([buscarBancos(), buscarDados()]);
 
-        const listBanco = bankData.map((item: any) => ({
-          value: item.id,    // Valor associado ao item
-          label: item.banco, // Texto que será exibido no Dropdown
-        }));
-        setBanks(listBanco);
+        setBanks(bankData.map((item: any) => ({
+          value: item.id, label: item.banco
+        })));
 
         const transformedData = movementData.map((item: any) => ({
           description: item.descricao,
@@ -44,9 +42,6 @@ function AnaliseMovimentacao() {
           supplier: item.fornecedores || 'Não informado',
         }));
         setMovements(transformedData);
-
-
-        
       } catch (error) {
         setErrorMessage('Erro ao buscar dados. Tente novamente mais tarde.');
         console.error('Erro ao buscar dados:', error);
@@ -57,40 +52,39 @@ function AnaliseMovimentacao() {
     fetchAllData();
   }, []);
 
+  const paymentTypes = [
+    { value: 'Dinheiro', label: 'Dinheiro' },
+    { value: 'Cartão', label: 'Cartão' },
+    { value: 'Pix', label: 'Pix' },
+    { value: 'Transferência', label: 'Transferência' }
+  ];
+const filterMovements = (data: Movement[]) => {
+  return data.filter(movement => {
+    const dateInRange = (!startDate || !endDate) ? true : 
+      new Date(movement.date) >= startDate && new Date(movement.date) <= endDate;
+      
+    const bankMatches = !selectedBank ? true : 
+      movement.bank === selectedBank.label;
+
+    const paymentTypeMatches = !selectedPaymentType ? true : 
+      movement.paymentMethod === selectedPaymentType;
+
+
+    return dateInRange && bankMatches && paymentTypeMatches;
+  });
+};
   const totalEntrada = calcularTotais(movements, 'Entrada');
   const totalSaida = calcularTotais(movements, 'Saída');
   const totalCaixa = calcularPorBanco(movements, 'Caixa');
   const totalNubank = calcularPorBanco(movements, 'Nubank');
   const totalDinheiro = calcularPorDinheiro(movements, 'Dinheiro');
 
-  const editarMovimento = (rowData: Movement) => {
-    console.log('Editar movimento:', rowData);
-    // Adicione lógica de edição aqui
+  const handleClearFilters = () => {
+    setStartDate(null);
+    setEndDate(null);
+    setSelectedBank(null);
+    setSelectedPaymentType(null);
   };
-
-  const visualizarMovimento = (rowData: Movement) => {
-    console.log('Visualizar movimento:', rowData);
-    // Adicione lógica de visualização aqui
-  };
-
-  const actionTemplate = (rowData: Movement) => (
-    <div className="flex gap-2">
-      <Button
-        icon={<PencilLine className="w-4 h-4" />}
-        rounded
-        text
-        severity="secondary"
-        onClick={() => editarMovimento(rowData)}
-      />
-      <Button
-        icon={<Users className="w-4 h-4" />}
-        rounded
-        text
-        severity="secondary"
-        onClick={() => visualizarMovimento(rowData)}
-      />
-    </div>
-  );
 
   if (isLoading) {
     return <div className="mt-8 text-center">Carregando dados...</div>;
@@ -116,8 +110,6 @@ function AnaliseMovimentacao() {
               className="w-full"
               dateFormat="dd/mm/yy"
               showIcon
-              showTime
-              hourFormat="24"
             />
             <Calendar
               value={endDate}
@@ -125,8 +117,6 @@ function AnaliseMovimentacao() {
               className="w-full mt-4"
               dateFormat="dd/mm/yy"
               showIcon
-              showTime
-              hourFormat="24"
             />
             <Dropdown
               value={selectedBank}
@@ -134,7 +124,16 @@ function AnaliseMovimentacao() {
               onChange={(e) => setSelectedBank(e.value)}
               placeholder="Selecione"
               className="w-full mt-4"
+             disabled
             />
+            <Dropdown
+              value={selectedPaymentType}
+              options={paymentTypes}
+              onChange={(e) => setSelectedPaymentType(e.value)}
+              placeholder="Selecione tipo de pagamento"
+              className="w-full mt-4"
+            />
+            <Button label="Limpar Filtros" onClick={handleClearFilters} className="mt-4" />
           </div>
 
           <div className="p-6 bg-white rounded-lg shadow">
@@ -154,7 +153,7 @@ function AnaliseMovimentacao() {
           </div>
         </div>
 
-        <DataTable value={movements} stripedRows>
+        <DataTable value={filterMovements(movements)} stripedRows>
           <Column field="description" header="Descrição" />
           <Column field="date" header="Data" />
           <Column field="situacao" header="Tipo de Pagamento" />
@@ -163,7 +162,6 @@ function AnaliseMovimentacao() {
           <Column field="bank" header="Banco" />
           <Column field="value" header="Valor" />
           <Column field="supplier" header="Fornecedor" />
-          <Column body={actionTemplate} header="Ações" />
         </DataTable>
       </div>
     </div>

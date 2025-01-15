@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { BarChart3, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
 import { Chart } from 'primereact/chart';
@@ -90,11 +90,10 @@ export default function Home() {
     };
   };
 
-  const carregarDados = async () => {
+  const carregarDados = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await DashboardHome();
-      console.log(' Retorno:',response[0]);
       const transactions = response[0].map((transaction: any) => ({
         ...transaction,
         previousBalance: 0, 
@@ -117,7 +116,7 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [calculateSummary]);
 
   const updateChartData = (transactions: Transaction[]) => {
     const monthlyData = processMonthlyData(transactions);
@@ -217,11 +216,10 @@ export default function Home() {
 
   useEffect(() => {
     carregarDados();
-    
     // Atualizar dados a cada 5 minutos
     const interval = setInterval(carregarDados, 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [carregarDados]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -262,7 +260,8 @@ export default function Home() {
   return (
     <div className="p-6 space-y-6">
       <Toast ref={toast} />
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard Financeiro</h1>
+
+      <h1 className="text-2xl font-bold text-white mb-6">Dashboard Financeiro</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <motion.div

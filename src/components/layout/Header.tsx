@@ -31,53 +31,49 @@ const Header = ({ toggleSidebar, isSidebarOpen }: HeaderProps) => {
   };
 
   return (
-    <header className="text-white bg-blue-600 aba">
-      <div className="ma">
-      <nav aria-label="Global" className="flex items-center justify-between p-2">
-
-        <div className="border-white border-x-2">
-        <button
-          onClick={toggleSidebar}
-          className="text-white focus:outline-none"
-          aria-label="Toggle Sidebar"
-        >
-          <i
-            className={`bi ${isSidebarOpen ? 'bi-x' : 'bi-list'}`}
-            style={{ fontSize: '1.5rem' }}
-          ></i>
-        </button>
+    <header className="bg-gray-100 border-b border-gray-300 aba">
+      <div className="flex items-center justify-between p-4 ma">
+        <div className="flex items-center space-x-4">
+          <Button
+            icon="pi pi-list"
+            className="p-button-text p-button-rounded"
+            style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}
+            onClick={toggleSidebar}
+            aria-label="Toggle Sidebar"
+          />
+          <span className="text-lg font-semibold text-gray-800">
+          Domifin
+          </span>
         </div>
 
-        {/* Botão Home no centro */}
-        <div className="flex">
-          <button
+        <div className="flex items-center space-x-4">
+          <Button
+            label="Inicio"
+            icon="pi pi-home"
+            className="p-button-text p-button-rounded"
+            style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}
             onClick={() => handleNavigation('/')}
-            className="text-xl font-semibold leading-6 text-white hover:text-gray-300"
-          >
-            Home
-          </button>
+            aria-label="Home"
+          />
+          
+          <Button
+            label="Configurações"
+            icon="pi pi-cog"
+            className="p-button-text p-button-rounded"
+            style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}
+            onClick={() => handleNavigation('/config')}
+            aria-label="Configurações"	
+          />
+          
+          <Button
+            label="Sair"
+            icon="pi pi-sign-out"
+            className="p-button-text p-button-rounded"
+            style={{ backgroundColor: 'rgba(255,255,255,0.5)' }}
+            onClick={handleLogout}
+            aria-label="Sair"
+          />
         </div>
-
-        {/* Botão de Logout à direita */}
-        <div className="flex justify-end">
-        <div className="flex items-center">
-      <Button
-        icon="pi pi-cog"
-        className="bttUser p-button-text p-button-rounded p-button-plain"
-        onClick={() => handleNavigation('/config')}
-        aria-label="Configurações"
-      />
-
-      <Button
-        icon="pi pi-sign-out"
-        className="bttUser p-button-text p-button-rounded p-button-plain"
-        onClick={handleLogout}
-        aria-label="Sair"
-      />
-    </div>
-
-        </div>
-      </nav>
       </div>
     </header>
   );

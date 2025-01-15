@@ -34,7 +34,6 @@ function TabelaCategoria({ data }) {
       expandedRows={expandedRows}
       onRowToggle={(e) => setExpandedRows(e.data)}
       rowExpansionTemplate={rowExpansionTemplate}
-      style={{ maxWidth: "25vw" }}
     >
       <Column expander style={{ width: "3em" }} />
       <Column field="tipo_categoria" header="Tipo de Categoria" />
