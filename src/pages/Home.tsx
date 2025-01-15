@@ -230,16 +230,16 @@ export default function Home() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="grid grid-cols-1 gap-6"
+        className="grid grid-cols-1 gap-4"
       >
-        <Card className="bg-white shadow-lg">
+        <Card className="bg-white shadow-lg col-span-2 p-4 ">
           <h2 className="text-xl font-semibold mb-4">Fluxo de Caixa</h2>
-          <div className="w-full h-[400px]">
-            <Chart type="line" data={chartData} options={chartOptions} />
+          <div className="w-full max-h-64">
+            <Chart type="line" data={chartData} options={chartOptions} className="max-h-64" />
           </div>
         </Card>
-
-        <Card className="bg-white shadow-lg">
+        <p></p>
+        <Card className="bg-white shadow-lg col-span-2 p-4 overflow-y-auto">
           <h2 className="text-xl font-semibold mb-4">Últimas Transações</h2>
           <DataTable
             value={mockTransactions}
