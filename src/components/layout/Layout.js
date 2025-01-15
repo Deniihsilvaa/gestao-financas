@@ -13,7 +13,10 @@ const Layout = () => {
 
   return (
     <div className="flex flex-col min-h-screen layout">
-      <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+      {/* fixar o cabeçalho */}
+      <div className="fixed top-0 left-0 right-0">
+        <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+      </div>
 
       <div className="flex flex-1 p-3">
         <Sidebar

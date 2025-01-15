@@ -19,36 +19,37 @@ function AnaliseMovimentacao() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedPaymentType, setSelectedPaymentType] = useState<Nullable<string>>(null);
+  
+  
+  async function fetchAllData() {
+    setIsLoading(true);
+    try {
+      const [bankData, movementData] = await Promise.all([buscarBancos(), buscarDados()]);
 
-  useEffect(() => {
-    async function fetchAllData() {
-      setIsLoading(true);
-      try {
-        const [bankData, movementData] = await Promise.all([buscarBancos(), buscarDados()]);
+      setBanks(bankData.map((item: any) => ({
+        value: item.id, label: item.banco
+      })));
 
-        setBanks(bankData.map((item: any) => ({
-          value: item.id, label: item.banco
-        })));
-
-        const transformedData = movementData.map((item: any) => ({
-          description: item.descricao,
-          date: item.data_transacao,
-          situacao: item.tipo_registro as 'Entrada' | 'Saída',
-          paymentType: item.payment_type,
-          movementType: item.tipo_categoria,
-          paymentMethod: item.payment_type || 'Indefinido',
-          bank: item.conta_bancaria || 'Indefinido',
-          value: `R$ ${parseFloat(item.valor).toFixed(2).replace('.', ',')}`,
-          supplier: item.fornecedores || 'Não informado',
-        }));
-        setMovements(transformedData);
-      } catch (error) {
-        setErrorMessage('Erro ao buscar dados. Tente novamente mais tarde.');
-        console.error('Erro ao buscar dados:', error);
-      } finally {
-        setIsLoading(false);
-      }
+      const transformedData = movementData.map((item: any) => ({
+        description: item.descricao,
+        date: item.data_transacao,
+        situacao: item.tipo_registro as 'Entrada' | 'Saída',
+        paymentType: item.payment_type,
+        movementType: item.tipo_categoria,
+        paymentMethod: item.payment_type || 'Indefinido',
+        bank: item.conta_bancaria || 'Indefinido',
+        value: `R$ ${parseFloat(item.valor).toFixed(2).replace('.', ',')}`,
+        supplier: item.fornecedores || 'Não informado',
+      }));
+      setMovements(transformedData);
+    } catch (error) {
+      setErrorMessage('Erro ao buscar dados. Tente novamente mais tarde.');
+      console.error('Erro ao buscar dados:', error);
+    } finally {
+      setIsLoading(false);
     }
+  }
+  useEffect(() => {
     fetchAllData();
   }, []);
 

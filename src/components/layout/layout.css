@@ -52,7 +52,7 @@ body {
 }
 
 .sidebar.w-60 {
-  width: 15rem; /* Largura padrão quando visível */
+  width: 1rem; /* Largura padrão quando visível */
 }
 
 .sidebar.w-0 {

@@ -16,7 +16,8 @@ const Header = ({ toggleSidebar, isSidebarOpen }: HeaderProps) => {
     try {
       // Desloga o usuário
       await supabase.auth.signOut();
-      // Redireciona para a página de login
+      // apagar cache
+      localStorage.clear();
       navigate('/login');
       alert('Você foi deslogado com sucesso.');
     } catch (error) {

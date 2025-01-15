@@ -62,6 +62,11 @@ export function Login() {
       setLoading(false);
     }
   };
+  // funcao para mostar a senha
+  const togglePasswordVisibility = () => {
+    const passwordInput = document.getElementById("password") as HTMLInputElement;
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+  };
 
   return (
     <div className="flex items-center justify-center w-full h-screen bg-gradient-to-b from-indigo-900 to-blue-900">
@@ -84,7 +89,7 @@ export function Login() {
         <div className="text-center">
           <img src={logo} alt="Daily Control" className="w-auto h-16 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-white">
-            {isResetting ? "Redefinir Senha" : "Bem-vindo de volta!"}
+            {isResetting ? "Redefinir Senha" : "Bem-vindo ao Domifin!"}
           </h2>
         </div>
 
@@ -111,6 +116,7 @@ export function Login() {
                 <label htmlFor="password" className="block text-sm text-gray-200">
                   Senha
                 </label>
+
                 <input
                   id="password"
                   type="password"
@@ -119,6 +125,18 @@ export function Login() {
                   required
                   className="block w-full px-4 py-2 text-gray-900 rounded-md bg-gray-50"
                 />
+
+                <div className="flex items-center mt-2">
+                  <input
+                    type="checkbox"
+                    id="showPassword"
+                    className="mr-2"
+                    onChange={togglePasswordVisibility}
+                  />
+                  <label htmlFor="showPassword" className="text-sm text-gray-200">
+                    Mostrar Senha
+                  </label>
+                </div>
               </div>
 
               <button
