@@ -5,6 +5,8 @@ import ModalSenha from "./Modais/ModalSenha";
 import ModalRegistro from "./Modais/ModalUser";
 import ModalContaBancaria from "./Modais/ModalContaBancaria";
 import ModalFormPG from "./Modais/ModalFormPG";
+import ModalTipoCategoria from "./Modais/ModalTipoCategorias";
+
 import { Button } from "primereact/button";
 
 const Config: React.FC = () => {
@@ -12,6 +14,7 @@ const Config: React.FC = () => {
   const [isRegistroModalOpen, setIsRegistroModalOpen] = useState(false);
   const [isContaModalOpen, setIsContaModalOpen] = useState(false);
   const [isFormPGModalOpen, setIsFormPGModalOpen] = useState(false);
+  const [isTipoCategoriaModalOpen, setIsTipoCategoriaModalOpen] = useState(false);
   const [userID, setUserID] = useState<string | null>(null);
 
   // Funções para abrir/fechar modais
@@ -29,6 +32,8 @@ const Config: React.FC = () => {
   const handleCloseContaModal = () => setIsContaModalOpen(false);
   const handleOpenFormPGModal = () => setIsFormPGModalOpen(true);
   const handleCloseFormPGModal = () => setIsFormPGModalOpen(false);
+  const handleOpenTipoCategoriaModal = () => setIsTipoCategoriaModalOpen(true);
+  const handleCloseTipoCategoriaModal = () => setIsTipoCategoriaModalOpen(false);
 
   return (
     <div className="container">
@@ -60,6 +65,12 @@ const Config: React.FC = () => {
             icon="pi pi-credit-card"
             className="p-button-warning"
             onClick={handleOpenFormPGModal}
+          />
+          <Button
+            label="Tipo de categorias"
+            icon="pi pi-list"
+            className="p-button-secondary"
+            onClick={handleOpenTipoCategoriaModal}
           />
         </div>
 
@@ -97,6 +108,19 @@ const Config: React.FC = () => {
           title="Formas de Pagamento"
         >
           <ModalFormPG onClose={handleCloseFormPGModal} />
+        </Modal>
+
+        {/* Modal para Tipo de Categorias */}
+        <Modal
+          isOpen={isTipoCategoriaModalOpen}
+          onClose={handleCloseTipoCategoriaModal}
+          title="Tipo de Categorias"
+        >
+          <ModalTipoCategoria
+            isOpen={isTipoCategoriaModalOpen}
+            onClose={handleCloseTipoCategoriaModal}
+            title="Tipo de Categorias"
+          />
         </Modal>
       </div>
     </div>
