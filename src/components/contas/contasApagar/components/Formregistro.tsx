@@ -1,6 +1,5 @@
 // src/components/contas/contasApagar/components/FormRegistro.tsx
 import React, { useState, useEffect } from "react";
-import { Card } from "primereact/card";
 import { supabase } from "../../../../services/supabaseClient";
 
 import {
@@ -175,7 +174,6 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
   };
 
   return (
-    <Card>
       <form
         onSubmit={handleSubmit}
         className="grid grid-cols-4 gap-4"
@@ -386,7 +384,6 @@ const FormRegistro: React.FC<TemplateRegistrosProps> = ({
           <Button type="submit" label="Salvar" icon="pi pi-check" />
         </div>
       </form>
-    </Card>
   );
 };
 

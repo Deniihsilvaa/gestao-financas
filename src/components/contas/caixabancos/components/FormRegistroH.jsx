@@ -124,155 +124,167 @@ const FormRegistroH = ({ onClose, onSave }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4 space-y-4">
-      <div className="field">
+    <form
+      onSubmit={handleSubmit}
+      className="grid grid-cols-1 mt-4 gap-2 md:grid-cols-4 "
+    >
+      {/* Descrição */}
+      <div className="field col-span-2">
         <label htmlFor="descricao">Descrição</label>
         <input
           type="text"
           id="descricao"
-          value={descricao}
-          onChange={(e) => setDescricao(e.target.value)}
-          className="w-full p-2 border rounded"
-          required
-          style={getInputStyle("descricao")}
-        />
-      </div>
-      <div className="field">
-        <div className="w-full">
-          <span className="p-float-label">Fornecedor * </span>
-          <AutoComplete
-            value={value}
-            suggestions={items}
-            completeMethod={search}
-            disabled
-            style={getInputStyle("fornecedor")}
-            placeholder="selecione um fornecedor"
-            className="w-full h-full border rounded"
-            onChange={(e) => setValue(e.value)}
-          />
-        </div>
-      </div>
+      value={descricao}
+      onChange={(e) => setDescricao(e.target.value)}
+      className="w-full p-2 border rounded"
+      required
+      style={getInputStyle("descricao")}
+    />
+  </div>
 
-      <div className="field">
-        <label htmlFor="valor">Valor</label>
-        <input
-          type="number"
-          id="valor"
-          value={valor}
-          onChange={(e) => setValor(e.target.value)}
-          className="w-full p-2 border rounded"
-          required
-          style={getInputStyle("valor")}
-        />
-      </div>
+  {/* Fornecedor */}
+  <div className="field col-span-2">
+    <label htmlFor="fornecedor">Fornecedor *</label>
+    <AutoComplete
+      value={value}
+      suggestions={items}
+      completeMethod={search}
+      disabled
+      style={getInputStyle("fornecedor")}
+      placeholder="Selecione um fornecedor"
+      className="w-full p-2 border rounded"
+      onChange={(e) => setValue(e.value)}
+    />
+  </div>
 
-      <div className="field">
-        <label htmlFor="tipo_registro">Tipo</label>
-        <select
-          id="tipo_registro"
-          value={tipo_registro}
-          onChange={(e) => setTipoRegistro(e.target.value)}
-          className="w-full p-2 border rounded"
-          required
-          style={getInputStyle("tipo_registro")}
-        >
-          <option value="">Selecione</option>
-          <option value="Entrada">Entrada</option>
-          <option value="Saída">Saída</option>
-        </select>
-      </div>
+  {/* Valor */}
+  <div className="field col-span-2">
+    <label htmlFor="valor">Valor</label>
+    <input
+      type="number"
+      id="valor"
+      value={valor}
+      onChange={(e) => setValor(e.target.value)}
+     className="w-full p-2 border rounded"
+      required
+      style={getInputStyle("valor")}
+    />
+  </div>
 
-      <div className="field">
-        <label htmlFor="banco">Banco</label>
-        <select
-          id="banco"
-          value={conta_bancaria ?? ""}
-          onChange={(e) => setBancoId(Number(e.target.value))} // Converta para número
-          className="w-full p-2 border rounded"
-          required
-          style={getInputStyle("conta_bancaria")}
-        >
-          <option value="">Selecione o Banco</option>
-          {bancos.map((banco) => (
-            <option key={banco.id} value={banco.id}>
-              {banco.banco}
-            </option>
-          ))}
-        </select>
-      </div>
+  {/* Tipo de Registro */}
+  <div className="field col-span-2">
+    <label htmlFor="tipo_registro">Tipo</label>
+    <select
+      id="tipo_registro"
+      value={tipo_registro}
+      onChange={(e) => setTipoRegistro(e.target.value)}
+      className="w-full p-2 border rounded"
+      required
+      style={getInputStyle("tipo_registro")}
+    >
+      <option value="">Selecione</option>
+      <option value="Entrada">Entrada</option>
+      <option value="Saída">Saída</option>
+    </select>
+  </div>
 
-      <div className="field">
-        <label htmlFor="categoria">Categoria</label>
-        <select
-          id="categoria"
-          value={tipo_categoria ?? ""}
-          onChange={(e) => setTipoCategoria(Number(e.target.value))} // Converta para número
-          className="w-full p-2 border rounded"
-          disabled={!tipo_registro} // Desabilitar até selecionar tipo de registro
-          required
-          style={getInputStyle("tipo_categoria")}
-        >
-          <option value="">Selecione a Categoria</option>
-          {categoriasFiltradas.map((categoria) => (
-            <option key={categoria.id} value={categoria.id}>
-              {categoria.categoria}
-            </option>
-          ))}
-        </select>
-      </div>
+  {/* Banco */}
+  <div className="field col-span-2">
+    <label htmlFor="banco">Banco</label>
+    <select
+      id="banco"
+      value={conta_bancaria ?? ""}
+      onChange={(e) => setBancoId(Number(e.target.value))}
+      className="w-full p-2 border rounded"
+      required
+      style={getInputStyle("conta_bancaria")}
+    >
+      <option value="">Selecione o Banco</option>
+      {bancos.map((banco) => (
+        <option key={banco.id} value={banco.id}>
+          {banco.banco}
+        </option>
+      ))}
+    </select>
+  </div>
 
-      <div className="field">
-        <label htmlFor="data_registro">Data competência *</label>
-        <input
-          type="date"
-          id="data_registro"
-          value={data_registro}
-          onChange={(e) => setDataRegistro(e.target.value)}
-          className="w-full p-2 border rounded"
-          required
-          style={getInputStyle("data_registro")}
-        />
-      </div>
+  {/* Categoria */}
+  <div className="field col-span-2">
+    <label htmlFor="categoria">Categoria</label>
+    <select
+      id="categoria"
+      value={tipo_categoria ?? ""}
+      onChange={(e) => setTipoCategoria(Number(e.target.value))}
+      className="w-full p-2 border rounded"
+      disabled={!tipo_registro}
+      required
+      style={getInputStyle("tipo_categoria")}
+    >
+      <option value="">Selecione a Categoria</option>
+      {categoriasFiltradas.map((categoria) => (
+        <option key={categoria.id} value={categoria.id}>
+          {categoria.categoria}
+        </option>
+      ))}
+    </select>
+  </div>
 
-      <div className="field">
-        <label htmlFor="data_transacao">Data Transação</label>
-        <input
-          type="date"
-          id="data_transacao"
-          value={data_transacao}
-          onChange={(e) => setDataTransacao(e.target.value)}
-          className="w-full p-2 border rounded"
-          required
-          style={getInputStyle("data_transacao")}
-        />
-      </div>
+  {/* Data de Registro */}
+  <div className="field col-span-2">
+    <label htmlFor="data_registro">Data competência *</label>
+    <input
+      type="date"
+      id="data_registro"
+      value={data_registro}
+      onChange={(e) => setDataRegistro(e.target.value)}
+      className="w-full p-2 border rounded"
+      required
+      style={getInputStyle("data_registro")}
+    />
+  </div>
 
-      <div className="col-span-2 field">
-        <label htmlFor="observacao">Observações</label>
-        <textarea
-          id="observacao"
-          value={observacao}
-          onChange={(e) => setObservacao(e.target.value)}
-          className="w-full p-2 border rounded"
-        />
-      </div>
+  {/* Data de Transação */}
+  <div className="field col-span-2">
+    <label htmlFor="data_transacao">Data Transação</label>
+    <input
+      type="date"
+      id="data_transacao"
+      value={data_transacao}
+      onChange={(e) => setDataTransacao(e.target.value)}
+      className="w-full p-2 border rounded"
+      required
+      style={getInputStyle("data_transacao")}
+    />
+  </div>
 
-      <div className="flex justify-end col-span-2 space-x-2">
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-2 text-sm font-semibold text-white bg-gray-500 rounded-lg hover:bg-gray-600"
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 text-sm font-semibold text-white bg-green-500 rounded-lg hover:bg-green-600"
-        >
-          Salvar
-        </button>
-      </div>
-    </form>
+  {/* Observações */}
+  <div className="col-span-1 md:col-span-4 field col-span-2">
+    <label htmlFor="observacao">Observações</label>
+    <textarea
+      id="observacao"
+      value={observacao}
+      onChange={(e) => setObservacao(e.target.value)}
+      className="w-full p-2 border rounded"
+    />
+  </div>
+
+  {/* Botões */}
+  <div className="flex justify-end col-span-1 md:col-span-4 space-x-2">
+    <button
+      type="button"
+      onClick={onClose}
+      className="px-4 py-2 text-sm font-semibold text-white bg-gray-500 rounded-lg hover:bg-gray-600"
+    >
+      Cancelar
+    </button>
+    <button
+      type="submit"
+      className="px-4 py-2 text-sm font-semibold text-white bg-green-500 rounded-lg hover:bg-green-600"
+    >
+      Salvar
+    </button>
+  </div>
+</form>
   );
 };
 

@@ -11,7 +11,7 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
     if (!isOpen) return null;
 
     return (
-        <div className="modal-overlay">
+        <div className="modal-overlay p-2 w-screen h-screen">
             <div className="modal-container">
                 <div className="modal-header">
                     <h2>{title}</h2>

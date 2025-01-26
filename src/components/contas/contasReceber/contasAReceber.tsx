@@ -76,21 +76,22 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
     }
   };
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100">
+    <div className="container mx-auto p-1 md:p-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-screen">
       {/* Conteúdo principal */}
-      <main className="flex-1 p-2 ml-0 overflow-y-auto bg-gray-100 rounded-2xl">
-        <h2 className="mb-4 text-lg font-semibold">Contas a Receber</h2>
+      <main className="col-span-1 md:col-span-2">
+        <h2 className="mb-4 text-lg font-semibold text-white">Contas a Receber</h2>
         {/* Breadcrumb */}
-        <nav aria-label="Breadcrumb" className="mb-4">
+        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center mb-6 text-sm text-gray-400">
           <ol className="flex items-center space-x-4">
             <li>
-              <a href="/" className="text-sm font-medium text-gray-900">
+              <a href="/" className="text-sm font-medium text-shite">
                 Home
               </a>
               <span className="mx-2 text-gray-400">/</span>
             </li>
             <li>
-              <a href="/contas" className="text-sm font-medium text-gray-900">
+              <a href="/contas" className="text-sm font-medium text-shite">
                 Contas
               </a>
               <span className="mx-2 text-gray-400">/</span>
@@ -124,7 +125,7 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
       </main>
 
       {/* Barra escura no lado direito */}
-      <aside className="hidden w-1/6 p-4 text-white bg-gray-800 md:block">
+      <aside className="hidden md:block text-white bg-gray-800 p-4 rounded-lg col-span-1 mt-4">
         <h2 className="mb-4 text-lg font-semibold">Resumo</h2>
         <p>Dados importantes:</p>
         <ul className="mt-2 ml-4 space-y-2 list-disc">
@@ -138,6 +139,7 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
           <li>Próximas a vencer: {/* Lógica personalizada */}</li>
         </ul>
       </aside>
+    </div>
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

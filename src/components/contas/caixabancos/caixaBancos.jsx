@@ -7,7 +7,7 @@ import { Calendar } from "primereact/calendar";
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.css";
 import Modal from "../../Modal/Modal";
-
+import {Card} from "primereact/card";
 function CaixaBancos() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [registros, setRegistros] = useState([]);
@@ -81,7 +81,7 @@ function CaixaBancos() {
         .select("id, banco")
         .order("banco", { ascending: true });
       if (error) throw error;
-      
+
       setBancosDisponiveis(data || []);
     } catch (error) {
       console.error("Erro ao buscar bancos:", error);
@@ -189,75 +189,79 @@ function CaixaBancos() {
   }, [registros, calcularTotais]); // Calcula os totais sempre que registros mudarem
 
   return (
-    <div className="flex flex-col h-full md:flex-row">
-      {/* Main Content */}
-      <main className="flex-1 p-6 bg-gray-100">
-        <h2 className="mb-4 text-lg font-semibold text-gray-800">
-          Carteira
-        </h2>
+    <div className="container w-screen mx-auto p-1 md:p-10 ">
+      <Card>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-screen">
+        {/* Main Content */}
+        <main className="col-span-1 md:col-span-2">
+          <h2 className="mb-4 text-lg font-semibold text-white">
+            Carteira
+          </h2>
 
-        {/* Filter Section */}
-        <div className="flex flex-col items-start gap-4 p-4 mb-6 bg-white rounded-lg shadow md:flex-row md:items-center">
-          <Dropdown
-            value={filtroBanco}
-            onChange={(e) => setFiltroBanco(e.value)}
-            options={[
-              { label: "Todos", value: "" }, // Aqui adicionamos a opção "Todos"
-              ...bancosDisponiveis.map((banco) => ({
-                label: banco.banco,
-                value: banco.banco,
-              })),
-            ]}
-            placeholder="Selecione um banco"
-            className="w-full md:w-52"
-          />
-          <Calendar
-            value={filtroDataInicio}
-            onChange={(e) => setFiltroDataInicio(e.value)}
-            placeholder="Data início"
-            className="w-full md:w-52"
-            dateFormat="dd/mm/yy"
-          />
-          <Calendar
-            value={filtroDataFim}
-            onChange={(e) => setFiltroDataFim(e.value)}
-            placeholder="Data fim"
-            className="w-full md:w-52"
-            dateFormat="dd/mm/yy"
-          />
-          <button
-            onClick={handleOpenModal}
-            className="w-full px-4 py-2 text-sm font-semibold text-white bg-green-500 rounded-lg md:w-auto hover:bg-green-600"
-          >
-            Registrar
-          </button>
-        </div>
+          {/* Filter Section */}
+          <div className="flex flex-col items-start gap-4 p-4 mb-6 bg-white rounded-lg shadow md:flex-row md:items-center">
+            <Dropdown
+              value={filtroBanco}
+              onChange={(e) => setFiltroBanco(e.value)}
+              options={[
+                { label: "Todos", value: "" }, // Aqui adicionamos a opção "Todos"
+                ...bancosDisponiveis.map((banco) => ({
+                  label: banco.banco,
+                  value: banco.banco,
+                })),
+              ]}
+              placeholder="Selecione um banco"
+              className="w-full md:w-52"
+            />
+            <Calendar
+              value={filtroDataInicio}
+              onChange={(e) => setFiltroDataInicio(e.value)}
+              placeholder="Data início"
+              className="w-full md:w-52"
+              dateFormat="dd/mm/yy"
+            />
+            <Calendar
+              value={filtroDataFim}
+              onChange={(e) => setFiltroDataFim(e.value)}
+              placeholder="Data fim"
+              className="w-full md:w-52"
+              dateFormat="dd/mm/yy"
+            />
+            <button
+              onClick={handleOpenModal}
+              className="w-full px-4 py-2 text-sm font-semibold text-white bg-green-500 rounded-lg md:w-auto hover:bg-green-600"
+            >
+              Registrar
+            </button>
+          </div>
 
-        {/* Table Section */}
-        <div className="overflow-x-auto bg-white rounded-lg shadow">
-          <TableCaixaBancos registros={registros} onDelete={handleDelete} />
-        </div>
-      </main>
+          {/* Table Section */}
+          <div className="overflow-hidden bg-white rounded-lg shadow">
+            <TableCaixaBancos registros={registros} onDelete={handleDelete} />
+          </div>
+        </main>
+        {/* Sidebar */}
+        <aside className="hidden md:block text-white bg-gray-800 p-4 rounded-lg col-span-1 mt-4">
+          <h2 className="mb-4 text-lg font-semibold">Resumo</h2>
+          <ul className="mt-2 ml-4 space-y-2 list-disc">
+            <li>Total de contas: {totais.totalConta}</li>
+            <li>Total Entrada: R$ {totais.totalEntrada.toFixed(2)}</li>
+            <li>Total Saída: R$ {totais.totalSaida.toFixed(2)}</li>
+            <li>Saldo Total: R$ {totais.saldo.toFixed(2)}</li>
+
+            <li>Contas a Receber pendentes: {totais.totalEntradaPendente}</li>
+            <li>Contas a Paga pendentes: {totais.totalSaidaPendente}</li>
+            <li>Saldo pendentes: R$ {totais.totalSaldoPendente.toFixed(2)}</li>
+          </ul>
+        </aside>
+      </div>
+        </Card>
 
       {/* Modal */}
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} title="Registro">
         <FormRegistroH onSave={handlerSubmit} onClose={handleCloseModal} />
       </Modal>
-
-      {/* Sidebar */}
-      <aside className="w-full p-4 text-white bg-gray-800 md:w-1/4 lg:w-1/6 fontesize-sm">
-        <h2 className="mb-4 text-lg font-semibold">Resumo</h2>
-        <ul className="mt-2 ml-4 space-y-2 list-disc">
-          <li>Total de contas: {totais.totalConta}</li>
-          <li>Total Entrada: R$ {totais.totalEntrada.toFixed(2)}</li>
-          <li>Total Saída: R$ {totais.totalSaida.toFixed(2)}</li>
-          <li>Saldo Total: R$ {totais.saldo.toFixed(2)}</li>
-
-          <li>Contas a Receber pendentes: {totais.totalEntradaPendente}</li>
-          <li>Contas a Paga pendentes: {totais.totalSaidaPendente}</li>
-          <li>Saldo pendentes: R$ {totais.totalSaldoPendente.toFixed(2)}</li>
-        </ul>
-      </aside>
+    
     </div>
   );
 }
