@@ -45,7 +45,7 @@ function ModalTipoCategorias({
 }) {
   const [tipoCategorias, setTipoCategorias] = useState<TipoCategoria[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [setError] = useState<string | null>(null);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [newCategoria, setNewCategoria] = useState<Partial<TipoCategoria>>({});
   const toast = React.useRef<Toast>(null);
