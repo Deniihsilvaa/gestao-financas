@@ -1,4 +1,3 @@
-// src/components/contas/contas.jsx
 import React, { useState, useEffect } from "react";
 import "./conta.css";
 import { supabase } from "../../services/supabaseClient";
@@ -9,17 +8,19 @@ import GraficoGeral from "./Graficos/GraficoGeral";
 import GraficoReceitaDespesas from "./Graficos/GraficoReceitaDespesas";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
+import { Button } from "primereact/button";
 import { formatCurrency } from "../../utils/formatters";
 import PropTypes from "prop-types";
+
 function Contas() {
   const [data, setData] = useState([]);
   const [receita, setReceita] = useState(0);
   const [despesa, setDespesa] = useState(0);
   const [selectedSituacao, setSelectedSituacao] = useState(null);
-  const [selectedStartDate, setSelectedStartDate] = useState(null); // Data de início do período
-  const [selectedEndDate, setSelectedEndDate] = useState(null); // Data de fim do período
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
 
-  // Função para buscar os dados no banco
+  // Buscar dados do Supabase
   useEffect(() => {
     async function fetchData() {
       const { data, error } = await supabase.from("viewBaseCaixa").select("*");
@@ -28,7 +29,6 @@ function Contas() {
         return;
       }
 
-      // Aplicando filtros de período e situação
       const filteredData = filterByDateAndSituacao(
         data,
         selectedStartDate,
@@ -38,7 +38,7 @@ function Contas() {
 
       const { receita, despesa } = getReceitaDespesa(filteredData);
 
-      setData(filteredData); // Dados completos, sem agrupamento por categoria e mês
+      setData(filteredData);
       setReceita(receita);
       setDespesa(despesa);
     }
@@ -46,9 +46,10 @@ function Contas() {
     fetchData();
   }, [selectedStartDate, selectedEndDate, selectedSituacao]);
 
-  // Função para filtrar os dados por data e situação
-  const filterByDateAndSituacao = (data, startDate, endDate, situacao) => {
-    return data.filter((item) => {
+  // Filtrar dados por data e situação
+  const filterByDateAndSituacao = (dados, startDate, endDate, situacao) => {
+    if (!dados || !Array.isArray(dados)) return [];
+    return dados.filter((item) => {
       const itemDate = new Date(item.data_transacao);
       const isInDateRange =
         (!startDate || itemDate >= new Date(startDate)) &&
@@ -58,46 +59,36 @@ function Contas() {
     });
   };
 
-  // Função para calcular a receita e a despesa
-  const getReceitaDespesa = (data) => {
-    if (!Array.isArray(data)) {
-      console.error("Dados inválidos:", data);
+  // Calcular receita e despesa
+  const getReceitaDespesa = (dados) => {
+    if (!Array.isArray(dados)) {
+      console.error("Dados inválidos:", dados);
       return { receita: 0, despesa: 0 };
     }
 
-    const receita = data
+    const receita = dados
       .filter((item) => item.tipo_registro === "Entrada")
       .reduce((sum, item) => sum + item.valor, 0);
-    const despesa = data
+    const despesa = dados
       .filter((item) => item.tipo_registro === "Saída")
       .reduce((sum, item) => sum + item.valor, 0);
     return { receita, despesa };
   };
 
-  // Funções para filtrar os dados para os gráficos
-  const filtrarSaidas = (dados) => {
-    return dados.filter((item) => item.tipo_registro === "Saída");
-  };
-
-  const filtrarPorCategoria = (dados) => {
-    return dados.reduce((acc, item) => {
-      if (item.tipo_categoria) {
-        acc[item.tipo_categoria] = (acc[item.tipo_categoria] || 0) + item.valor;
-      }
-      return acc;
-    }, {});
-  };
-
+  // Filtrar dados por situação
   const filtrarPorSituacao = (dados, situacao) => {
-    return dados.filter((item) => item.situacao === situacao);
+    if (!dados || !Array.isArray(dados)) return [];
+    return situacao
+      ? dados.filter((item) => item.situacao === situacao)
+      : dados;
   };
 
-  // Funções de opções do Dropdown
   const situacaoOptions = [
     { label: "Todas", value: "" },
     { label: "Pendente", value: "Pendente" },
     { label: "Concluído", value: "Concluido" },
   ];
+
   const handleClearFilters = () => {
     setSelectedSituacao(null);
     setSelectedStartDate(null);
@@ -105,84 +96,82 @@ function Contas() {
   };
 
   return (
-   <div className="min-h-screen p-4 md:p-6 space-y-4 md:space-y-8 text-white shadow-sm rounded-2xl bg-gradient-to-b from-blue-900 to-black">
-      <h2 className="mb-8 text-3xl font-bold text-center">
-        Dashboard de Caixa Entrada e Saída
-      </h2>
+    <div className="min-h-screen p-6 space-y-8 bg-gradient-to-b from-blue-800 to-black text-white">
+      <h1 className="text-3xl md:text-4xl font-bold text-center">
+        Dashboard de Caixa: Entrada e Saída
+      </h1>
 
-      <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between mb-4 md:mb-6">
-      <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-4 p-4 text-black bg-white rounded-lg">
+      {/* Filtros */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="w-full lg:w-1/3 bg-white rounded-lg p-6 shadow-lg">
+          <h2 className="text-xl font-semibold mb-4 text-black">Filtros</h2>
           <Dropdown
             value={selectedSituacao}
             options={situacaoOptions}
             onChange={(e) => setSelectedSituacao(e.value)}
             placeholder="Filtrar por Situação"
-            className="w-40 hover:bg-gray-200"
+            className="w-full mb-4"
           />
-
-          <div className="flex gap-4">
-            <Calendar
-              value={selectedStartDate}
-              onChange={(e) => setSelectedStartDate(e.value)}
-              showIcon
-              dateFormat="dd/mm/yy"
-              placeholder="Data Início"
-              className="w-40"
-            />
-            <Calendar
-              value={selectedEndDate}
-              onChange={(e) => setSelectedEndDate(e.value)}
-              showIcon
-              dateFormat="dd/mm/yy"
-              placeholder="Data Fim"
-              className="w-40 text-black "
-            />
-            <button className="btn" onClick={handleClearFilters}>
-              Limpar
-            </button>
-          </div>
+          <Calendar
+            value={selectedStartDate}
+            onChange={(e) => setSelectedStartDate(e.value)}
+            dateFormat="dd/mm/yy"
+            placeholder="Data Inicial"
+            className="w-full mb-4"
+          />
+          <Calendar
+            value={selectedEndDate}
+            onChange={(e) => setSelectedEndDate(e.value)}
+            dateFormat="dd/mm/yy"
+            placeholder="Data Final"
+            className="w-full mb-4"
+          />
+          <Button
+            label="Limpar Filtros"
+            onClick={handleClearFilters}
+            className="w-full"
+          />
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          <div className="p-4 text-center bg-green-800 rounded-lg shadow-lg">
-            <h5>Total Receita</h5>
-            <p className="text-xl">{formatCurrency(receita)}</p>
+        {/* Resumo Financeiro */}
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-green-600 text-white p-6 rounded-lg shadow-md text-center">
+            <h3 className="text-lg font-semibold">Receita</h3>
+            <p className="text-2xl font-bold">{formatCurrency(receita)}</p>
           </div>
-          <div className="p-4 text-center bg-red-800 rounded-lg shadow-lg">
-            <h5>Total Despesa</h5>
-            <p className="text-xl">{formatCurrency(despesa)}</p>
+          <div className="bg-red-600 text-white p-6 rounded-lg shadow-md text-center">
+            <h3 className="text-lg font-semibold">Despesa</h3>
+            <p className="text-2xl font-bold">{formatCurrency(despesa)}</p>
           </div>
-          <div className="p-4 text-center bg-blue-800 rounded-lg shadow-lg">
-            <h5>Saldo</h5>
-            <p className="text-xl">{formatCurrency(receita - despesa)}</p>{" "}
-            {/* Corrigido para exibir o valor correto */}
+          <div className="bg-blue-600 text-white p-6 rounded-lg shadow-md text-center">
+            <h3 className="text-lg font-semibold">Saldo</h3>
+            <p className="text-2xl font-bold">{formatCurrency(receita - despesa)}</p>
           </div>
         </div>
       </div>
 
-      {/* Grid de gráficos */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div className="card p-4 backdrop-blur-sm rounded-lg">
-          <GraficoPizza data={filtrarSaidas(data)} />
+      {/* Gráficos */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <GraficoPizza data={data} />
         </div>
-      <div className="card p-4 backdrop-blur-sm rounded-lg">
+        <div className="bg-white p-6 rounded-lg shadow-md">
           <GraficoReceitaDespesas receita={receita} despesa={despesa} />
         </div>
-      <div className="card p-4 backdrop-blur-sm rounded-lg">
-          <GraficoColunas data={filtrarPorCategoria(data)} />
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <GraficoColunas data={data} />
         </div>
-      <div className="card p-4 backdrop-blur-sm rounded-lg col-span-2">
+        <div className="col-span-1 sm:col-span-2 bg-white p-6 rounded-lg shadow-md">
           <TabelaCategoria data={data} />
         </div>
-      <div className="card p-4 backdrop-blur-sm rounded-lg">
-          <GraficoGeral
-            situacaoData={filtrarPorSituacao(data, selectedSituacao)}
-          />
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <GraficoGeral situacaoData={filtrarPorSituacao(data, selectedSituacao)} />
         </div>
       </div>
     </div>
   );
 }
+
 Contas.propTypes = {
   data: PropTypes.array,
   receita: PropTypes.number,

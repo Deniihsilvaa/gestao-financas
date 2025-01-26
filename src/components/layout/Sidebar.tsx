@@ -58,13 +58,7 @@ const Sidebar = ({
 
           <div className="menu-section mb-4">
             <h3 className="text-black text-base font-medium mb-2">Financeiro</h3>
-            <Button
-              label="Contas"
-              icon="pi pi-book"
-              className="p-button-text text-black w-full text-left p-button-rounded p-button-outlined mb-2"
-              onClick={() => handleNavigation("/contas")}
-            />
-            <Ripple />
+
             <Button
               label="Caixa e Bancos"
               icon="pi pi-wallet"
@@ -91,6 +85,13 @@ const Sidebar = ({
               icon="pi pi-file"
               className="p-button-text text-black w-full text-left p-button-rounded p-button-outlined mb-2"
               onClick={() => handleNavigation("/analisemovimentacao")}
+            />
+            <Ripple />
+            <Button
+              label="Registro de Contas"
+              icon="pi pi-book"
+              className="p-button-text text-black w-full text-left p-button-rounded p-button-outlined mb-2"
+              onClick={() => handleNavigation("/contas")}
             />
             <Ripple />
           </div>
