@@ -59,11 +59,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }: HeaderProps) => {
   );
 
   return (
-    <header className="bg-gray-100 border-b border-gray-300 h-[10vh] fixed top-0 left-0 right-0 z-30 shadow-sm">
-      <div className="max-w-screen-xl mx-auto">
-        <Menubar model={menuItems} start={start} />
-      </div>
-    </header>
+    <Menubar model={menuItems} start={start} />
   );
 };
 

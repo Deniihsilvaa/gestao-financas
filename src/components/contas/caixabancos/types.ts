@@ -22,9 +22,8 @@ export interface FiltrobancosProps {
 }
 interface TableCaixaBancosProps {
   registros: RegistroProps[];
-  mapearSituacao: (situacao: string) => JSX.Element; // Adicione esta linha
+  mapearSituacao: (situacao: string) => string;
 }
-//////////////////////////////////////////////////////////////////////
 export interface ContaPropsEdit {
   id?: number;
   descricao: string;

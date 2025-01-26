@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import Sidebar from "./Sidebar";
+import { ScrollPanel } from 'primereact/scrollpanel';
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -12,13 +13,13 @@ const Layout = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen layout">
-      {/* fixar o cabeçalho */}
-      <div className="fixed top-0 left-0 right-0 z-10">
+    <div className="grid grid-rows-layout h-screen w-screen overflow-hidden">
+      <div className="row top-0 left-0 right-0 z-10">
+      {/* fixar o cabeçalho <div className="fixed top-0 left-0 right-0 z-10">*/}
         <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       </div>
 
-      <div className="flex flex-1 m-5">
+      <div className="row md:p-1 lg:p-1">
         {/* Barra Lateral */}
         <aside
           className={`transition-all duration-500 z-1 ${
@@ -31,16 +32,19 @@ const Layout = () => {
             onClose={() => setIsSidebarOpen(false)}
           />
         </aside>
+        <ScrollPanel style={{ width: '100vw', height: '80vh' }}>
         <main
-          className={`flex-grow transition-all duration-500 w-100 ${
+          className={`p-2 md:p-4 lg:p-4 flex-grow  transition-all duration-500 w-100 h-100 ${
             isSidebarOpen ? "ml-10" : "ml-0"
           }`}
         >
           <Outlet />
         </main>
+        </ScrollPanel>
       </div>
-
-      <Footer />
+      <div className="row fixed bottom-0 left-0 right-0 z-10">
+        <Footer />
+      </div>
     </div>
   );
 };

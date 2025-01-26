@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./config.css";
 import Modal from "../Modal/Modal";
 import ModalSenha from "./Modais/ModalSenha";
 import ModalRegistro from "./Modais/ModalUser";
@@ -36,13 +35,13 @@ const Config: React.FC = () => {
   const handleCloseTipoCategoriaModal = () => setIsTipoCategoriaModalOpen(false);
 
   return (
-    <div className="container">
-      <div className="cardRegistro">
-        <h2 className="car-title">Configurações Gerais</h2>
+    <div className="container mx-auto p-5 md:p-10 lg:p-20">
+      <h2 className="car-title text-2xl font-bold mb-5 md:text-3xl text-white">Configurações Gerais</h2>
 
-        {/* Botões de Ações */}
-        <div className="flex justify-center gap-3 button-container">
-          <Button
+      {/* Botões de Ações */}
+      {/* usar grid para alinhar os botões se for tela menor que 768px deixar de lado */}
+      <div className="grid grid-cols-1 gap-3 button-container md:grid-cols-5">
+        <Button
             label="Alterar Senha"
             icon="pi pi-key"
             className="p-button-primary"
@@ -123,7 +122,6 @@ const Config: React.FC = () => {
           />
         </Modal>
       </div>
-    </div>
   );
 };
 
