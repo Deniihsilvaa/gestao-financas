@@ -126,6 +126,13 @@ function ModalTipoCategorias({
     }
     setIsLoading(false);
   };
+  if (error) {
+    toast.current?.show({
+      severity: "error",
+      summary: "Erro",
+      detail: error,
+    });
+  }
 
   useEffect(() => {
     fetchTipoCategorias();
