@@ -229,7 +229,7 @@ export default function Home() {
       setChartData(data);
       setChartOptions(options);
     } catch (error) {
-      console.error('Erro ao carregar os dados:', error);
+      console.error('Erro ao carregar o dados:', error);
       toast.current?.show({
         severity: 'error',
         summary: 'Erro',
