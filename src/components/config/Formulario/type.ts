@@ -22,6 +22,7 @@ export interface TableContaProps {
 
 export interface FormularioContaProps {
     onClose: () => void;
+    
 
 }
 export interface FormularioTypePagamentoProps {

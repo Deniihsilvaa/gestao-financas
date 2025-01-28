@@ -189,12 +189,12 @@ function CaixaBancos() {
   }, [registros, calcularTotais]); // Calcula os totais sempre que registros mudarem
 
   return (
-    <div className="container w-screen mx-auto p-1 md:p-10 ">
+    <div className="container w-screen mx-auto p-1 md:p-10 max-w-100">
       <Card>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-screen">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-100">
         {/* Main Content */}
         <main className="col-span-1 md:col-span-2">
-          <h2 className="mb-4 text-lg font-semibold text-white">
+          <h2 className="mb-4 text-lg font-semibold text-black">
             Carteira
           </h2>
 

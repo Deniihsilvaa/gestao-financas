@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Modal from "../../Modal/Modal";
 import FormRegistro from "./components/Formregistro";
-
+import {Card} from "primereact/card";
 import { supabase } from "../../../services/supabaseClient";
 import TableRegistro from "../Tabela/TabelaFomsCaixa";
 
@@ -96,11 +96,12 @@ function ContasApagar() {
   };
 
   return (
-    <div className="container mx-auto p-1 md:p-10">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-screen">
+    <div className="container w-screen mx-auto p-1 md:p-10 max-w-100">
+      <Card>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-100">
         {/* Conteúdo principal */}
         <main className="col-span-1 md:col-span-2 ">
-          <h2 className="mb-4 text-lg font-semibold text-white">Contas a Pagar</h2>
+          <h2 className="mb-4 text-lg font-semibold text-black">Contas a Pagar</h2>
           {/* Breadcrumb */}
           <nav
             aria-label="Breadcrumb"
@@ -167,7 +168,7 @@ function ContasApagar() {
           </ul>
         </aside>
       </div>
-
+      </Card>
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

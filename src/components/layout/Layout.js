@@ -14,12 +14,12 @@ const Layout = () => {
 
   return (
     <div className="grid grid-rows-layout h-screen w-screen overflow-hidden">
-      <div className="row top-0 left-0 right-0 z-10">
+      <div className="row top-0 left-0 right-0 z-10 max-w-100">
       {/* fixar o cabeçalho <div className="fixed top-0 left-0 right-0 z-10">*/}
         <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       </div>
 
-      <div className="row md:p-1 lg:p-1">
+      <div className="row md:p-1 lg:p-1 max-w-100">
         {/* Barra Lateral */}
         <aside
           className={`transition-all duration-500 z-1 ${
@@ -42,7 +42,7 @@ const Layout = () => {
         </main>
         </ScrollPanel>
       </div>
-      <div className="row fixed bottom-0 left-0 right-0 z-10">
+      <div className="row fixed bottom-0 left-0 right-0 z-10 max-w-100">
         <Footer />
       </div>
     </div>

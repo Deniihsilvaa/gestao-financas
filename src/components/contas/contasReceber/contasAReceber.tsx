@@ -4,6 +4,7 @@ import { BaseDataProps, ContasReceber } from "./types";
 import TabelaContasReceber from "../Tabela/TabelaFomsCaixa";
 import FormRegistro from "./Components/formContasReceber";
 import { supabase } from "../../../services/supabaseClient";
+import {Card} from "primereact/card";
 
 interface ContasReceberProps {
   baseData: BaseDataProps[];
@@ -76,11 +77,12 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
     }
   };
   return (
-    <div className="container mx-auto p-1 md:p-10">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-screen">
+    <div className="container w-screen mx-auto p-1 md:p-10 max-w-100">
+      <Card>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-100">
       {/* Conteúdo principal */}
       <main className="col-span-1 md:col-span-2">
-        <h2 className="mb-4 text-lg font-semibold text-white">Contas a Receber</h2>
+        <h2 className="mb-4 text-lg font-semibold text-black">Contas a Receber</h2>
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="flex flex-wrap items-center mb-6 text-sm text-gray-400">
           <ol className="flex items-center space-x-4">
@@ -140,6 +142,7 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
         </ul>
       </aside>
     </div>
+    </Card>
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
