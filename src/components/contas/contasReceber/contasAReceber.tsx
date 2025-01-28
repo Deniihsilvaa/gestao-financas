@@ -5,6 +5,7 @@ import TabelaContasReceber from "../Tabela/TabelaFomsCaixa";
 import FormRegistro from "./Components/formContasReceber";
 import { supabase } from "../../../services/supabaseClient";
 import {Card} from "primereact/card";
+import {Button} from "primereact/button";
 
 interface ContasReceberProps {
   baseData: BaseDataProps[];
@@ -79,7 +80,7 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
   return (
     <div className="container w-screen mx-auto p-1 md:p-10 max-w-100">
       <Card>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-100">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 max-w-100">
       {/* Conteúdo principal */}
       <main className="col-span-1 md:col-span-2">
         <h2 className="mb-4 text-lg font-semibold text-black">Contas a Receber</h2>
@@ -108,12 +109,12 @@ function ContasResceber(): React.ReactElement<ContasReceberProps> {
 
         {/* Barra de filtros */}
         <div className="flex items-center justify-between p-4 mb-6 bg-white rounded shadow">
-          <button
+          <Button
             className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
             onClick={handleOpenModal}
-          >
-            Registrar
-          </button>
+            tooltip="Registrar novo registro" tooltipOptions={{ showDelay: 1000, hideDelay: 300 }} 
+            label="Registrar"
+          />
         </div>
 
         {/* Tabela */}

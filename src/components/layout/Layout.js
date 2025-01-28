@@ -13,8 +13,8 @@ const Layout = () => {
   };
 
   return (
-    <div className="grid grid-rows-layout h-screen w-screen overflow-hidden">
-      <div className="row top-0 left-0 right-0 z-10 max-w-100">
+    <div className="grid grid-rows-[auto_1fr_auto] h-screen w-screen overflow-hidden">
+      <div className="row z-10 max-w-100">
       {/* fixar o cabeçalho <div className="fixed top-0 left-0 right-0 z-10">*/}
         <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       </div>
@@ -32,9 +32,10 @@ const Layout = () => {
             onClose={() => setIsSidebarOpen(false)}
           />
         </aside>
+         {/* <ScrollPanel style={{ width: '100vw', height: "calc(100vh - 64px)" }}> */}
         <ScrollPanel style={{ width: '100vw', height: '80vh' }}>
         <main
-          className={`p-2 md:p-4 lg:p-4 flex-grow  transition-all duration-500 w-100 h-100 ${
+          className={`p-1 md:p-4 lg:p-4 flex-grow transition-all duration-500 ${
             isSidebarOpen ? "ml-10" : "ml-0"
           }`}
         >
@@ -42,7 +43,7 @@ const Layout = () => {
         </main>
         </ScrollPanel>
       </div>
-      <div className="row fixed bottom-0 left-0 right-0 z-10 max-w-100">
+      <div className="row bottom-0 left-0 right-0 z-10 max-w-100">
         <Footer />
       </div>
     </div>

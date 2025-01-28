@@ -189,9 +189,12 @@ function CaixaBancos() {
   }, [registros, calcularTotais]); // Calcula os totais sempre que registros mudarem
 
   return (
-    <div className="container w-screen mx-auto p-1 md:p-10 max-w-100">
-      <Card>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-100">
+    <div className="container">
+      <Card
+      className="md:w-screen"
+      title="Caixa Bancário"
+      >
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Main Content */}
         <main className="col-span-1 md:col-span-2">
           <h2 className="mb-4 text-lg font-semibold text-black">
@@ -231,7 +234,7 @@ function CaixaBancos() {
               onClick={handleOpenModal}
               className="w-full px-4 py-2 text-sm font-semibold text-white bg-green-500 rounded-lg md:w-auto hover:bg-green-600"
             >
-              Registrar
+              Nova Transação
             </button>
           </div>
 

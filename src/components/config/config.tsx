@@ -5,6 +5,7 @@ import ModalRegistro from "./Modais/ModalUser";
 import ModalContaBancaria from "./Modais/ModalContaBancaria";
 import ModalFormPG from "./Modais/ModalFormPG";
 import ModalTipoCategoria from "./Modais/ModalTipoCategorias";
+import ModalMaquininha from "./Modais/ModalMaquininha";
 
 import { Button } from "primereact/button";
 
@@ -14,6 +15,7 @@ const Config: React.FC = () => {
   const [isContaModalOpen, setIsContaModalOpen] = useState(false);
   const [isFormPGModalOpen, setIsFormPGModalOpen] = useState(false);
   const [isTipoCategoriaModalOpen, setIsTipoCategoriaModalOpen] = useState(false);
+  const [isMaquininhaModalOpen, setIsMaquininhaModalOpen] = useState(false);
   const [userID, setUserID] = useState<string | null>(null);
 
   // Funções para abrir/fechar modais
@@ -33,6 +35,8 @@ const Config: React.FC = () => {
   const handleCloseFormPGModal = () => setIsFormPGModalOpen(false);
   const handleOpenTipoCategoriaModal = () => setIsTipoCategoriaModalOpen(true);
   const handleCloseTipoCategoriaModal = () => setIsTipoCategoriaModalOpen(false);
+  const handleOpenMaquininhaModal = () => setIsMaquininhaModalOpen(true);
+  const handleCloseMaquininhaModal = () => setIsMaquininhaModalOpen(false);
 
   return (
     <div className="container mx-auto p-5 md:p-10 lg:p-20">
@@ -70,6 +74,12 @@ const Config: React.FC = () => {
             icon="pi pi-list"
             className="p-button-secondary"
             onClick={handleOpenTipoCategoriaModal}
+          />
+          <Button
+            label="Maquininha"
+            icon="pi pi-cog"
+            className="p-button-secondary"
+            onClick={handleOpenMaquininhaModal}
           />
         </div>
 
@@ -120,6 +130,14 @@ const Config: React.FC = () => {
             onClose={handleCloseTipoCategoriaModal}
             title="Tipo de Categorias"
           />
+        </Modal>
+        {/* Modal para Maquininha */}
+        <Modal
+          isOpen={isMaquininhaModalOpen}
+          onClose={handleCloseMaquininhaModal}
+          title="Maquininha"
+        >
+          <ModalMaquininha />
         </Modal>
       </div>
   );

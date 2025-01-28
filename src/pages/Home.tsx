@@ -335,7 +335,7 @@ export default function Home() {
           >
             <Column field="type" header="Tipo" body={(rowData) => <TypeTemplate rowData={rowData} />} sortable />
             <Column field="category" header="Categoria" sortable />
-            <Column field="paymentMethod" header="Forma de Pagamento" sortable />
+            <Column field="paymentMethod" header="Tipo de Movimentação" sortable />
             <Column field="date" header="Data" body={(rowData) => <DateTemplate rowData={rowData} />} sortable />
             <Column field="amount" header="Valor" body={(rowData) => <AmountTemplate rowData={rowData} />} sortable />
             <Column field="currentBalance" header="Saldo" body={(rowData) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(rowData.currentBalance)} />
