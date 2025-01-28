@@ -254,10 +254,12 @@ export default function Home() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="container w-screen mx-auto p-1 md:p-10 max-w-100">
+      <Card>
+    <div className="p-6 space-y-6 text-sm md:text-lg lg:text-2xl">
       <Toast ref={toast} />
 
-      <h1 className="text-2xl font-bold text-white mb-6">Dashboard Financeiro</h1>
+      <h1 className="text-2xl font-bold text-black mb-6">Dashboard Financeiro</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="col-span-1">
@@ -340,6 +342,8 @@ export default function Home() {
           </DataTable>
         </Card>
       </motion.div>
+    </div>
+    </Card>
     </div>
   );
 }
