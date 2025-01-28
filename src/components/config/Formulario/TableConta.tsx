@@ -1,10 +1,12 @@
 import React from "react";
 import { TableContaProps } from "./type";
 
-
-
-
-const TableConta: React.FC<TableContaProps> = ({ contas, isLoading, handleDelete }) => {
+const TableConta: React.FC<TableContaProps> = ({
+  contas,
+  isLoading,
+  handleDelete,
+  handleEdit,
+}) => {
   return (
     <div className="responsive-table">
       <table className="table table-striped mt-3">
@@ -29,7 +31,7 @@ const TableConta: React.FC<TableContaProps> = ({ contas, isLoading, handleDelete
                 <td>{conta.agencia}</td>
                 <td>{conta.conta}</td>
                 <td>
-                  <button className="btn btn-primary">Editar</button>
+                  <button className="btn btn-primary" onClick={() => handleEdit(conta)}>Editar</button>
                 </td>
                 <td>
                   <button

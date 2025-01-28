@@ -17,6 +17,7 @@ export interface TableContaProps {
     contas: Conta[];
     isLoading: boolean;
     handleDelete: (id: number) => void;
+    handleEdit: (conta: Conta) => void;
 }
 
 export interface FormularioContaProps {
