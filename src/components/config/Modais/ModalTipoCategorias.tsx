@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { supabase } from "../../../services/supabaseClient";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
@@ -7,59 +7,38 @@ import { Column } from "primereact/column";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
+import { TipoCategoria, ModalRegistroProps } from "../../../types/ModalTipoCategoriaTypes";
+import { config,buscarConfigAll,deleteConfig } from "../../../Api/ApiConfig";
 
-interface TipoCategoria {
-  id: number;
-  tipo: string;
-  categoria: string;
-  grupo: string;
-  natureza: string;
-  dre: string;
-  subcategoria: string;
-  categoria_financeira: string;
-}
-
-const tipos = [
-  { label: "Entrada", value: "Entrada" },
-  { label: "Saída", value: "Saída" },
-];
-
-const grupos = [
-  { label: "Receita", value: "Receita" },
-  { label: "Despesa", value: "Despesa" },
-];
-
-const naturezas = [
-  { label: "Operacional", value: "Operacional" },
-  { label: "Não Operacional", value: "Não Operacional" },
-];
-
-function ModalTipoCategorias({
-  onClose,
-  isOpen,
-  title,
-}: {
-  onClose: () => void;
-  isOpen: boolean;
-  title: string;
-}) {
+function ModalTipoCategorias({ onClose, isOpen, title }: ModalRegistroProps) {
   const [tipoCategorias, setTipoCategorias] = useState<TipoCategoria[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [newCategoria, setNewCategoria] = useState<Partial<TipoCategoria>>({});
-  const toast = React.useRef<Toast>(null);
+  const [configData, setConfigData] = useState<any>(null);
+  
+  const toast = useRef<Toast>(null);
+
+  // Carregar configurações dinâmicas
+  useEffect(() => {
+    const fetchConfig = async () => {
+      const data = await config();
+      setConfigData(data);
+    };
+    fetchConfig();
+  }, []);
 
   // Fetch data from Supabase
   const fetchTipoCategorias = async () => {
     setIsLoading(true);
-    const { data, error } = await supabase.from("type_categoria").select("*");
-    if (error) {
-      setError(error.message);
+    const data = await buscarConfigAll();
+    if (!data) {
+      setError("Erro ao buscar configurações.");
       toast.current?.show({
         severity: "error",
         summary: "Erro",
-        detail: error.message,
+        detail: error,
       });
     } else {
       setTipoCategorias(data || []);
@@ -67,16 +46,14 @@ function ModalTipoCategorias({
     setIsLoading(false);
   };
 
-  // Create a new category
+  // Criar nova categoria
   const handleCreate = async () => {
     if (!newCategoria.categoria || !newCategoria.tipo || !newCategoria.grupo || !newCategoria.natureza) {
       setError("Preencha todos os campos obrigatórios.");
       return;
     }
     setIsLoading(true);
-    const { data, error } = await supabase
-      .from("type_categoria")
-      .insert([newCategoria]);
+    const { data, error } = await supabase.from("type_categoria").insert([newCategoria]);
     if (error) {
       toast.current?.show({
         severity: "error",
@@ -96,25 +73,30 @@ function ModalTipoCategorias({
     setIsLoading(false);
   };
 
-  // Delete a category
+  // Deletar uma categoria
   const handleDelete = async (id: number) => {
     setIsLoading(true);
-    //verificar antes de deletar
+    //verificar confirmacao
+    const confirm = window.confirm("Tem certeza que deseja excluir esta categoria?");
+    if (!confirm) {
+      setIsLoading(false);
+      return;
+    }
     if (!id) {
       toast.current?.show({
         severity: "error",
         summary: "Erro",
-        detail: "Selecione um categoria para excluir.",
+        detail: "Selecione uma categoria para excluir.",
       });
       setIsLoading(false);
       return;
     }
-    const { error } = await supabase.from("type_categoria").delete().eq("id", id);
-    if (error) {
+    const result = await deleteConfig(id);
+    if (result) {
       toast.current?.show({
         severity: "error",
         summary: "Erro",
-        detail: error.message,
+        detail: result.message,
       });
     } else {
       toast.current?.show({
@@ -126,13 +108,6 @@ function ModalTipoCategorias({
     }
     setIsLoading(false);
   };
-  if (error) {
-    toast.current?.show({
-      severity: "error",
-      summary: "Erro",
-      detail: error,
-    });
-  }
 
   useEffect(() => {
     fetchTipoCategorias();
@@ -142,7 +117,6 @@ function ModalTipoCategorias({
     <div className="p-4">
       <Toast ref={toast} />
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">{title}</h1>
         <Button
           label="Adicionar Categoria"
           icon="pi pi-plus"
@@ -155,6 +129,7 @@ function ModalTipoCategorias({
         <p className="text-center text-gray-500">Carregando...</p>
       ) : (
         <DataTable value={tipoCategorias} paginator rows={5} responsiveLayout="scroll">
+
           <Column field="id" header="ID" style={{ width: "5%" }} />
           <Column field="tipo" header="Tipo" />
           <Column field="categoria" header="Categoria" />
@@ -189,10 +164,8 @@ function ModalTipoCategorias({
             <label className="block font-semibold mb-2">Tipo</label>
             <Dropdown
               value={newCategoria.tipo || ""}
-              options={tipos}
-              onChange={(e) =>
-                setNewCategoria((prev) => ({ ...prev, tipo: e.value }))
-              }
+              options={configData?.tipos || []}
+              onChange={(e) => setNewCategoria((prev) => ({ ...prev, tipo: e.value }))}
               placeholder="Selecione o Tipo"
               className="w-full"
             />
@@ -201,10 +174,8 @@ function ModalTipoCategorias({
             <label className="block font-semibold mb-2">Grupo</label>
             <Dropdown
               value={newCategoria.grupo || ""}
-              options={grupos}
-              onChange={(e) =>
-                setNewCategoria((prev) => ({ ...prev, grupo: e.value }))
-              }
+              options={configData?.grupos || []}
+              onChange={(e) => setNewCategoria((prev) => ({ ...prev, grupo: e.value }))}
               placeholder="Selecione o Grupo"
               className="w-full"
             />
@@ -213,11 +184,29 @@ function ModalTipoCategorias({
             <label className="block font-semibold mb-2">Natureza</label>
             <Dropdown
               value={newCategoria.natureza || ""}
-              options={naturezas}
-              onChange={(e) =>
-                setNewCategoria((prev) => ({ ...prev, natureza: e.value }))
-              }
+              options={configData?.naturezas || []}
+              onChange={(e) => setNewCategoria((prev) => ({ ...prev, natureza: e.value }))}
               placeholder="Selecione a Natureza"
+              className="w-full"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold mb-2">Categoria Financeira</label>
+            <Dropdown
+              value={newCategoria.categoria_financeira || ""}
+              options={configData?.financeiras || []}
+              onChange={(e) => setNewCategoria((prev) => ({ ...prev, categoria_financeira: e.value }))}
+              placeholder="Selecione a Categoria Financeira"
+              className="w-full"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold mb-2">Subcategoria</label>
+            <Dropdown
+              value={newCategoria.subcategoria || ""}
+              options={configData?.subCategorias || []}
+              onChange={(e) => setNewCategoria((prev) => ({ ...prev, subcategoria: e.value }))}
+              placeholder="Selecione a Subcategoria"
               className="w-full"
             />
           </div>
@@ -225,26 +214,15 @@ function ModalTipoCategorias({
             <label className="block font-semibold mb-2">Categoria</label>
             <InputText
               value={newCategoria.categoria || ""}
-              onChange={(e) =>
-                setNewCategoria((prev) => ({ ...prev, categoria: e.target.value }))
-              }
+              onChange={(e) => setNewCategoria((prev) => ({ ...prev, categoria: e.target.value }))}
               className="w-full"
             />
           </div>
-          <Button
-            label="Salvar"
-            icon="pi pi-check"
-            className="p-button-success w-full"
-            onClick={handleCreate}
-          />
+          <Button label="Salvar" icon="pi pi-check" className="p-button-success w-full" onClick={handleCreate} />
         </div>
       </Dialog>
 
-      <Button
-        label="Fechar"
-        className="p-button-secondary mt-4"
-        onClick={onClose}
-      />
+      <Button label="Fechar" className="p-button-secondary mt-4" onClick={onClose} />
     </div>
   );
 }
