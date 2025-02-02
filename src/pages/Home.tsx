@@ -10,24 +10,8 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
 import { ChartData, ChartOptions } from 'chart.js';
 import DashboardHome from '../pages/DashBoardHome/types';
+import {Transaction, FinancialSummary} from '../types/homeTypes';
 
-interface Transaction {
-  id: string;
-  type: 'Entrada' | 'Saída';
-  category: string;
-  paymentMethod: string;
-  date: string;
-  amount: number;
-  previousBalance: number;
-  currentBalance: number;
-}
-
-interface FinancialSummary {
-  totalBalance: number;
-  totalIncome: number;
-  totalExpenses: number;
-  monthlyChange: string;
-}
 
 const TypeTemplate = React.memo(({ rowData }: { rowData: Transaction }) => (
   <Tag
@@ -255,18 +239,15 @@ export default function Home() {
 
   return (
     <div className="container w-screen mx-auto p-1 md:p-10 max-w-100">
-      <Card>
-    <div className="p-6 space-y-6 text-sm md:text-lg lg:text-2xl">
+      <Card title="Dashboard Financeiro">
+      <div className="space-y-4 text-sm md:text-lg lg:text-2xl">
       <Toast ref={toast} />
 
-      <h1 className="text-2xl font-bold text-black mb-6">Dashboard Financeiro</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="col-span-1">
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-white shadow-lg" title="Saldo Total">
             <div className="flex items-center justify-between p-2 rounded">
               <div>
-                <p className="text-sm text-gray-600">Saldo Total</p>
                 <p className="text-2xl font-bold text-gray-800">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary.totalBalance)}</p>
               </div>
               <Wallet className="w-8 h-8 text-blue-500" />
@@ -275,10 +256,9 @@ export default function Home() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="col-span-1">
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-white shadow-lg" title="Entradas">
             <div className="flex items-center justify-between p-2 rounded">
               <div>
-                <p className="text-sm text-gray-600">Total Entradas</p>
                 <p className="text-2xl font-bold text-green-500">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary.totalIncome)}</p>
               </div>
               <TrendingUp className="w-8 h-8 text-green-500" />
@@ -287,10 +267,9 @@ export default function Home() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="col-span-1">
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-white shadow-lg" title="Saídas">
             <div className="flex items-center justify-between p-2 rounded">
               <div>
-                <p className="text-sm text-gray-600">Total Saídas</p>
                 <p className="text-2xl font-bold text-red-500">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(summary.totalExpenses)}</p>
               </div>
               <TrendingDown className="w-8 h-8 text-red-500" />
@@ -299,10 +278,9 @@ export default function Home() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="col-span-1">
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-white shadow-lg" title="Variação Mensal">
             <div className="flex items-center justify-between p-2 rounded">
               <div>
-                <p className="text-sm text-gray-600">Variação Mensal</p>
                 <p className={`text-2xl font-bold ${parseFloat(summary.monthlyChange) >= 0 ? 'text-green-500' : 'text-red-500'}`}>{summary.monthlyChange}</p>
               </div>
               <BarChart3 className="w-8 h-8 text-blue-500" />
@@ -312,15 +290,13 @@ export default function Home() {
       </div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="grid grid-cols-1 gap-4">
-        <Card className="bg-white shadow-lg col-span-2 p-4">
-          <h2 className="text-xl font-semibold mb-4">Fluxo de Caixa</h2>
+        <Card className="bg-white shadow-lg col-span-2 p-4" title="Fluxo de Caixa">
           <div className="w-full">
             <Chart type="line" data={chartData} options={chartOptions} />
           </div>
         </Card>
 
-        <Card className="bg-white shadow-lg col-span-2 p-4">
-          <h2 className="text-xl font-semibold mb-4">Últimas Transações</h2>
+        <Card className="bg-white shadow-lg col-span-2 p-4" title="Últimas Transações">
           <DataTable
             value={dadosViewBaseCaixa}
             paginator
