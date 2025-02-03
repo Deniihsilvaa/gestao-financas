@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "../../../services/supabaseClient";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
@@ -21,13 +21,13 @@ function ModalTipoCategorias({ onClose, isOpen, title }: ModalRegistroProps) {
   const toast = useRef<Toast>(null);
 
   // Carregar configurações dinâmicas
-  const fetchConfig = async () => {
+  const fetchConfig = useCallback(async () => {
     const data = await config();
     setConfigData(data);
-  };
+  }, []);
 
   // Fetch data from Supabase
-  const fetchTipoCategorias = async () => {
+  const fetchTipoCategorias = useCallback(async () => {
     setIsLoading(true);
     const data = await buscarConfigAll();
     if (!data) {
@@ -41,7 +41,7 @@ function ModalTipoCategorias({ onClose, isOpen, title }: ModalRegistroProps) {
       setTipoCategorias(data || []);
     }
     setIsLoading(false);
-  };
+  }, []);
 
   // Criar nova categoria
   const handleCreate = async () => {
@@ -109,7 +109,7 @@ function ModalTipoCategorias({ onClose, isOpen, title }: ModalRegistroProps) {
   useEffect(() => {
     fetchTipoCategorias();
     fetchConfig();
-  }, []);
+  }, [fetchTipoCategorias, fetchConfig]);
 
   return (
     <div className="p-4">

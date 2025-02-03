@@ -9,8 +9,6 @@ export async function config() {
         console.error("Erro ao buscar configurações:", error.message);
         return null;
     }
-    console.log("Verifique as configurações:", data);
-
     return {
         tipos: Array.from(new Set(data.map(item => item.tipo))).map(tipo => ({ label: tipo, value: tipo })),
         grupos: Array.from(new Set(data.map(item => item.grupo))).map(grupo => ({ label: grupo, value: grupo })),
