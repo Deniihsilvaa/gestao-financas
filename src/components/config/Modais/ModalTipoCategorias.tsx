@@ -21,13 +21,10 @@ function ModalTipoCategorias({ onClose, isOpen, title }: ModalRegistroProps) {
   const toast = useRef<Toast>(null);
 
   // Carregar configurações dinâmicas
-  useEffect(() => {
-    const fetchConfig = async () => {
-      const data = await config();
-      setConfigData(data);
-    };
-    fetchConfig();
-  }, []);
+  const fetchConfig = async () => {
+    const data = await config();
+    setConfigData(data);
+  };
 
   // Fetch data from Supabase
   const fetchTipoCategorias = async () => {
@@ -111,6 +108,7 @@ function ModalTipoCategorias({ onClose, isOpen, title }: ModalRegistroProps) {
 
   useEffect(() => {
     fetchTipoCategorias();
+    fetchConfig();
   }, []);
 
   return (
