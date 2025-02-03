@@ -13,7 +13,6 @@ import { config,buscarConfigAll,deleteConfig } from "../../../Api/ApiConfig";
 function ModalTipoCategorias({ onClose, isOpen, title }: ModalRegistroProps) {
   const [tipoCategorias, setTipoCategorias] = useState<TipoCategoria[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [newCategoria, setNewCategoria] = useState<Partial<TipoCategoria>>({});
   const [configData, setConfigData] = useState<any>(null);
@@ -31,11 +30,10 @@ function ModalTipoCategorias({ onClose, isOpen, title }: ModalRegistroProps) {
     setIsLoading(true);
     const data = await buscarConfigAll();
     if (!data) {
-      setError("Erro ao buscar configurações.");
       toast.current?.show({
         severity: "error",
         summary: "Erro",
-        detail: error,
+        detail: "Erro ao buscar Dados.",
       });
     } else {
       setTipoCategorias(data || []);
@@ -46,7 +44,11 @@ function ModalTipoCategorias({ onClose, isOpen, title }: ModalRegistroProps) {
   // Criar nova categoria
   const handleCreate = async () => {
     if (!newCategoria.categoria || !newCategoria.tipo || !newCategoria.grupo || !newCategoria.natureza) {
-      setError("Preencha todos os campos obrigatórios.");
+      toast.current?.show({
+        severity: "error",
+        summary: "Erro",
+        detail: "Preencha todos os campos obrigatórios.",
+      });
       return;
     }
     setIsLoading(true);

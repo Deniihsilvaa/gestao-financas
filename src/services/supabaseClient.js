@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 
 // Configuração do Supabase
 
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'default_supabase_url';
+const supabaseKey = process.env.REACT_APP_SUPABASE_KEY || 'default_supabase_key';
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
     auth: {

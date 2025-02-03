@@ -1,38 +1,41 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import pluginReact from "eslint-plugin-react";
-import pluginTs from "@typescript-eslint/eslint-plugin"; // Importa o plugin TypeScript
-import parser from "@typescript-eslint/parser"; // Importa o parser TypeScript
+import pluginTs from "@typescript-eslint/eslint-plugin";
+import parser from "@typescript-eslint/parser";
 
-/** @type {import('eslint').Linter.Config[]} */
+/** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
   {
-    files: ["**/*.{js,mjs,cjs,jsx,tsx}"], // Ajuste os tipos de arquivos a serem analisados
+    files: ["**/*.{js,mjs,cjs,jsx,tsx,ts}"], // Inclui arquivos TypeScript e JSX
     languageOptions: {
-      globals: globals.browser, // Definições globais para o ambiente de navegador
-      parser, // Adiciona o parser TypeScript
+      globals: globals.browser,
+      parser,
       parserOptions: {
-        ecmaVersion: 2020, // Suporte para ES2020
-        sourceType: "module", // Módulos ECMAScript
+        ecmaVersion: 2020,
+        sourceType: "module",
         ecmaFeatures: {
-          jsx: true, // Ativa o suporte a JSX
+          jsx: true,
         },
       },
     },
-  },
-  pluginJs.configs.recommended, // Configurações recomendadas para JavaScript
-  pluginReact.configs.flat.recommended, // Configurações recomendadas para React
-  {
-    files: ["**/*.ts", "**/*.tsx"], // Aplica regras específicas para arquivos TypeScript
     plugins: {
-      "@typescript-eslint": pluginTs, // Adiciona o plugin do TypeScript
+      "@typescript-eslint": pluginTs, // Adiciona o plugin TypeScript
+      "react": pluginReact, // Adiciona o plugin React
     },
-    extends: [
-      "plugin:@typescript-eslint/recommended", // Regras recomendadas para TypeScript
-      "plugin:react/recommended", // Regras recomendadas para React
-    ],
+    settings: {
+      react: {
+        version: "detect", // Detecta automaticamente a versão do React
+      },
+    },
     rules: {
-      // Aqui você pode adicionar ou sobrescrever regras específicas para o TypeScript
+      ...pluginJs.configs.recommended.rules, // Regras JS recomendadas
+      ...pluginReact.configs.recommended.rules, // Regras React recomendadas
+      ...pluginTs.configs.recommended.rules, // Regras TypeScript recomendadas
+
+      // Regras personalizadas
+      "no-console": "warn",
+      "react/react-in-jsx-scope": "off",
     },
-  },
+  }
 ];

@@ -24,9 +24,10 @@ export const formatCurrency = (value: number): string => {
   
   
   // Função para formatar valores numéricos com casas decimais
-  export const formatNumber = (value: number, decimals: number = 2): string => {
+  export const formatNumber = (value: number, decimals = 2): string => {
     return value.toFixed(decimals).replace(".", ",");
   };
+ 
   
   // Função para formatar como porcentagem
   export const formatPercentage = (value: number): string => {
@@ -34,7 +35,11 @@ export const formatCurrency = (value: number): string => {
   };
   
   // Função para formatar status (ex: ativo / inativo)
-  export const formatStatus = (status: string): string => {
-    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-  };
+// Função para formatar status (ex: Ativo / Inativo)
+export const formatStatus = (status: string): string => {
+  return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+};
+
+  
+  
   
